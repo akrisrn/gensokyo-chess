@@ -3,6 +3,7 @@ public class Piece extends Role {
   private int Y;
   private char P;
   private String Camp;
+  private int SpecialMoveCheck = 0;
 
   public Piece(int x, int y, char p) {
     super(p);
@@ -33,8 +34,10 @@ public class Piece extends Role {
     }
   }
 
-  public void moveTo(int x, int y, StringBuffer chessboard) throws CanNotPlaceException, CanNotMoveException {
+  public void moveTo(int x, int y, StringBuffer chessboard, int count) throws CanNotPlaceException,
+          CanNotMoveException {
     char aimChar = chessboard.charAt(convert(x, y));
+    int index = chessboard.indexOf(String.valueOf(P));
 
     if (Math.abs(x - X) > 1 || Math.abs(y - Y) > 1) {
       throw new CanNotMoveException();
@@ -43,10 +46,34 @@ public class Piece extends Role {
       throw new CanNotPlaceException();
     }
 
+    if (index == 344 || index == 352 || index == 356 || index == 364 || index == 368 || index == 376) {
+      if (aimChar != '*') {
+        speciallyMoveTo(x, y, chessboard, count);
+      } else {
+        normallyMoveTo(x, y, chessboard);
+      }
+    } else if (aimChar == '*') {
+      speciallyMoveTo(x, y, chessboard, count);
+    } else {
+      normallyMoveTo(x, y, chessboard);
+    }
+  }
+
+  public void normallyMoveTo(int x, int y, StringBuffer chessboard) {
+    SpecialMoveCheck = 0;
     removeFrom(chessboard);
     chessboard.setCharAt(convert(x, y), P);
     setX(x);
     setY(y);
+  }
+
+  public void speciallyMoveTo(int x, int y, StringBuffer chessboard, int count) {
+    SpecialMoveCheck++;
+    if (SpecialMoveCheck == 2) {
+      normallyMoveTo(x, y, chessboard);
+    } else if (count == 2) {
+      SpecialMoveCheck = 0;
+    }
   }
 
   public void removeFrom(StringBuffer chessboard) {
@@ -95,5 +122,9 @@ public class Piece extends Role {
 
   public void setY(int y) {
     Y = y;
+  }
+
+  public void setSpecialMoveCheck(int specialMoveCheck) {
+    SpecialMoveCheck = specialMoveCheck;
   }
 }

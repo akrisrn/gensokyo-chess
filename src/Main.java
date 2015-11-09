@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
+// TODO: 15-11-8 添加借机战斗
+// TODO: 15-11-8 添加远程战斗
+
 public class Main {
   private static final String PLACE = "x1y1a x2y1b x3y1c x4y1d x5y1e x6y1f x7y1g x8y1h x9y1i x4y2j x6y2k " +
           "x1y9A x2y9B x3y9C x4y9D x5y9E x6y9F x7y9G x8y9H x9y9I x4y8J x6y8K";
@@ -19,7 +22,14 @@ public class Main {
     }
 
     String camp = "red";
+    int round = 0;
+    int count = 0;
     while (true) {
+      if (count % 2 != 1) {
+        round++;
+      }
+      count++;
+      System.out.println("第 " + round + " 回合");
       boolean inputError = false;
       for (int i = 1; i <= 2; i++) {
         do {
@@ -41,7 +51,7 @@ public class Main {
             int x = (int) acton.get(1);
             int y = (int) acton.get(2);
             char p = (char) acton.get(3);
-            if (!moveAction(x, y, p, camp, chessboard.getChessboard())) {
+            if (!moveAction(x, y, p, camp, chessboard.getChessboard(), i)) {
               inputError = true;
             } else {
               inputError = false;
@@ -142,12 +152,12 @@ public class Main {
     }
   }
 
-  public static boolean moveAction(int x, int y, char p, String camp, StringBuffer board) {
+  public static boolean moveAction(int x, int y, char p, String camp, StringBuffer board, int count) {
     Piece piece = findPiece(camp, p);
 
     if (piece != null) {
       try {
-        piece.moveTo(x, y, board);
+        piece.moveTo(x, y, board, count);
         return true;
       } catch (CanNotPlaceException e) {
         System.out.println("无法放到该格");

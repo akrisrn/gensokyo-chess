@@ -1,3 +1,5 @@
+// TODO: 15-11-8 添加远程攻击
+
 public class Role {
   private char Name;
   private int Strength;
