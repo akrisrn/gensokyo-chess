@@ -1,6 +1,7 @@
 // TODO: 15-11-8 添加远程攻击
 
 public class Role {
+  private final int RIVER_BONUX = 5;
   private char Name;
   private int Strength;
   private int Dexterity;
@@ -10,6 +11,8 @@ public class Role {
   private int ArmorClass;
   private int Initiative;
   private int AttackBonus;
+  private int CurrentAB;
+  private int AttackType = 0;
 
   public Role(char name) {
     Name = name;
@@ -23,6 +26,7 @@ public class Role {
         Strength = 9;
         Dexterity = 15;
         Constitution = 11;
+        AttackType = 1;
         break;
       case 'c':
         Strength = 12;
@@ -53,6 +57,7 @@ public class Role {
         Strength = 10;
         Dexterity = 15;
         Constitution = 8;
+        AttackType = 1;
         break;
       case 'i':
         Strength = 11;
@@ -123,6 +128,7 @@ public class Role {
         Strength = 13;
         Dexterity = 11;
         Constitution = 11;
+        AttackType = 1;
         break;
     }
 
@@ -130,7 +136,12 @@ public class Role {
     CurrentHP = HitPoint;
     ArmorClass = 10 + getBonus(Dexterity);
     Initiative = getBonus(Dexterity);
-    AttackBonus = getBonus(Strength);
+    if (AttackType == 0) {
+      AttackBonus = getBonus(Strength);
+    } else {
+      AttackBonus = getBonus(Dexterity);
+    }
+    CurrentAB = AttackBonus;
   }
 
   public int roll(int x, int n) {
@@ -146,11 +157,15 @@ public class Role {
   }
 
   public int rollAttack() {
-    return AttackBonus + roll(1, 20);
+    return CurrentAB + roll(1, 20);
   }
 
   public int rollDamage() {
-    return roll(2, 2) + getBonus(Strength);
+    if (AttackType == 0) {
+      return roll(2, 2) + getBonus(Strength);
+    } else {
+      return roll(1, 7) + getBonus(Dexterity);
+    }
   }
 
   public void recoverHP() {
@@ -165,6 +180,14 @@ public class Role {
     return ArmorClass;
   }
 
+  public void addRiverBonus() {
+    ArmorClass += RIVER_BONUX;
+  }
+
+  public void subRiverBonus() {
+    ArmorClass -= RIVER_BONUX;
+  }
+
   private int getBonus(int attr) {
     return (int) Math.floor((attr - 10) / 2.0);
   }
@@ -177,8 +200,20 @@ public class Role {
     return Name;
   }
 
-  public int getAttackBonus() {
-    return AttackBonus;
+  public int getCurrentAB() {
+    return CurrentAB;
+  }
+
+  public void recoverAB() {
+    CurrentAB = AttackBonus;
+  }
+
+  public void subDistanceBonus(int gridNumber) {
+    CurrentAB -= gridNumber + 2;
+  }
+
+  public int getAttackType() {
+    return AttackType;
   }
 
   public int getStrength() {

@@ -1,57 +1,63 @@
 public class Battle {
-  static boolean IsBattleOver;
-  static char Loser;
-
-  private static void normalAtk(Role role1, Role role2) {
+  private static char normalAtk(Role role1, Role role2) {
     System.out.println(role1.getName() + " 的攻击击中了!");
     int damage = role1.rollDamage();
     role2.hpReduce(damage);
     System.out.println(role1.getName() + " 对 " + role2.getName() + " 造成了 " + damage + " 点伤害");
     System.out.println(role2.getName() + " 的 HP 现在是:" + role2.getCurrentHP());
-    isDefeated(role2);
+    return defeated(role2);
   }
 
-  private static void criticalAtk(Role role1, Role role2) {
+  private static char criticalAtk(Role role1, Role role2) {
     System.out.println(role1.getName() + " 造成了重击!");
     int damage = role1.rollDamage() + role1.rollDamage();
     role2.hpReduce(damage);
     System.out.println(role1.getName() + " 对 " + role2.getName() + " 造成了 " + damage + " 点伤害");
     System.out.println(role2.getName() + " 的 HP 现在是:" + role2.getCurrentHP());
-    isDefeated(role2);
+    return defeated(role2);
   }
 
-  private static void isDefeated(Role role2) {
+  private static char defeated(Role role2) {
     if (role2.getCurrentHP() <= 0) {
       System.out.println(role2.getName() + " 被打倒了!");
-      Loser = role2.getName();
       role2.recoverHP();
-      IsBattleOver = true;
+      return role2.getName();
+    } else {
+      return ' ';
     }
   }
 
-  private static void battleRound(Role role1, Role role2) {
+  private static char battleRound(Role role1, Role role2, int distance) {
+    if (role1.getAttackType() != 0) {
+      role1.recoverAB();
+      role1.subDistanceBonus(distance);
+    }
+
     int armorClass = role2.getArmorClass();
     int attackRoll = role1.rollAttack();
     System.out.println(role1.getName() + " 的攻击检定为:" + attackRoll);
 
-    if (attackRoll - role1.getAttackBonus() == 1) {
+    if (attackRoll - role1.getCurrentAB() == 1) {
       System.out.println(role1.getName() + " 的攻击失手了!");
-    } else if (attackRoll - role1.getAttackBonus() == 20) {
+      return ' ';
+    } else if (attackRoll - role1.getCurrentAB() == 20) {
       if (role1.rollAttack() > armorClass) {
-        criticalAtk(role1, role2);
+        return criticalAtk(role1, role2);
       } else {
-        normalAtk(role1, role2);
+        return normalAtk(role1, role2);
       }
     } else if (attackRoll > armorClass) {
-      normalAtk(role1, role2);
+      return normalAtk(role1, role2);
     } else if (attackRoll == armorClass) {
       if (role1.getStrength() > role2.getStrength()) {
-        normalAtk(role1, role2);
+        return normalAtk(role1, role2);
       } else {
         System.out.println(role1.getName() + " 的攻击失手了!");
+        return ' ';
       }
     } else {
       System.out.println(role1.getName() + " 的攻击失手了!");
+      return ' ';
     }
   }
 
@@ -78,17 +84,30 @@ public class Battle {
     return false;
   }
 
-  public static void start(Role role1, Role role2) {
+  public static char frontalBattle(Role role1, Role role2) {
     boolean isRole1First = judgeInitiative(role1, role2);
-
-    IsBattleOver = false;
-    while (!IsBattleOver) {
+    char result;
+    while (true) {
       if (isRole1First) {
-        battleRound(role1, role2);
+        result = battleRound(role1, role2, 0);
+        if (result != ' ') {
+          return result;
+        }
       } else {
-        battleRound(role2, role1);
+        result = battleRound(role2, role1, 0);
+        if (result != ' ') {
+          return result;
+        }
       }
       isRole1First = !isRole1First;
     }
+  }
+
+  public static char remoteBattle(Role role1, Role role2, int distance) {
+    return battleRound(role1, role2, distance);
+  }
+
+  public static char opportunityBattle(Role role1, Role role2) {
+    return battleRound(role1, role2, 0);
   }
 }

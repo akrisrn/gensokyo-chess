@@ -17,3 +17,8 @@ class SameCampException extends Exception {
   public SameCampException() {
   }
 }
+
+class haveObstacleException extends Exception {
+  public haveObstacleException() {
+  }
+}

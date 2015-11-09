@@ -8,6 +8,7 @@ public class Main {
   private static final String PLACE = "x1y1a x2y1b x3y1c x4y1d x5y1e x6y1f x7y1g x8y1h x9y1i x4y2j x6y2k " +
           "x1y9A x2y9B x3y9C x4y9D x5y9E x6y9F x7y9G x8y9H x9y9I x4y8J x6y8K";
   private static ArrayList<Piece> Pieces;
+  private static char Loser;
 
   public static void main(String[] args) {
     Chessboard chessboard = new Chessboard();
@@ -60,19 +61,27 @@ public class Main {
           } else if ((int) acton.get(0) == 2) {
             Piece piece1 = (Piece) acton.get(1);
             Piece piece2 = (Piece) acton.get(2);
-            if (!battleAction(piece1, piece2, chessboard.getChessboard())) {
-              inputError = true;
-            } else {
-              inputError = false;
-              chessboard.show();
-
-              if (Battle.Loser == 'e') {
-                System.out.println("黑方胜利");
-                System.exit(0);
-              } else if (Battle.Loser == 'E') {
-                System.out.println("红方胜利");
-                System.exit(0);
+            if (piece1.getAttackType() == 0) {
+              if (!frontalBattleAction(piece1, piece2, chessboard.getChessboard())) {
+                inputError = true;
+              } else {
+                inputError = false;
+                chessboard.show();
               }
+            } else {
+              if (!remoteBattleAction(piece1, piece2, chessboard.getChessboard())) {
+                inputError = true;
+              } else {
+                inputError = false;
+                chessboard.show();
+              }
+            }
+            if (Loser == 'e') {
+              System.out.println("黑方胜利");
+              System.exit(0);
+            } else if (Loser == 'E') {
+              System.out.println("红方胜利");
+              System.exit(0);
             }
           }
         } while (inputError);
@@ -139,9 +148,25 @@ public class Main {
     return null;
   }
 
-  public static boolean battleAction(Piece piece1, Piece piece2, StringBuffer board) {
+  public static boolean remoteBattleAction(Piece piece1, Piece piece2, StringBuffer chessboard) {
     try {
-      piece1.battleWith(piece2, board);
+      Loser = piece1.remoteBattleWith(piece2, chessboard);
+      return true;
+    } catch (ExceedAttackRangeException e) {
+      System.out.println("超出攻击范围");
+      return false;
+    } catch (haveObstacleException e) {
+      System.out.println("中间有障碍");
+      return false;
+    } catch (SameCampException e) {
+      System.out.println("这是己方棋子");
+      return false;
+    }
+  }
+
+  public static boolean frontalBattleAction(Piece piece1, Piece piece2, StringBuffer chessboard) {
+    try {
+      Loser = piece1.frontalBattleWith(piece2, chessboard);
       return true;
     } catch (SameCampException e) {
       System.out.println("这是己方棋子");
@@ -152,12 +177,12 @@ public class Main {
     }
   }
 
-  public static boolean moveAction(int x, int y, char p, String camp, StringBuffer board, int count) {
+  public static boolean moveAction(int x, int y, char p, String camp, StringBuffer chessboard, int count) {
     Piece piece = findPiece(camp, p);
 
     if (piece != null) {
       try {
-        piece.moveTo(x, y, board, count);
+        piece.moveTo(x, y, chessboard, count);
         return true;
       } catch (CanNotPlaceException e) {
         System.out.println("无法放到该格");
