@@ -1,7 +1,5 @@
-// TODO: 15-11-8 添加远程攻击
-
 public class Role {
-  private final int RIVER_BONUX = 5;
+  private final int RIVER_BONUS = 5;
   private char Name;
   private int Strength;
   private int Dexterity;
@@ -181,11 +179,11 @@ public class Role {
   }
 
   public void addRiverBonus() {
-    ArmorClass += RIVER_BONUX;
+    ArmorClass += RIVER_BONUS;
   }
 
   public void subRiverBonus() {
-    ArmorClass -= RIVER_BONUX;
+    ArmorClass -= RIVER_BONUS;
   }
 
   private int getBonus(int attr) {
@@ -222,9 +220,5 @@ public class Role {
 
   public int getDexterity() {
     return Dexterity;
-  }
-
-  public int getConstitution() {
-    return Constitution;
   }
 }

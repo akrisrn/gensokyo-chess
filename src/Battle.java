@@ -85,18 +85,19 @@ public class Battle {
   }
 
   public static char frontalBattle(Role role1, Role role2) {
+    System.out.println(role1.getName() + " 和 " + role2.getName() + " 展开正面战斗");
     boolean isRole1First = judgeInitiative(role1, role2);
-    char result;
+    char loser;
     while (true) {
       if (isRole1First) {
-        result = battleRound(role1, role2, 0);
-        if (result != ' ') {
-          return result;
+        loser = battleRound(role1, role2, 0);
+        if (loser != ' ') {
+          return loser;
         }
       } else {
-        result = battleRound(role2, role1, 0);
-        if (result != ' ') {
-          return result;
+        loser = battleRound(role2, role1, 0);
+        if (loser != ' ') {
+          return loser;
         }
       }
       isRole1First = !isRole1First;
@@ -104,10 +105,12 @@ public class Battle {
   }
 
   public static char remoteBattle(Role role1, Role role2, int distance) {
+    System.out.println(role1.getName() + " 对 " + role2.getName() + " 进行远程攻击");
     return battleRound(role1, role2, distance);
   }
 
   public static char opportunityBattle(Role role1, Role role2) {
+    System.out.println(role1.getName() + " 对 " + role2.getName() + " 进行借机攻击");
     return battleRound(role1, role2, 0);
   }
 }

@@ -18,7 +18,16 @@ public class Piece extends Role {
     }
   }
 
-  public boolean isHaveObstacleBetween(Piece piece, boolean isXAxis, StringBuffer chessboard) {
+  private char removeLoser(Piece piece1, Piece piece2, char loser, StringBuffer chessboard) {
+    if (piece1.getP() == loser) {
+      piece1.removeFrom(chessboard);
+    } else if (piece2.getP() == loser) {
+      piece2.removeFrom(chessboard);
+    }
+    return loser;
+  }
+
+  private boolean isHaveObstacleBetween(Piece piece, boolean isXAxis, StringBuffer chessboard) {
     if (isXAxis) {
       for (int i = X + 1; i < piece.getX(); i++) {
         char aimChar = chessboard.charAt(convert(i, Y));
@@ -37,37 +46,45 @@ public class Piece extends Role {
     return false;
   }
 
-  public char remoteBattleWith(Piece piece, StringBuffer chessboard) throws ExceedAttackRangeException, SameCampException, haveObstacleException {
+  public char opportunityBattleWith(Piece piece, StringBuffer chessboard) {
+    char loser = Battle.opportunityBattle(this, piece);
+    return removeLoser(this, piece, loser, chessboard);
+  }
+
+  private char remoteBattle(Piece piece, int distance, StringBuffer chessboard) throws haveObstacleException {
+    char loser;
+    if (isHaveObstacleBetween(piece, false, chessboard)) {
+      throw new haveObstacleException();
+    } else {
+      if (distance == 0) {
+        loser = Battle.opportunityBattle(piece, this);
+        if (loser == ' ') {
+          loser = Battle.remoteBattle(this, piece, distance);
+        }
+      } else {
+        loser = Battle.remoteBattle(this, piece, distance);
+      }
+    }
+    return loser;
+  }
+
+  public char remoteBattleWith(Piece piece, StringBuffer chessboard) throws ExceedAttackRangeException,
+          SameCampException, haveObstacleException {
     if (Camp.equals(piece.getCamp())) {
       throw new SameCampException();
     }
+    char loser;
     if (X == piece.getX()) {
-      if (isHaveObstacleBetween(piece, false, chessboard)) {
-        throw new haveObstacleException();
-      } else {
-        char loser = Battle.remoteBattle(this, piece, Math.abs(Y - piece.getY()) - 1);
-        if (loser != ' ') {
-          piece.removeFrom(chessboard);
-          return loser;
-        } else {
-          return loser;
-        }
-      }
+      int distance = Math.abs(Y - piece.getY()) - 1;
+      loser = remoteBattle(piece, distance, chessboard);
     } else if (Y == piece.getY()) {
-      if (isHaveObstacleBetween(piece, true, chessboard)) {
-        throw new haveObstacleException();
-      } else {
-        char loser = Battle.remoteBattle(this, piece, Math.abs(X - piece.getX()) - 1);
-        if (loser != ' ') {
-          piece.removeFrom(chessboard);
-          return loser;
-        } else {
-          return loser;
-        }
-      }
+      int distance = Math.abs(X - piece.getX()) - 1;
+      loser = remoteBattle(piece, distance, chessboard);
     } else {
       throw new ExceedAttackRangeException();
     }
+
+    return removeLoser(this, piece, loser, chessboard);
   }
 
   public char frontalBattleWith(Piece piece, StringBuffer chessboard) throws ExceedAttackRangeException,
@@ -80,18 +97,109 @@ public class Piece extends Role {
     }
 
     char loser = Battle.frontalBattle(this, piece);
-    if (P == loser) {
-      removeFrom(chessboard);
-    } else {
-      piece.removeFrom(chessboard);
-    }
-    return loser;
+    return removeLoser(this, piece, loser, chessboard);
   }
 
-  public void moveTo(int x, int y, StringBuffer chessboard, int count) throws CanNotPlaceException,
+  private char[] findHaveChanceChar(int x, int y, StringBuffer chessboard) {
+    char haveChanceChar[] = new char[5];
+    char nearbyChar[] = findNearbyChar(chessboard);
+    int direction = determineDirection(x, y);
+    switch (direction) {
+      case 0:
+        System.arraycopy(nearbyChar, 3, haveChanceChar, 0, 3);
+        break;
+      case 1:
+        System.arraycopy(nearbyChar, 3, haveChanceChar, 0, 5);
+        break;
+      case 2:
+        System.arraycopy(nearbyChar, 5, haveChanceChar, 0, 3);
+        break;
+      case 3:
+        System.arraycopy(nearbyChar, 5, haveChanceChar, 0, 3);
+        System.arraycopy(nearbyChar, 0, haveChanceChar, 3, 2);
+        break;
+      case 4:
+        System.arraycopy(nearbyChar, 0, haveChanceChar, 0, 2);
+        haveChanceChar[2] = nearbyChar[7];
+        break;
+      case 5:
+        System.arraycopy(nearbyChar, 0, haveChanceChar, 0, 4);
+        haveChanceChar[4] = nearbyChar[7];
+        break;
+      case 6:
+        System.arraycopy(nearbyChar, 1, haveChanceChar, 0, 3);
+        break;
+      case 7:
+        System.arraycopy(nearbyChar, 1, haveChanceChar, 0, 5);
+        break;
+    }
+    return haveChanceChar;
+  }
+
+  private char[] findNearbyChar(StringBuffer chessboard) {
+    char nearbyChar[] = new char[8];
+    int count = 0;
+    for (int i = X + 1; i >= X - 1; i--) {
+      for (int j = Y + 1; j >= Y - 1; j--) {
+        if (!(i == X && j == Y)) {
+          int index = convert(i, j);
+          if (index == 0) {
+            nearbyChar[count] = ' ';
+          } else {
+            char aimChar = chessboard.charAt(index);
+            if (aimChar != ' ' && aimChar != '*' && aimChar != '|') {
+              nearbyChar[count] = aimChar;
+            } else {
+              nearbyChar[count] = ' ';
+            }
+          }
+          count++;
+        }
+      }
+    }
+    char tmp = nearbyChar[3];
+    System.arraycopy(nearbyChar, 0, nearbyChar, 1, 3);
+    nearbyChar[0] = tmp;
+    tmp = nearbyChar[7];
+    nearbyChar[7] = nearbyChar[5];
+    nearbyChar[5] = tmp;
+    return nearbyChar;
+  }
+
+  private int determineDirection(int x, int y) {
+    /*
+       701
+       6 2
+       543
+     */
+    if (x > X) {
+      if (y > Y) {
+        return 1;
+      } else if (y < Y) {
+        return 3;
+      } else {
+        return 2;
+      }
+    } else if (x < X) {
+      if (y > Y) {
+        return 7;
+      } else if (y < Y) {
+        return 5;
+      } else {
+        return 6;
+      }
+    } else {
+      if (y > Y) {
+        return 0;
+      } else {
+        return 4;
+      }
+    }
+  }
+
+  public char[] moveTo(int x, int y, StringBuffer chessboard, int count, boolean noChance) throws CanNotPlaceException,
           CanNotMoveException {
     char aimChar = chessboard.charAt(convert(x, y));
-    int index = chessboard.indexOf(String.valueOf(P));
 
     if (Math.abs(x - X) > 1 || Math.abs(y - Y) > 1) {
       throw new CanNotMoveException();
@@ -100,28 +208,33 @@ public class Piece extends Role {
       throw new CanNotPlaceException();
     }
 
-    if (index == 344 || index == 352 || index == 356 || index == 364 || index == 368 || index == 376) {
+    if (Y == 5 && X != 2 && X != 5 && X != 8) {
       if (aimChar != '*') {
-        speciallyMoveTo(x, y, chessboard, false, count);
+        return speciallyMoveTo(x, y, chessboard, false, count);
       } else {
-        normallyMoveTo(x, y, chessboard);
+        return normallyMoveTo(x, y, chessboard, noChance);
       }
     } else if (aimChar == '*') {
-      speciallyMoveTo(x, y, chessboard, true, count);
+      return speciallyMoveTo(x, y, chessboard, true, count);
     } else {
-      normallyMoveTo(x, y, chessboard);
+      return normallyMoveTo(x, y, chessboard, noChance);
     }
   }
 
-  public void normallyMoveTo(int x, int y, StringBuffer chessboard) {
+  private char[] normallyMoveTo(int x, int y, StringBuffer chessboard, boolean noChance) {
+    char haveChanceChars[] = null;
+    if (!noChance) {
+      haveChanceChars = findHaveChanceChar(x, y, chessboard);
+    }
     SpecialMoveCheck = 0;
     removeFrom(chessboard);
     chessboard.setCharAt(convert(x, y), P);
-    setX(x);
-    setY(y);
+    setXY(x, y);
+    return haveChanceChars;
   }
 
-  public void speciallyMoveTo(int x, int y, StringBuffer chessboard, boolean into, int count) {
+  private char[] speciallyMoveTo(int x, int y, StringBuffer chessboard, boolean into, int count) {
+    char haveChanceChars[] = null;
     SpecialMoveCheck++;
     if (SpecialMoveCheck == 2) {
       if (into) {
@@ -129,23 +242,33 @@ public class Piece extends Role {
       } else {
         subRiverBonus();
       }
-      normallyMoveTo(x, y, chessboard);
+      removeFrom(chessboard);
+      chessboard.setCharAt(convert(x, y), P);
+      setXY(x, y);
     } else if (count == 2) {
+      if (into) {
+        haveChanceChars = findHaveChanceChar(x, y, chessboard);
+      }
       SpecialMoveCheck = 0;
+    } else {
+      if (into) {
+        haveChanceChars = findHaveChanceChar(x, y, chessboard);
+      }
     }
+    return haveChanceChars;
   }
 
-  public void removeFrom(StringBuffer chessboard) {
-    int index = chessboard.indexOf(String.valueOf(P));
-    if (index == 344 || index == 352 || index == 356 || index == 364 || index == 368 || index == 376) {
-      chessboard.setCharAt(index, '*');
-    } else if (index == 348 || index == 360 || index == 372) {
-      chessboard.setCharAt(index, '|');
+  private void removeFrom(StringBuffer chessboard) {
+    if (Y == 5) {
+      if (X == 2 || X == 5 || X == 8) {
+        chessboard.setCharAt(convert(X, Y), '|');
+      } else {
+        chessboard.setCharAt(convert(X, Y), '*');
+      }
     } else {
-      chessboard.setCharAt(index, ' ');
+      chessboard.setCharAt(convert(X, Y), ' ');
     }
-    setX(-1);
-    setY(-1);
+    setXY(-1, -1);
   }
 
   public void placeTo(StringBuffer chessboard) throws CanNotPlaceException {
@@ -155,8 +278,12 @@ public class Piece extends Role {
     chessboard.setCharAt(convert(X, Y), P);
   }
 
-  public int convert(int x, int y) {
-    return 648 - (y - 1) * 76 + (x - 1) * 4;
+  private int convert(int x, int y) {
+    if (x <= 0 || y <= 0) {
+      return 0;
+    } else {
+      return 648 - (y - 1) * 76 + (x - 1) * 4;
+    }
   }
 
   public String getCamp() {
@@ -171,19 +298,12 @@ public class Piece extends Role {
     return X;
   }
 
-  public void setX(int x) {
-    X = x;
-  }
-
   public int getY() {
     return Y;
   }
 
-  public void setY(int y) {
+  private void setXY(int x, int y) {
+    X = x;
     Y = y;
-  }
-
-  public void setSpecialMoveCheck(int specialMoveCheck) {
-    SpecialMoveCheck = specialMoveCheck;
   }
 }

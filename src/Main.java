@@ -1,9 +1,6 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-// TODO: 15-11-8 添加借机战斗
-// TODO: 15-11-8 添加远程战斗
-
 public class Main {
   private static final String PLACE = "x1y1a x2y1b x3y1c x4y1d x5y1e x6y1f x7y1g x8y1h x9y1i x4y2j x6y2k " +
           "x1y9A x2y9B x3y9C x4y9D x5y9E x6y9F x7y9G x8y9H x9y9I x4y8J x6y8K";
@@ -32,6 +29,8 @@ public class Main {
       count++;
       System.out.println("第 " + round + " 回合");
       boolean inputError = false;
+      boolean haveBattle = false;
+      boolean noChance = false;
       for (int i = 1; i <= 2; i++) {
         do {
           if (camp.equals("red")) {
@@ -52,13 +51,14 @@ public class Main {
             int x = (int) acton.get(1);
             int y = (int) acton.get(2);
             char p = (char) acton.get(3);
-            if (!moveAction(x, y, p, camp, chessboard.getChessboard(), i)) {
+            if (!moveAction(x, y, p, camp, chessboard.getChessboard(), i, noChance)) {
               inputError = true;
             } else {
               inputError = false;
               chessboard.show();
             }
           } else if ((int) acton.get(0) == 2) {
+            haveBattle = true;
             Piece piece1 = (Piece) acton.get(1);
             Piece piece2 = (Piece) acton.get(2);
             if (piece1.getAttackType() == 0) {
@@ -85,6 +85,10 @@ public class Main {
             }
           }
         } while (inputError);
+
+        if (i == 1 && haveBattle) {
+          noChance = true;
+        }
       }
 
       if (camp.equals("red")) {
@@ -177,12 +181,25 @@ public class Main {
     }
   }
 
-  public static boolean moveAction(int x, int y, char p, String camp, StringBuffer chessboard, int count) {
+  public static boolean moveAction(int x, int y, char p, String camp, StringBuffer chessboard, int count, boolean noChance) {
     Piece piece = findPiece(camp, p);
 
     if (piece != null) {
       try {
-        piece.moveTo(x, y, chessboard, count);
+        char haveChanceChars[] = piece.moveTo(x, y, chessboard, count, noChance);
+        if (haveChanceChars != null) {
+          for (char haveChanceChar : haveChanceChars) {
+            if (haveChanceChar != ' ') {
+              Piece haveChancePiece = findPiece(haveChanceChar);
+              System.out.println(haveChanceChar);
+              if (haveChancePiece != null) {
+                if (!haveChancePiece.getCamp().equals(piece.getCamp())) {
+                  haveChancePiece.opportunityBattleWith(piece, chessboard);
+                }
+              }
+            }
+          }
+        }
         return true;
       } catch (CanNotPlaceException e) {
         System.out.println("无法放到该格");
