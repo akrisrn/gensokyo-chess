@@ -3,6 +3,7 @@ public class Piece extends Role {
   private int Y;
   private char P;
   private String Camp;
+  private boolean IsKing = false;
   private int SpecialMoveCheck = 0;
 
   public Piece(int x, int y, char p) {
@@ -15,6 +16,10 @@ public class Piece extends Role {
       Camp = "black";
     } else if (y > 0 && y < 5) {
       Camp = "red";
+    }
+
+    if (x == 5 && (y == 1 || y == 9)) {
+      IsKing = true;
     }
   }
 
@@ -47,8 +52,13 @@ public class Piece extends Role {
   }
 
   public char opportunityBattleWith(Piece piece, StringBuffer chessboard) {
-    char loser = Battle.opportunityBattle(this, piece);
-    return removeLoser(this, piece, loser, chessboard);
+    char loser;
+    if (this.getAttackType() != 0) {
+      return ' ';
+    } else {
+      loser = Battle.opportunityBattle(this, piece);
+      return removeLoser(this, piece, loser, chessboard);
+    }
   }
 
   private char remoteBattle(Piece piece, int distance, StringBuffer chessboard) throws haveObstacleException {
@@ -284,6 +294,10 @@ public class Piece extends Role {
     } else {
       return 648 - (y - 1) * 76 + (x - 1) * 4;
     }
+  }
+
+  public boolean isKing() {
+    return IsKing;
   }
 
   public String getCamp() {

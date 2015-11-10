@@ -40,47 +40,29 @@ public class Main {
           }
           System.out.print("第 " + i + " 次行动:");
 
-          ArrayList acton = handleInput(in.nextLine());
-          if (acton == null) {
+          ArrayList action = handleInput(in.nextLine());
+          if (action == null) {
             System.out.println("输入有误");
             inputError = true;
             continue;
           }
 
-          if ((int) acton.get(0) == 3) {
-            int x = (int) acton.get(1);
-            int y = (int) acton.get(2);
-            char p = (char) acton.get(3);
+          if ((int) action.get(0) == 3) {
+            int x = (int) action.get(1);
+            int y = (int) action.get(2);
+            char p = (char) action.get(3);
             if (!moveAction(x, y, p, camp, chessboard.getChessboard(), i, noChance)) {
               inputError = true;
             } else {
               inputError = false;
               chessboard.show();
             }
-          } else if ((int) acton.get(0) == 2) {
+          } else if ((int) action.get(0) == 2) {
             haveBattle = true;
-            Piece piece1 = (Piece) acton.get(1);
-            Piece piece2 = (Piece) acton.get(2);
-            if (piece1.getAttackType() == 0) {
-              if (!frontalBattleAction(piece1, piece2, chessboard.getChessboard())) {
-                inputError = true;
-              } else {
-                inputError = false;
-                chessboard.show();
-              }
-            } else {
-              if (!remoteBattleAction(piece1, piece2, chessboard.getChessboard())) {
-                inputError = true;
-              } else {
-                inputError = false;
-                chessboard.show();
-              }
+            if (!battleAction(action, chessboard)) {
+              inputError = true;
             }
-            if (Loser == 'e') {
-              System.out.println("黑方胜利");
-              System.exit(0);
-            } else if (Loser == 'E') {
-              System.out.println("红方胜利");
+            if (isGameOver()) {
               System.exit(0);
             }
           }
@@ -97,6 +79,40 @@ public class Main {
         camp = "red";
       }
     }
+  }
+
+  public static boolean battleAction(ArrayList action, Chessboard chessboard) {
+    Piece piece1 = (Piece) action.get(1);
+    Piece piece2 = (Piece) action.get(2);
+    if (piece1.getAttackType() == 0) {
+      if (!frontalBattleAction(piece1, piece2, chessboard.getChessboard())) {
+        return false;
+      } else {
+        chessboard.show();
+        return true;
+      }
+    } else {
+      if (!remoteBattleAction(piece1, piece2, chessboard.getChessboard())) {
+        return false;
+      } else {
+        chessboard.show();
+        return true;
+      }
+    }
+  }
+
+  public static boolean isGameOver() {
+    Piece loserPiece = findPiece(Loser);
+    if (loserPiece != null) {
+      if (loserPiece.getCamp().equals("red") && loserPiece.isKing()) {
+        System.out.println("黑方胜利");
+        return true;
+      } else if (loserPiece.getCamp().equals("black") && loserPiece.isKing()) {
+        System.out.println("红方胜利");
+        return true;
+      }
+    }
+    return false;
   }
 
   @SuppressWarnings("unchecked")
@@ -191,7 +207,6 @@ public class Main {
           for (char haveChanceChar : haveChanceChars) {
             if (haveChanceChar != ' ') {
               Piece haveChancePiece = findPiece(haveChanceChar);
-              System.out.println(haveChanceChar);
               if (haveChancePiece != null) {
                 if (!haveChancePiece.getCamp().equals(piece.getCamp())) {
                   haveChancePiece.opportunityBattleWith(piece, chessboard);
