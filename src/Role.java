@@ -134,6 +134,7 @@ public class Role {
     CurrentHP = HitPoint;
     ArmorClass = 10 + getBonus(Dexterity);
     Initiative = getBonus(Dexterity);
+
     if (AttackType == 0) {
       AttackBonus = getBonus(Strength);
     } else {
@@ -144,6 +145,7 @@ public class Role {
 
   public int roll(int x, int n) {
     int ran = 0;
+
     for (int i = 0; i < x; i++) {
       ran += (int) (Math.random() * n + 1);
     }

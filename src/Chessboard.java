@@ -14,11 +14,14 @@ public class Chessboard {
 
   public ArrayList<Piece> placePieces(String in) throws CanNotPlaceException {
     String cmd[] = in.split("\\s+");
+
     for (String aCmd : cmd) {
       String tmp[] = aCmd.split("");
+
       int x = Integer.parseInt(tmp[1]);
       int y = Integer.parseInt(tmp[3]);
       char p = tmp[4].charAt(0);
+
       Piece piece = new Piece(x, y, p);
       piece.placeTo(Chessboard);
       Pieces.add(piece);

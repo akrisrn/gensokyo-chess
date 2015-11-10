@@ -64,7 +64,6 @@ public class Battle {
   private static boolean judgeInitiative(Role role1, Role role2) {
     int initiativeRoll1 = role1.rollInitiative();
     int initiativeRoll2 = role2.rollInitiative();
-
     System.out.println(role1.getName() + " 的先攻检定为:" + initiativeRoll1);
     System.out.println(role2.getName() + " 的先攻检定为:" + initiativeRoll2);
 
@@ -86,8 +85,10 @@ public class Battle {
 
   public static char frontalBattle(Role role1, Role role2) {
     System.out.println(role1.getName() + " 和 " + role2.getName() + " 展开正面战斗");
+
     boolean isRole1First = judgeInitiative(role1, role2);
     char loser;
+
     while (true) {
       if (isRole1First) {
         loser = battleRound(role1, role2, 0);

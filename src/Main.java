@@ -10,6 +10,7 @@ public class Main {
   public static void main(String[] args) {
     Chessboard chessboard = new Chessboard();
     Scanner in = new Scanner(System.in);
+
     try {
       System.out.println("自动填入棋子:");
       Pieces = chessboard.placePieces(PLACE);
@@ -22,15 +23,18 @@ public class Main {
     String camp = "red";
     int round = 0;
     int count = 0;
+
     while (true) {
       if (count % 2 != 1) {
         round++;
       }
       count++;
       System.out.println("第 " + round + " 回合");
+
       boolean inputError = false;
       boolean haveBattle = false;
       boolean noChance = false;
+
       for (int i = 1; i <= 2; i++) {
         do {
           if (camp.equals("red")) {
@@ -51,26 +55,22 @@ public class Main {
             int x = (int) action.get(1);
             int y = (int) action.get(2);
             char p = (char) action.get(3);
-            if (!moveAction(x, y, p, camp, chessboard.getChessboard(), i, noChance)) {
-              inputError = true;
-            } else {
-              inputError = false;
+            inputError = !moveAction(x, y, p, camp, chessboard.getChessboard(), i, noChance);
+            if (!inputError) {
               chessboard.show();
             }
           } else if ((int) action.get(0) == 2) {
             haveBattle = true;
-            if (!battleAction(action, chessboard)) {
-              inputError = true;
+            inputError = !battleAction(action, chessboard);
+            if (!inputError) {
+              chessboard.show();
             }
             if (isGameOver()) {
               System.exit(0);
             }
           }
         } while (inputError);
-
-        if (i == 1 && haveBattle) {
-          noChance = true;
-        }
+        noChance = i == 1 && haveBattle;
       }
 
       if (camp.equals("red")) {
@@ -84,30 +84,22 @@ public class Main {
   public static boolean battleAction(ArrayList action, Chessboard chessboard) {
     Piece piece1 = (Piece) action.get(1);
     Piece piece2 = (Piece) action.get(2);
+
     if (piece1.getAttackType() == 0) {
-      if (!frontalBattleAction(piece1, piece2, chessboard.getChessboard())) {
-        return false;
-      } else {
-        chessboard.show();
-        return true;
-      }
+      return frontalBattleAction(piece1, piece2, chessboard.getChessboard());
     } else {
-      if (!remoteBattleAction(piece1, piece2, chessboard.getChessboard())) {
-        return false;
-      } else {
-        chessboard.show();
-        return true;
-      }
+      return remoteBattleAction(piece1, piece2, chessboard.getChessboard());
     }
   }
 
   public static boolean isGameOver() {
-    Piece loserPiece = findPiece(Loser);
-    if (loserPiece != null) {
-      if (loserPiece.getCamp().equals("red") && loserPiece.isKing()) {
+    Piece loser = findPiece(Loser);
+
+    if (loser != null) {
+      if (loser.getCamp().equals("red") && loser.isKing()) {
         System.out.println("黑方胜利");
         return true;
-      } else if (loserPiece.getCamp().equals("black") && loserPiece.isKing()) {
+      } else if (loser.getCamp().equals("black") && loser.isKing()) {
         System.out.println("红方胜利");
         return true;
       }
@@ -122,8 +114,10 @@ public class Main {
 
     if (tmp.length == 3) {
       action.add(2);
+
       Piece piece1 = findPiece(tmp[0].charAt(0));
       Piece piece2 = findPiece(tmp[2].charAt(0));
+
       if (piece1 == null || piece2 == null) {
         return null;
       } else {
@@ -132,10 +126,12 @@ public class Main {
       }
     } else if (tmp.length == 5) {
       action.add(3);
+
       try {
         int x = Integer.parseInt(tmp[1]);
         int y = Integer.parseInt(tmp[3]);
         char p = tmp[4].charAt(0);
+
         action.add(x);
         action.add(y);
         action.add(p);

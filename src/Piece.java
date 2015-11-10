@@ -3,7 +3,7 @@ public class Piece extends Role {
   private int Y;
   private char P;
   private String Camp;
-  private boolean IsKing = false;
+  private boolean IsKing;
   private int SpecialMoveCheck = 0;
 
   public Piece(int x, int y, char p) {
@@ -18,9 +18,7 @@ public class Piece extends Role {
       Camp = "red";
     }
 
-    if (x == 5 && (y == 1 || y == 9)) {
-      IsKing = true;
-    }
+    IsKing = x == 5 && (y == 1 || y == 9);
   }
 
   private char removeLoser(Piece piece1, Piece piece2, char loser, StringBuffer chessboard) {
@@ -53,6 +51,7 @@ public class Piece extends Role {
 
   public char opportunityBattleWith(Piece piece, StringBuffer chessboard) {
     char loser;
+
     if (this.getAttackType() != 0) {
       return ' ';
     } else {
@@ -63,6 +62,7 @@ public class Piece extends Role {
 
   private char remoteBattle(Piece piece, int distance, StringBuffer chessboard) throws haveObstacleException {
     char loser;
+
     if (isHaveObstacleBetween(piece, false, chessboard)) {
       throw new haveObstacleException();
     } else {
@@ -83,7 +83,9 @@ public class Piece extends Role {
     if (Camp.equals(piece.getCamp())) {
       throw new SameCampException();
     }
+
     char loser;
+
     if (X == piece.getX()) {
       int distance = Math.abs(Y - piece.getY()) - 1;
       loser = remoteBattle(piece, distance, chessboard);
@@ -93,7 +95,6 @@ public class Piece extends Role {
     } else {
       throw new ExceedAttackRangeException();
     }
-
     return removeLoser(this, piece, loser, chessboard);
   }
 
@@ -102,6 +103,7 @@ public class Piece extends Role {
     if (Math.abs(X - piece.getX()) > 1 || Math.abs(Y - piece.getY()) > 1) {
       throw new ExceedAttackRangeException();
     }
+
     if (Camp.equals(piece.getCamp())) {
       throw new SameCampException();
     }
@@ -114,6 +116,7 @@ public class Piece extends Role {
     char haveChanceChar[] = new char[5];
     char nearbyChar[] = findNearbyChar(chessboard);
     int direction = determineDirection(x, y);
+
     switch (direction) {
       case 0:
         System.arraycopy(nearbyChar, 3, haveChanceChar, 0, 3);
@@ -149,6 +152,7 @@ public class Piece extends Role {
   private char[] findNearbyChar(StringBuffer chessboard) {
     char nearbyChar[] = new char[8];
     int count = 0;
+
     for (int i = X + 1; i >= X - 1; i--) {
       for (int j = Y + 1; j >= Y - 1; j--) {
         if (!(i == X && j == Y)) {
@@ -167,6 +171,7 @@ public class Piece extends Role {
         }
       }
     }
+
     char tmp = nearbyChar[3];
     System.arraycopy(nearbyChar, 0, nearbyChar, 1, 3);
     nearbyChar[0] = tmp;
@@ -232,11 +237,13 @@ public class Piece extends Role {
   }
 
   private char[] normallyMoveTo(int x, int y, StringBuffer chessboard, boolean noChance) {
+    SpecialMoveCheck = 0;
     char haveChanceChars[] = null;
+
     if (!noChance) {
       haveChanceChars = findHaveChanceChar(x, y, chessboard);
     }
-    SpecialMoveCheck = 0;
+
     removeFrom(chessboard);
     chessboard.setCharAt(convert(x, y), P);
     setXY(x, y);
@@ -246,12 +253,14 @@ public class Piece extends Role {
   private char[] speciallyMoveTo(int x, int y, StringBuffer chessboard, boolean into, int count) {
     char haveChanceChars[] = null;
     SpecialMoveCheck++;
+
     if (SpecialMoveCheck == 2) {
       if (into) {
         addRiverBonus();
       } else {
         subRiverBonus();
       }
+
       removeFrom(chessboard);
       chessboard.setCharAt(convert(x, y), P);
       setXY(x, y);
