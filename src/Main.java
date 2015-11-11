@@ -61,12 +61,12 @@ public class Main {
             }
           } else if ((int) action.get(0) == 2) {
             haveBattle = true;
-            inputError = !battleAction(action, chessboard);
+            inputError = !battleAction(action, camp, chessboard.getChessboard());
             if (!inputError) {
               chessboard.show();
-            }
-            if (isGameOver()) {
-              System.exit(0);
+            	if (isGameOver()) {
+            	  System.exit(0);
+           		}
             }
           }
         } while (inputError);
@@ -81,14 +81,18 @@ public class Main {
     }
   }
 
-  public static boolean battleAction(ArrayList action, Chessboard chessboard) {
+  public static boolean battleAction(ArrayList action, String camp, StringBuffer chessboard) {
     Piece piece1 = (Piece) action.get(1);
+		if (!piece1.getCamp().equals(camp)) {
+			System.out.println("你没有这个棋子");
+			return false;
+		}
     Piece piece2 = (Piece) action.get(2);
 
     if (piece1.getAttackType() == 0) {
-      return frontalBattleAction(piece1, piece2, chessboard.getChessboard());
+      return frontalBattleAction(piece1, piece2, chessboard);
     } else {
-      return remoteBattleAction(piece1, piece2, chessboard.getChessboard());
+      return remoteBattleAction(piece1, piece2, chessboard);
     }
   }
 

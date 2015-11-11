@@ -52,7 +52,7 @@ public class Piece extends Role {
   public char opportunityBattleWith(Piece piece, StringBuffer chessboard) {
     char loser;
 
-    if (this.getAttackType() != 0) {
+    if (getAttackType() != 0) {
       return ' ';
     } else {
       loser = Battle.opportunityBattle(this, piece);
@@ -298,7 +298,7 @@ public class Piece extends Role {
   }
 
   private int convert(int x, int y) {
-    if (x <= 0 || y <= 0) {
+    if (x < 1 || y < 1 || x > 9 || y > 9) {
       return 0;
     } else {
       return 648 - (y - 1) * 76 + (x - 1) * 4;
