@@ -175,7 +175,7 @@ public class Main {
     } catch (ExceedAttackRangeException e) {
       System.out.println("超出攻击范围");
       return false;
-    } catch (haveObstacleException e) {
+    } catch (HaveObstacleException e) {
       System.out.println("中间有障碍");
       return false;
     } catch (SameCampException e) {

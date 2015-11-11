@@ -60,11 +60,11 @@ public class Piece extends Role {
     }
   }
 
-  private char remoteBattle(Piece piece, int distance, StringBuffer chessboard) throws haveObstacleException {
+  private char remoteBattle(Piece piece, int distance, StringBuffer chessboard) throws HaveObstacleException {
     char loser;
 
     if (isHaveObstacleBetween(piece, false, chessboard)) {
-      throw new haveObstacleException();
+      throw new HaveObstacleException();
     } else {
       if (distance == 0) {
         loser = Battle.opportunityBattle(piece, this);
@@ -79,7 +79,7 @@ public class Piece extends Role {
   }
 
   public char remoteBattleWith(Piece piece, StringBuffer chessboard) throws ExceedAttackRangeException,
-          SameCampException, haveObstacleException {
+          SameCampException, HaveObstacleException {
     if (Camp.equals(piece.getCamp())) {
       throw new SameCampException();
     }

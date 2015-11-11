@@ -18,7 +18,7 @@ class SameCampException extends Exception {
   }
 }
 
-class haveObstacleException extends Exception {
-  public haveObstacleException() {
+class HaveObstacleException extends Exception {
+  public HaveObstacleException() {
   }
 }
