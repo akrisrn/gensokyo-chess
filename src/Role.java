@@ -14,6 +14,8 @@ public class Role {
 
   public Role(char name) {
     Name = name;
+    String bodyType = "中";
+
     switch (name) {
       case 'a':
         Strength = 11;
@@ -30,6 +32,7 @@ public class Role {
         Strength = 12;
         Dexterity = 10;
         Constitution = 10;
+        bodyType = "小";
         break;
       case 'd':
         Strength = 10;
@@ -40,6 +43,7 @@ public class Role {
         Strength = 11;
         Dexterity = 10;
         Constitution = 13;
+        bodyType = "小";
         break;
       case 'f':
         Strength = 12;
@@ -66,11 +70,13 @@ public class Role {
         Strength = 13;
         Dexterity = 11;
         Constitution = 10;
+        bodyType = "小";
         break;
       case 'k':
         Strength = 13;
         Dexterity = 11;
         Constitution = 10;
+        bodyType = "小";
         break;
       case 'A':
         Strength = 10;
@@ -81,6 +87,7 @@ public class Role {
         Strength = 10;
         Dexterity = 12;
         Constitution = 10;
+        bodyType = "小";
         break;
       case 'C':
         Strength = 15;
@@ -91,6 +98,7 @@ public class Role {
         Strength = 10;
         Dexterity = 10;
         Constitution = 12;
+        bodyType = "小";
         break;
       case 'E':
         Strength = 10;
@@ -106,11 +114,13 @@ public class Role {
         Strength = 10;
         Dexterity = 10;
         Constitution = 12;
+        bodyType = "小";
         break;
       case 'H':
         Strength = 11;
         Dexterity = 13;
         Constitution = 11;
+        bodyType = "小";
         break;
       case 'I':
         Strength = 10;
@@ -132,13 +142,13 @@ public class Role {
 
     HitPoint = 10 + getBonus(Constitution);
     CurrentHP = HitPoint;
-    ArmorClass = 10 + getBonus(Dexterity);
+    ArmorClass = 10 + getBonus(Dexterity) + getBonus(bodyType);
     Initiative = getBonus(Dexterity);
 
     if (AttackType == 0) {
-      AttackBonus = getBonus(Strength);
+      AttackBonus = getBonus(Strength) + getBonus(bodyType);
     } else {
-      AttackBonus = getBonus(Dexterity);
+      AttackBonus = getBonus(Dexterity) + getBonus(bodyType);
     }
     CurrentAB = AttackBonus;
   }
@@ -190,6 +200,23 @@ public class Role {
 
   private int getBonus(int attr) {
     return (int) Math.floor((attr - 10) / 2.0);
+  }
+
+  private int getBonus(String bodyType) {
+    switch (bodyType) {
+      case "中":
+        return 0;
+      case "小":
+        return 1;
+      case "超小":
+        return 2;
+      case "大":
+        return -1;
+      case "超大":
+        return -2;
+      default:
+        return 0;
+    }
   }
 
   public int getCurrentHP() {
