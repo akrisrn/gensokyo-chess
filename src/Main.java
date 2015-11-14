@@ -114,13 +114,13 @@ public class Main {
   @SuppressWarnings("unchecked")
   public static ArrayList handleInput(String in) {
     ArrayList action = new ArrayList();
-    String tmp[] = in.split("");
+    char tmp[] = in.toCharArray();
 
     if (tmp.length == 3) {
       action.add(2);
 
-      Piece piece1 = findPiece(tmp[0].charAt(0));
-      Piece piece2 = findPiece(tmp[2].charAt(0));
+      Piece piece1 = findPiece(tmp[0]);
+      Piece piece2 = findPiece(tmp[2]);
 
       if (piece1 == null || piece2 == null) {
         return null;
@@ -132,9 +132,9 @@ public class Main {
       action.add(3);
 
       try {
-        int x = Integer.parseInt(tmp[1]);
-        int y = Integer.parseInt(tmp[3]);
-        char p = tmp[4].charAt(0);
+        int x = Character.getNumericValue(tmp[1]);
+        int y = Character.getNumericValue(tmp[3]);
+        char p = tmp[4];
 
         action.add(x);
         action.add(y);
