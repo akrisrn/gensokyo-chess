@@ -181,6 +181,9 @@ public class Main {
     } catch (SameCampException e) {
       System.out.println("这是己方棋子");
       return false;
+    } catch (InRiverException e) {
+      System.out.println("在河流中无法进行攻击");
+      return false;
     }
   }
 
@@ -193,6 +196,9 @@ public class Main {
       return false;
     } catch (ExceedAttackRangeException e) {
       System.out.println("超出攻击范围");
+      return false;
+    } catch (InRiverException e) {
+      System.out.println("在河流中无法进行攻击");
       return false;
     }
   }

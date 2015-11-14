@@ -4,6 +4,7 @@ public class Piece extends Role {
   private char P;
   private String Camp;
   private boolean IsKing;
+  private boolean InRiver = false;
   private int SpecialMoveCheck = 0;
 
   public Piece(int x, int y, char p) {
@@ -52,7 +53,7 @@ public class Piece extends Role {
   public char opportunityBattleWith(Piece piece, StringBuffer chessboard) {
     char loser;
 
-    if (getAttackType() != 0) {
+    if (getAttackType() != 0 || isInRiver() || piece.isInRiver()) {
       return ' ';
     } else {
       loser = Battle.opportunityBattle(this, piece);
@@ -79,9 +80,13 @@ public class Piece extends Role {
   }
 
   public char remoteBattleWith(Piece piece, StringBuffer chessboard) throws ExceedAttackRangeException,
-          SameCampException, HaveObstacleException {
+          SameCampException, HaveObstacleException, InRiverException {
     if (Camp.equals(piece.getCamp())) {
       throw new SameCampException();
+    }
+
+    if (isInRiver()) {
+      throw new InRiverException();
     }
 
     char loser;
@@ -99,13 +104,17 @@ public class Piece extends Role {
   }
 
   public char frontalBattleWith(Piece piece, StringBuffer chessboard) throws ExceedAttackRangeException,
-          SameCampException {
+          SameCampException, InRiverException {
     if (Math.abs(X - piece.getX()) > 1 || Math.abs(Y - piece.getY()) > 1) {
       throw new ExceedAttackRangeException();
     }
 
     if (Camp.equals(piece.getCamp())) {
       throw new SameCampException();
+    }
+
+    if (isInRiver() || piece.isInRiver()) {
+      throw new InRiverException();
     }
 
     char loser = Battle.frontalBattle(this, piece);
@@ -257,8 +266,10 @@ public class Piece extends Role {
     if (SpecialMoveCheck == 2) {
       if (into) {
         addRiverBonus();
+        InRiver = true;
       } else {
         subRiverBonus();
+        InRiver = false;
       }
 
       removeFrom(chessboard);
@@ -303,6 +314,10 @@ public class Piece extends Role {
     } else {
       return 648 - (y - 1) * 76 + (x - 1) * 4;
     }
+  }
+
+  public boolean isInRiver() {
+    return InRiver;
   }
 
   public boolean isKing() {

@@ -22,3 +22,8 @@ class HaveObstacleException extends Exception {
   public HaveObstacleException() {
   }
 }
+
+class InRiverException extends Exception {
+  public InRiverException() {
+  }
+}
