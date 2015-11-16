@@ -184,6 +184,9 @@ public class Main {
     } catch (InRiverException e) {
       System.out.println("在河流中无法进行攻击");
       return false;
+    } catch (KingSpellException e) {
+      System.out.println("国王不受来自对面区域的攻击");
+      return false;
     }
   }
 
@@ -225,7 +228,7 @@ public class Main {
       } catch (CanNotPlaceException e) {
         System.out.println("无法放到该格");
         return false;
-      } catch (CanNotMoveException e) {
+      } catch (CanNotMoveException | KingMoveException e) {
         System.out.println("超出移动范围");
         return false;
       }

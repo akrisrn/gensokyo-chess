@@ -27,3 +27,13 @@ class InRiverException extends Exception {
   public InRiverException() {
   }
 }
+
+class KingMoveException extends Exception {
+  public KingMoveException() {
+  }
+}
+
+class KingSpellException extends Exception {
+  public KingSpellException() {
+  }
+}

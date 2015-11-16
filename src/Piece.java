@@ -80,13 +80,17 @@ public class Piece extends Role {
   }
 
   public char remoteBattleWith(Piece piece, StringBuffer chessboard) throws ExceedAttackRangeException,
-          SameCampException, HaveObstacleException, InRiverException {
+          SameCampException, HaveObstacleException, InRiverException, KingSpellException {
     if (Camp.equals(piece.getCamp())) {
       throw new SameCampException();
     }
-
     if (isInRiver()) {
       throw new InRiverException();
+    }
+    if (piece.isKing()) {
+      if ((piece.getY() < 5 && Y > 5) || (piece.getY() > 5 && Y < 5)) {
+        throw new KingSpellException();
+      }
     }
 
     char loser;
@@ -222,7 +226,7 @@ public class Piece extends Role {
   }
 
   public char[] moveTo(int x, int y, StringBuffer chessboard, int count, boolean noChance) throws CanNotPlaceException,
-          CanNotMoveException {
+          CanNotMoveException, KingMoveException {
     char aimChar = chessboard.charAt(convert(x, y));
 
     if (Math.abs(x - X) > 1 || Math.abs(y - Y) > 1) {
@@ -230,6 +234,9 @@ public class Piece extends Role {
     }
     if (aimChar != ' ' && aimChar != '*' && aimChar != '|') {
       throw new CanNotPlaceException();
+    }
+    if (isKing() && y == 5) {
+      throw new KingMoveException();
     }
 
     if (Y == 5 && X != 2 && X != 5 && X != 8) {
