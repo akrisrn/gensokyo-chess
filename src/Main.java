@@ -4,17 +4,18 @@ import java.util.Scanner;
 public class Main {
   private static final String PLACE = "x1y1a x2y1b x3y1c x4y1d x5y1e x6y1f x7y1g x8y1h x9y1i x4y2j x6y2k " +
           "x1y9A x2y9B x3y9C x4y9D x5y9E x6y9F x7y9G x8y9H x9y9I x4y8J x6y8K";
+  private static Chessboard Chessboard = new Chessboard();
   private static ArrayList<Piece> Pieces;
   private static char Loser;
+  private static boolean NoChance = false;
 
   public static void main(String[] args) {
-    Chessboard chessboard = new Chessboard();
     Scanner in = new Scanner(System.in);
 
     try {
       System.out.println("自动填入棋子:");
-      Pieces = chessboard.placePieces(PLACE);
-      chessboard.show();
+      Pieces = Chessboard.placePieces(PLACE);
+      Chessboard.show();
     } catch (CanNotPlaceException e) {
       System.out.println("无法放到该格");
       System.exit(1);
@@ -33,7 +34,6 @@ public class Main {
 
       boolean inputError = false;
       boolean haveBattle = false;
-      boolean noChance = false;
 
       for (int i = 1; i <= 2; i++) {
         do {
@@ -55,22 +55,22 @@ public class Main {
             int x = (int) action.get(1);
             int y = (int) action.get(2);
             char p = (char) action.get(3);
-            inputError = !moveAction(x, y, p, camp, chessboard.getChessboard(), i, noChance);
+            inputError = !moveAction(x, y, p, camp, i);
             if (!inputError) {
-              chessboard.show();
+              Chessboard.show();
             }
           } else if ((int) action.get(0) == 2) {
             haveBattle = true;
-            inputError = !battleAction(action, camp, chessboard.getChessboard());
+            inputError = !battleAction(action, camp);
             if (!inputError) {
-              chessboard.show();
-            	if (isGameOver()) {
-            	  System.exit(0);
-           		}
+              Chessboard.show();
+              if (isGameOver()) {
+                System.exit(0);
+              }
             }
           }
         } while (inputError);
-        noChance = i == 1 && haveBattle;
+        NoChance = i == 1 && haveBattle;
       }
 
       if (camp.equals("red")) {
@@ -81,7 +81,7 @@ public class Main {
     }
   }
 
-  public static boolean battleAction(ArrayList action, String camp, StringBuffer chessboard) {
+  public static boolean battleAction(ArrayList action, String camp) {
     Piece piece1 = (Piece) action.get(1);
 		if (!piece1.getCamp().equals(camp)) {
 			System.out.println("你没有这个棋子");
@@ -90,9 +90,9 @@ public class Main {
     Piece piece2 = (Piece) action.get(2);
 
     if (piece1.getAttackType() == 0) {
-      return frontalBattleAction(piece1, piece2, chessboard);
+      return frontalBattleAction(piece1, piece2);
     } else {
-      return remoteBattleAction(piece1, piece2, chessboard);
+      return remoteBattleAction(piece1, piece2);
     }
   }
 
@@ -168,9 +168,9 @@ public class Main {
     return null;
   }
 
-  public static boolean remoteBattleAction(Piece piece1, Piece piece2, StringBuffer chessboard) {
+  public static boolean remoteBattleAction(Piece piece1, Piece piece2) {
     try {
-      Loser = piece1.remoteBattleWith(piece2, chessboard);
+      Loser = piece1.remoteBattleWith(piece2, Chessboard.getChessboard());
       return true;
     } catch (ExceedAttackRangeException e) {
       System.out.println("超出攻击范围");
@@ -187,9 +187,9 @@ public class Main {
     }
   }
 
-  public static boolean frontalBattleAction(Piece piece1, Piece piece2, StringBuffer chessboard) {
+  public static boolean frontalBattleAction(Piece piece1, Piece piece2) {
     try {
-      Loser = piece1.frontalBattleWith(piece2, chessboard);
+      Loser = piece1.frontalBattleWith(piece2, Chessboard.getChessboard());
       return true;
     } catch (SameCampException e) {
       System.out.println("这是己方棋子");
@@ -203,19 +203,19 @@ public class Main {
     }
   }
 
-  public static boolean moveAction(int x, int y, char p, String camp, StringBuffer chessboard, int count, boolean noChance) {
+  public static boolean moveAction(int x, int y, char p, String camp, int count) {
     Piece piece = findPiece(camp, p);
 
     if (piece != null) {
       try {
-        char haveChanceChars[] = piece.moveTo(x, y, chessboard, count, noChance);
+        char haveChanceChars[] = piece.moveTo(x, y, Chessboard.getChessboard(), count, NoChance);
         if (haveChanceChars != null) {
           for (char haveChanceChar : haveChanceChars) {
             if (haveChanceChar != ' ') {
               Piece haveChancePiece = findPiece(haveChanceChar);
               if (haveChancePiece != null) {
                 if (!haveChancePiece.getCamp().equals(piece.getCamp())) {
-                  haveChancePiece.opportunityBattleWith(piece, chessboard);
+                  haveChancePiece.opportunityBattleWith(piece, Chessboard.getChessboard());
                 }
               }
             }

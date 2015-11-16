@@ -272,6 +272,7 @@ public class Piece extends Role {
         InRiver = false;
       }
 
+      SpecialMoveCheck = 0;
       removeFrom(chessboard);
       chessboard.setCharAt(convert(x, y), P);
       setXY(x, y);
