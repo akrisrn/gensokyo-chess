@@ -51,7 +51,8 @@ public class Main {
             continue;
           }
 
-          if ((int) action.get(0) == 3) {
+          int id = (int) action.get(0);
+          if (id == 3) {
             int x = (int) action.get(1);
             int y = (int) action.get(2);
             char code = (char) action.get(3);
@@ -59,7 +60,7 @@ public class Main {
             if (!inputError) {
               Chessboard.show();
             }
-          } else if ((int) action.get(0) == 2) {
+          } else if (id == 2) {
             haveBattle = true;
             inputError = !battleAction(action, camp);
             if (!inputError) {
@@ -68,6 +69,11 @@ public class Main {
                 System.exit(0);
               }
             }
+          } else if (id == 1) {
+            Piece piece = (Piece) action.get(1);
+            Chessboard.show();
+            System.out.println(piece);
+            inputError = true;
           }
         } while (inputError);
         NoChance = i == 1 && haveBattle;
@@ -116,7 +122,16 @@ public class Main {
     ArrayList action = new ArrayList();
     char tmp[] = in.toCharArray();
 
-    if (tmp.length == 3) {
+    if (tmp.length == 1) {
+      action.add(1);
+
+      Piece piece = findPiece(tmp[0]);
+      if (piece == null) {
+        return null;
+      } else {
+        action.add(piece);
+      }
+    } else if (tmp.length == 3) {
       action.add(2);
 
       Piece piece1 = findPiece(tmp[0]);

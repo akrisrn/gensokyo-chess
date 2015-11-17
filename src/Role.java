@@ -156,4 +156,43 @@ public class Role {
   public int getDexterity() {
     return Dexterity;
   }
+
+  @Override
+  public String toString() {
+    String bodyType;
+    String attackType;
+
+    switch (BodyBonus) {
+      case 0:
+        bodyType = "中型";
+        break;
+      case 1:
+        bodyType = "小型";
+        break;
+      case 2:
+        bodyType = "超小型";
+        break;
+      case -1:
+        bodyType = "大型";
+        break;
+      case -2:
+        bodyType = "超大型";
+        break;
+      default:
+        bodyType = "中型";
+    }
+
+    if (AttackType == 0) {
+      attackType = "近战";
+    } else {
+      attackType = "远程";
+    }
+
+    return "\n姓名: " + Name + "\n" +
+            "力量: " + Strength + "\n" +
+            "敏捷: " + Dexterity + "\n" +
+            "体质: " + Constitution + "\n" +
+            "体型: " + bodyType + "\n" +
+            "攻击方式: " + attackType + "\n";
+  }
 }
