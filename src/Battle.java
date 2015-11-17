@@ -28,9 +28,9 @@ public class Battle {
   }
 
   private static char battleRound(Role role1, Role role2, int distance) {
-    if (role1.getAttackType() != 0) {
+    if (role1.getAttackType() == 1) {
       role1.recoverAB();
-      role1.subDistanceBonus(distance);
+      role1.subRemoteAttack(distance);
     }
 
     int armorClass = role2.getArmorClass();

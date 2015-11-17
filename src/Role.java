@@ -19,6 +19,7 @@ public class Role {
   private int CurrentAB;
   private int AttackType;
   private int BodyBonus;
+  private int DistanceBonus = 0;
 
   public Role(char code) {
     String path = System.getProperty("user.dir") + "/role.csv";
@@ -93,7 +94,7 @@ public class Role {
     if (AttackType == 0) {
       return roll(2, 2) + getBonus(Strength);
     } else {
-      return roll(1, 7) + getBonus(Dexterity);
+      return roll(1, 7 - DistanceBonus) + getBonus(Dexterity);
     }
   }
 
@@ -141,8 +142,13 @@ public class Role {
     CurrentAB = AttackBonus;
   }
 
-  public void subDistanceBonus(int gridNumber) {
+  public void subRemoteAttack(int gridNumber) {
     CurrentAB -= gridNumber + 2;
+    if (gridNumber == 0) {
+      DistanceBonus = 4;
+    } else {
+      DistanceBonus = 0;
+    }
   }
 
   public int getAttackType() {
@@ -153,46 +159,15 @@ public class Role {
     return Strength;
   }
 
-  public int getDexterity() {
-    return Dexterity;
+  public int getBodyBonus() {
+    return BodyBonus;
   }
 
-  @Override
-  public String toString() {
-    String bodyType;
-    String attackType;
+  public int getConstitution() {
+    return Constitution;
+  }
 
-    switch (BodyBonus) {
-      case 0:
-        bodyType = "中型";
-        break;
-      case 1:
-        bodyType = "小型";
-        break;
-      case 2:
-        bodyType = "超小型";
-        break;
-      case -1:
-        bodyType = "大型";
-        break;
-      case -2:
-        bodyType = "超大型";
-        break;
-      default:
-        bodyType = "中型";
-    }
-
-    if (AttackType == 0) {
-      attackType = "近战";
-    } else {
-      attackType = "远程";
-    }
-
-    return "\n姓名: " + Name + "\n" +
-            "力量: " + Strength + "\n" +
-            "敏捷: " + Dexterity + "\n" +
-            "体质: " + Constitution + "\n" +
-            "体型: " + bodyType + "\n" +
-            "攻击方式: " + attackType + "\n";
+  public int getDexterity() {
+    return Dexterity;
   }
 }

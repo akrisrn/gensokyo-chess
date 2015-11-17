@@ -346,4 +346,57 @@ public class Piece extends Role {
     X = x;
     Y = y;
   }
+
+  @Override
+  public String toString() {
+    String bodyType;
+    String attackType;
+    String camp;
+    String king = "";
+
+    switch (getBodyBonus()) {
+      case 0:
+        bodyType = "中型";
+        break;
+      case 1:
+        bodyType = "小型";
+        break;
+      case 2:
+        bodyType = "超小型";
+        break;
+      case -1:
+        bodyType = "大型";
+        break;
+      case -2:
+        bodyType = "超大型";
+        break;
+      default:
+        bodyType = "中型";
+    }
+
+    if (getAttackType() == 0) {
+      attackType = "近战";
+    } else {
+      attackType = "远程";
+    }
+
+    if (getCamp().equals("red")) {
+      camp = "红方";
+    } else {
+      camp = "黑方";
+    }
+
+    if (isKing()) {
+      king = "(国王)";
+    }
+
+    return "\n姓名: " + getName() + king + "\n" +
+            "阵营: " + camp + "\n" +
+            "HP : " + getCurrentHP() + "\n" +
+            "力量: " + getStrength() + "\n" +
+            "敏捷: " + getDexterity() + "\n" +
+            "体质: " + getConstitution() + "\n" +
+            "体型: " + bodyType + "\n" +
+            "攻击方式: " + attackType + "\n";
+  }
 }
