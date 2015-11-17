@@ -20,9 +20,10 @@ public class Chessboard {
 
       int x = Integer.parseInt(tmp[1]);
       int y = Integer.parseInt(tmp[3]);
-      char p = tmp[4].charAt(0);
+      char code = tmp[4].charAt(0);
+      int level = Integer.parseInt(tmp[5]);
 
-      Piece piece = new Piece(x, y, p);
+      Piece piece = new Piece(x, y, code, level);
       piece.placeTo(Chessboard);
       Pieces.add(piece);
     }

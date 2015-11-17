@@ -2,8 +2,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
-  private static final String PLACE = "x1y1a x2y1b x3y1c x4y1d x5y1e x6y1f x7y1g x8y1h x9y1i x4y2j x6y2k " +
-          "x1y9A x2y9B x3y9C x4y9D x5y9E x6y9F x7y9G x8y9H x9y9I x4y8J x6y8K";
+  private static final String PLACE = "x1y1a1 x2y1b1 x3y1c1 x4y1d1 x5y1e1 x6y1f1 x7y1g1 x8y1h1 x9y1i1 x4y2j1 x6y2k1 " +
+          "x1y9A1 x2y9B1 x3y9C1 x4y9D1 x5y9E1 x6y9F1 x7y9G1 x8y9H1 x9y9I1 x4y8J1 x6y8K1";
   private static Chessboard Chessboard = new Chessboard();
   private static ArrayList<Piece> Pieces;
   private static char Loser;

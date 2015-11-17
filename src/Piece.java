@@ -6,8 +6,8 @@ public class Piece extends Role {
   private boolean InRiver = false;
   private int SpecialMoveCheck = 0;
 
-  public Piece(int x, int y, char code) {
-    super(code);
+  public Piece(int x, int y, char code, int level) {
+    super(code, level);
     X = x;
     Y = y;
 
@@ -17,7 +17,9 @@ public class Piece extends Role {
       Camp = "red";
     }
 
-    IsKing = x == 5 && (y == 1 || y == 9);
+    if (IsKing = x == 5 && (y == 1 || y == 9)) {
+      setRoleLevel(code, 0);
+    }
   }
 
   private char removeLoser(Piece piece1, Piece piece2, char loser, StringBuffer chessboard) {
@@ -349,36 +351,8 @@ public class Piece extends Role {
 
   @Override
   public String toString() {
-    String bodyType;
-    String attackType;
     String camp;
     String king = "";
-
-    switch (getBodyBonus()) {
-      case 0:
-        bodyType = "中型";
-        break;
-      case 1:
-        bodyType = "小型";
-        break;
-      case 2:
-        bodyType = "超小型";
-        break;
-      case -1:
-        bodyType = "大型";
-        break;
-      case -2:
-        bodyType = "超大型";
-        break;
-      default:
-        bodyType = "中型";
-    }
-
-    if (getAttackType() == 0) {
-      attackType = "近战";
-    } else {
-      attackType = "远程";
-    }
 
     if (getCamp().equals("red")) {
       camp = "红方";
@@ -392,11 +366,13 @@ public class Piece extends Role {
 
     return "\n姓名: " + getName() + king + "\n" +
             "阵营: " + camp + "\n" +
-            "HP : " + getCurrentHP() + "\n" +
+            "等级: " + getLevel() + "\n" +
+            "生命: " + getCurrentHP() + "\n" +
+            "伤害: " + getDamageRange() + "\n" +
             "力量: " + getStrength() + "\n" +
             "敏捷: " + getDexterity() + "\n" +
             "体质: " + getConstitution() + "\n" +
-            "体型: " + bodyType + "\n" +
-            "攻击方式: " + attackType + "\n";
+            "体型: " + getBodyType() + "\n" +
+            "攻击方式: " + getRawAttackType() + "\n";
   }
 }

@@ -8,6 +8,7 @@ public class Role {
   private final int RIVER_BONUS = 5;
   private String Name;
   private char Code;
+  private int Level;
   private int Strength;
   private int Dexterity;
   private int Constitution;
@@ -20,8 +21,20 @@ public class Role {
   private int AttackType;
   private int BodyBonus;
   private int DistanceBonus = 0;
+  private int MaxDamage;
+  private int MinDamage;
+  private int DamageBonus;
 
-  public Role(char code) {
+  public Role(char code, int level) {
+    if (level > 5) {
+      level = 5;
+    } else if (level < 1) {
+      level = 1;
+    }
+    setRoleLevel(code, level);
+  }
+
+  private void init(char code) {
     String path = System.getProperty("user.dir") + "/role.csv";
     CsvReader reader = null;
 
@@ -59,18 +72,80 @@ public class Role {
       System.out.println("没有角色代码为: " + code);
       System.exit(1);
     }
+  }
 
-    HitPoint = 10 + getBonus(Constitution);
+  private void calculateBonus() {
+    HitPoint = 10 + getBonus(Constitution) + (Level - 1) * 3;
     CurrentHP = HitPoint;
     ArmorClass = 10 + getBonus(Dexterity) + BodyBonus;
     Initiative = getBonus(Dexterity);
 
     if (AttackType == 0) {
       AttackBonus = getBonus(Strength) + BodyBonus;
+      MaxDamage = Level + 1;
+      MinDamage = 2;
+      DamageBonus = getBonus(Strength);
     } else {
       AttackBonus = getBonus(Dexterity) + BodyBonus;
+      MaxDamage = Level + 6;
+      MinDamage = 1;
+      DamageBonus = getBonus(Dexterity);
     }
     CurrentAB = AttackBonus;
+  }
+
+  protected void setRoleLevel(char code, int level) {
+    if (level <= 1) {
+      init(code);
+    } else {
+      setRoleLevel(code, level - 1);
+      if (Strength % 2 + Dexterity % 2 + Constitution % 2 == 3) {
+        increaseAttr(3);
+      } else if (Strength % 2 + Dexterity % 2 + Constitution % 2 == 2) {
+        increaseAttr(0, 1, 3);
+      } else if (Strength % 2 + Dexterity % 2 + Constitution % 2 == 1) {
+        increaseAttr(1, 3, 1);
+      } else {
+        increaseAttr(5);
+      }
+    }
+    Level = level;
+    calculateBonus();
+  }
+
+  private void increaseAttr(int rise) {
+    if (Strength >= Dexterity && Strength >= Constitution) {
+      Strength += rise;
+    } else if (Dexterity >= Strength && Dexterity >= Constitution) {
+      Dexterity += rise;
+    } else {
+      Constitution += rise;
+    }
+  }
+
+  private void increaseAttr(int odevity, int rise1, int rise2) {
+    if (Strength % 2 == odevity) {
+      Strength += rise1;
+      if (Dexterity <= Constitution) {
+        Dexterity += rise2;
+      } else {
+        Constitution += rise2;
+      }
+    } else if (Dexterity % 2 == odevity) {
+      Dexterity += rise1;
+      if (Strength <= Constitution) {
+        Strength += rise2;
+      } else {
+        Constitution += rise2;
+      }
+    } else {
+      Constitution += rise1;
+      if (Strength <= Dexterity) {
+        Strength += rise2;
+      } else {
+        Dexterity += rise2;
+      }
+    }
   }
 
   public int roll(int x, int n) {
@@ -92,9 +167,9 @@ public class Role {
 
   public int rollDamage() {
     if (AttackType == 0) {
-      return roll(2, 2) + getBonus(Strength);
+      return roll(MinDamage, MaxDamage) + DamageBonus;
     } else {
-      return roll(1, 7 - DistanceBonus) + getBonus(Dexterity);
+      return roll(MinDamage, MaxDamage - DistanceBonus) + DamageBonus;
     }
   }
 
@@ -134,6 +209,10 @@ public class Role {
     return Code;
   }
 
+  public int getLevel() {
+    return Level;
+  }
+
   public int getCurrentAB() {
     return CurrentAB;
   }
@@ -169,5 +248,51 @@ public class Role {
 
   public int getDexterity() {
     return Dexterity;
+  }
+
+  public String getBodyType() {
+    switch (getBodyBonus()) {
+      case 0:
+        return "中型";
+      case 1:
+        return "小型";
+      case 2:
+        return "超小型";
+      case -1:
+        return "大型";
+      case -2:
+        return "超大型";
+      default:
+        return "中型";
+    }
+  }
+
+  public String getRawAttackType() {
+    if (getAttackType() == 0) {
+      return "近战";
+    } else {
+      return "远程";
+    }
+  }
+
+  public String getDamageRange() {
+    if (DamageBonus >= 0) {
+      return MinDamage + "d" + MaxDamage + "+" + DamageBonus;
+    } else {
+      return MinDamage + "d" + MaxDamage + DamageBonus;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "\n姓名: " + getName() + "\n" +
+            "等级: " + getLevel() + "\n" +
+            "生命: " + getCurrentHP() + "\n" +
+            "伤害: " + getDamageRange() + "\n" +
+            "力量: " + getStrength() + "\n" +
+            "敏捷: " + getDexterity() + "\n" +
+            "体质: " + getConstitution() + "\n" +
+            "体型: " + getBodyType() + "\n" +
+            "攻击方式: " + getRawAttackType() + "\n";
   }
 }
