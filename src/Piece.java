@@ -1,17 +1,15 @@
 public class Piece extends Role {
   private int X;
   private int Y;
-  private char P;
   private String Camp;
   private boolean IsKing;
   private boolean InRiver = false;
   private int SpecialMoveCheck = 0;
 
-  public Piece(int x, int y, char p) {
-    super(p);
+  public Piece(int x, int y, char code) {
+    super(code);
     X = x;
     Y = y;
-    P = p;
 
     if (y > 5 && y < 10) {
       Camp = "black";
@@ -23,9 +21,9 @@ public class Piece extends Role {
   }
 
   private char removeLoser(Piece piece1, Piece piece2, char loser, StringBuffer chessboard) {
-    if (piece1.getP() == loser) {
+    if (piece1.getCode() == loser) {
       piece1.removeFrom(chessboard);
-    } else if (piece2.getP() == loser) {
+    } else if (piece2.getCode() == loser) {
       piece2.removeFrom(chessboard);
     }
     return loser;
@@ -261,7 +259,7 @@ public class Piece extends Role {
     }
 
     removeFrom(chessboard);
-    chessboard.setCharAt(convert(x, y), P);
+    chessboard.setCharAt(convert(x, y), getCode());
     setXY(x, y);
     return haveChanceChars;
   }
@@ -281,7 +279,7 @@ public class Piece extends Role {
 
       SpecialMoveCheck = 0;
       removeFrom(chessboard);
-      chessboard.setCharAt(convert(x, y), P);
+      chessboard.setCharAt(convert(x, y), getCode());
       setXY(x, y);
     } else if (count == 2) {
       if (into) {
@@ -313,7 +311,7 @@ public class Piece extends Role {
     if (chessboard.charAt(convert(X, Y)) != ' ') {
       throw new CanNotPlaceException();
     }
-    chessboard.setCharAt(convert(X, Y), P);
+    chessboard.setCharAt(convert(X, Y), getCode());
   }
 
   private int convert(int x, int y) {
@@ -334,10 +332,6 @@ public class Piece extends Role {
 
   public String getCamp() {
     return Camp;
-  }
-
-  public char getP() {
-    return P;
   }
 
   public int getX() {

@@ -1,6 +1,13 @@
+import com.csvreader.CsvReader;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.Charset;
+
 public class Role {
   private final int RIVER_BONUS = 5;
-  private char Name;
+  private String Name;
+  private char Code;
   private int Strength;
   private int Dexterity;
   private int Constitution;
@@ -10,145 +17,57 @@ public class Role {
   private int Initiative;
   private int AttackBonus;
   private int CurrentAB;
-  private int AttackType = 0;
+  private int AttackType;
+  private int BodyBonus;
 
-  public Role(char name) {
-    Name = name;
-    String bodyType = "中";
+  public Role(char code) {
+    String path = System.getProperty("user.dir") + "/role.csv";
+    CsvReader reader = null;
 
-    switch (name) {
-      case 'a':
-        Strength = 11;
-        Dexterity = 15;
-        Constitution = 9;
-        break;
-      case 'b':
-        Strength = 9;
-        Dexterity = 15;
-        Constitution = 11;
-        AttackType = 1;
-        break;
-      case 'c':
-        Strength = 12;
-        Dexterity = 10;
-        Constitution = 10;
-        bodyType = "小";
-        break;
-      case 'd':
-        Strength = 10;
-        Dexterity = 10;
-        Constitution = 12;
-        break;
-      case 'e':
-        Strength = 11;
-        Dexterity = 10;
-        Constitution = 13;
-        bodyType = "小";
-        break;
-      case 'f':
-        Strength = 12;
-        Dexterity = 11;
-        Constitution = 11;
-        break;
-      case 'g':
-        Strength = 10;
-        Dexterity = 12;
-        Constitution = 10;
-        break;
-      case 'h':
-        Strength = 10;
-        Dexterity = 15;
-        Constitution = 8;
-        AttackType = 1;
-        break;
-      case 'i':
-        Strength = 11;
-        Dexterity = 12;
-        Constitution = 11;
-        break;
-      case 'j':
-        Strength = 13;
-        Dexterity = 11;
-        Constitution = 10;
-        bodyType = "小";
-        break;
-      case 'k':
-        Strength = 13;
-        Dexterity = 11;
-        Constitution = 10;
-        bodyType = "小";
-        break;
-      case 'A':
-        Strength = 10;
-        Dexterity = 10;
-        Constitution = 12;
-        break;
-      case 'B':
-        Strength = 10;
-        Dexterity = 12;
-        Constitution = 10;
-        bodyType = "小";
-        break;
-      case 'C':
-        Strength = 15;
-        Dexterity = 8;
-        Constitution = 10;
-        break;
-      case 'D':
-        Strength = 10;
-        Dexterity = 10;
-        Constitution = 12;
-        bodyType = "小";
-        break;
-      case 'E':
-        Strength = 10;
-        Dexterity = 10;
-        Constitution = 12;
-        break;
-      case 'F':
-        Strength = 10;
-        Dexterity = 10;
-        Constitution = 12;
-        break;
-      case 'G':
-        Strength = 10;
-        Dexterity = 10;
-        Constitution = 12;
-        bodyType = "小";
-        break;
-      case 'H':
-        Strength = 11;
-        Dexterity = 13;
-        Constitution = 11;
-        bodyType = "小";
-        break;
-      case 'I':
-        Strength = 10;
-        Dexterity = 8;
-        Constitution = 14;
-        break;
-      case 'J':
-        Strength = 13;
-        Dexterity = 10;
-        Constitution = 10;
-        break;
-      case 'K':
-        Strength = 13;
-        Dexterity = 11;
-        Constitution = 11;
-        AttackType = 1;
-        break;
+    try {
+      reader = new CsvReader(path, ',', Charset.forName("utf-8"));
+    } catch (FileNotFoundException e) {
+      System.out.println("没有找到角色文件");
+      System.exit(1);
+    }
+
+    boolean NotFindCode = true;
+    try {
+      reader.readHeaders();
+      while (reader.readRecord()) {
+        if (reader.get("Code").charAt(0) == code) {
+          Name = reader.get("Name");
+          Strength = Integer.parseInt(reader.get("Str"));
+          Dexterity = Integer.parseInt(reader.get("Dex"));
+          Constitution = Integer.parseInt(reader.get("Con"));
+          BodyBonus = Integer.parseInt(reader.get("BodyBonus"));
+          AttackType = Integer.parseInt(reader.get("AttackType"));
+          Code = code;
+          NotFindCode = false;
+          break;
+        }
+      }
+    } catch (IOException | NumberFormatException e) {
+      System.out.println("文件读取出错");
+      System.exit(1);
+    } finally {
+      reader.close();
+    }
+
+    if (NotFindCode) {
+      System.out.println("没有角色代码为: " + code);
+      System.exit(1);
     }
 
     HitPoint = 10 + getBonus(Constitution);
     CurrentHP = HitPoint;
-    ArmorClass = 10 + getBonus(Dexterity) + getBonus(bodyType);
+    ArmorClass = 10 + getBonus(Dexterity) + BodyBonus;
     Initiative = getBonus(Dexterity);
 
     if (AttackType == 0) {
-      AttackBonus = getBonus(Strength) + getBonus(bodyType);
+      AttackBonus = getBonus(Strength) + BodyBonus;
     } else {
-      AttackBonus = getBonus(Dexterity) + getBonus(bodyType);
+      AttackBonus = getBonus(Dexterity) + BodyBonus;
     }
     CurrentAB = AttackBonus;
   }
@@ -202,29 +121,16 @@ public class Role {
     return (int) Math.floor((attr - 10) / 2.0);
   }
 
-  private int getBonus(String bodyType) {
-    switch (bodyType) {
-      case "中":
-        return 0;
-      case "小":
-        return 1;
-      case "超小":
-        return 2;
-      case "大":
-        return -1;
-      case "超大":
-        return -2;
-      default:
-        return 0;
-    }
-  }
-
   public int getCurrentHP() {
     return CurrentHP;
   }
 
-  public char getName() {
+  public String getName() {
     return Name;
+  }
+
+  public char getCode() {
+    return Code;
   }
 
   public int getCurrentAB() {

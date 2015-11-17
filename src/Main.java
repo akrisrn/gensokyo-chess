@@ -54,8 +54,8 @@ public class Main {
           if ((int) action.get(0) == 3) {
             int x = (int) action.get(1);
             int y = (int) action.get(2);
-            char p = (char) action.get(3);
-            inputError = !moveAction(x, y, p, camp, i);
+            char code = (char) action.get(3);
+            inputError = !moveAction(x, y, code, camp, i);
             if (!inputError) {
               Chessboard.show();
             }
@@ -148,19 +148,19 @@ public class Main {
     return action;
   }
 
-  public static Piece findPiece(char p) {
+  public static Piece findPiece(char code) {
     for (Piece piece : Pieces) {
-      if (piece.getP() == p) {
+      if (piece.getCode() == code) {
         return piece;
       }
     }
     return null;
   }
 
-  public static Piece findPiece(String camp, char p) {
+  public static Piece findPiece(String camp, char code) {
     for (Piece piece : Pieces) {
       if (piece.getCamp().equals(camp)) {
-        if (piece.getP() == p) {
+        if (piece.getCode() == code) {
           return piece;
         }
       }
@@ -206,8 +206,8 @@ public class Main {
     }
   }
 
-  public static boolean moveAction(int x, int y, char p, String camp, int count) {
-    Piece piece = findPiece(camp, p);
+  public static boolean moveAction(int x, int y, char code, String camp, int count) {
+    Piece piece = findPiece(camp, code);
 
     if (piece != null) {
       try {

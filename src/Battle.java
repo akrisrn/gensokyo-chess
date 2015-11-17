@@ -21,7 +21,7 @@ public class Battle {
     if (role2.getCurrentHP() <= 0) {
       print(role2.getName() + " 被打倒了!");
       role2.recoverHP();
-      return role2.getName();
+      return role2.getCode();
     } else {
       return ' ';
     }
