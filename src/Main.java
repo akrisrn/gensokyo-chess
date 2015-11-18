@@ -2,25 +2,31 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
-  private static final String PLACE = "x1y1a1 x2y1b1 x3y1c1 x4y1d1 x5y1e1 x6y1f1 x7y1g1 x8y1h1 x9y1i1 x4y2j1 x6y2k1 " +
-          "x1y9A1 x2y9B1 x3y9C1 x4y9D1 x5y9E1 x6y9F1 x7y9G1 x8y9H1 x9y9I1 x4y8J1 x6y8K1";
+  private static final String PLACES[] = {"x1y1a1", "x2y1b1", "x3y1c1", "x4y1d1", "x5y1e1",
+          "x6y1f1", "x7y1g1", "x8y1h1", "x9y1i1", "x4y2j1", "x6y2k1",
+          "x1y9A1", "x2y9B1", "x3y9C1", "x4y9D1", "x5y9E1",
+          "x6y9F1", "x7y9G1", "x8y9H1", "x9y9I1", "x4y8J1", "x6y8K1"};
   private static Chessboard Chessboard = new Chessboard();
-  private static ArrayList<Piece> Pieces;
+  private static ArrayList<Piece> Pieces = new ArrayList<>();
   private static char Loser;
-  private static boolean NoChance = false;
+  private static boolean NoChance;
+  private static boolean HaveBattle;
 
   public static void main(String[] args) {
     Scanner in = new Scanner(System.in);
 
-    try {
-      System.out.println("自动填入棋子:");
-      Pieces = Chessboard.placePieces(PLACE);
+    System.out.println("是否使用默认布局?(Y/N)");
+    if (in.nextLine().equalsIgnoreCase("y")) {
+      place();
+    } else {
       Chessboard.show();
-    } catch (CanNotPlaceException e) {
-      System.out.println("无法放到该格");
-      System.exit(1);
+      place(in, "red");
+      place(in, "black");
     }
+    round(in);
+  }
 
+  public static void round(Scanner in) {
     String camp = "red";
     int round = 0;
     int count = 0;
@@ -32,51 +38,14 @@ public class Main {
       count++;
       System.out.println("第 " + round + " 回合");
 
-      boolean inputError = false;
-      boolean haveBattle = false;
+      NoChance = false;
+      HaveBattle = false;
 
       for (int i = 1; i <= 2; i++) {
-        do {
-          if (camp.equals("red")) {
-            System.out.print("红方");
-          } else {
-            System.out.print("黑方");
-          }
-          System.out.print("第 " + i + " 次行动:");
-
-          ArrayList action = handleInput(in.nextLine());
-          if (action == null) {
-            System.out.println("输入有误");
-            inputError = true;
-            continue;
-          }
-
-          int id = (int) action.get(0);
-          if (id == 3) {
-            int x = (int) action.get(1);
-            int y = (int) action.get(2);
-            char code = (char) action.get(3);
-            inputError = !moveAction(x, y, code, camp, i);
-            if (!inputError) {
-              Chessboard.show();
-            }
-          } else if (id == 2) {
-            haveBattle = true;
-            inputError = !battleAction(action, camp);
-            if (!inputError) {
-              Chessboard.show();
-              if (isGameOver()) {
-                System.exit(0);
-              }
-            }
-          } else if (id == 1) {
-            Piece piece = (Piece) action.get(1);
-            Chessboard.show();
-            System.out.println(piece);
-            inputError = true;
-          }
-        } while (inputError);
-        NoChance = i == 1 && haveBattle;
+        if (!action(in, camp, i)) {
+          System.exit(0);
+        }
+        NoChance = i == 1 && HaveBattle;
       }
 
       if (camp.equals("red")) {
@@ -87,12 +56,115 @@ public class Main {
     }
   }
 
+  public static boolean action(Scanner in, String camp, int i) {
+    boolean inputError;
+    do {
+      if (camp.equals("red")) {
+        System.out.print("红方");
+      } else {
+        System.out.print("黑方");
+      }
+      System.out.print("第 " + i + " 次行动:");
+
+      ArrayList action = handleInput(in.nextLine());
+      inputError = !handleAction(action, camp, i);
+
+      if (!inputError) {
+        Chessboard.show();
+        if (isGameOver()) {
+          return false;
+        }
+      }
+    } while (inputError);
+    return true;
+  }
+
+  public static boolean handleAction(ArrayList action, String camp, int i) {
+    if (action == null) {
+      System.out.println("输入有误");
+      return false;
+    }
+
+    int id = (int) action.get(0);
+    if (id == 3) {
+      int x = (int) action.get(1);
+      int y = (int) action.get(2);
+      char code = (char) action.get(3);
+      return moveAction(x, y, code, camp, i);
+    } else if (id == 2) {
+      HaveBattle = true;
+      return battleAction(action, camp);
+    } else {
+      Piece piece = (Piece) action.get(1);
+      Chessboard.show();
+      System.out.println(piece);
+      return false;
+    }
+  }
+
+  public static void place() {
+    Pieces = Chessboard.placePieces(PLACES);
+    System.out.println("自动填入棋子:");
+    Chessboard.show();
+  }
+
+  public static void place(Scanner in, String camp) {
+    int count = 1;
+    int levelCount = 0;
+    boolean haveKing = false;
+
+    while (levelCount != 10) {
+      if (camp.equals("red")) {
+        System.out.print("红方");
+      } else {
+        System.out.print("黑方");
+      }
+      System.out.print("第 " + count + " 个棋子: ");
+
+      String place = in.nextLine();
+      Piece piece = Chessboard.createPiece(place);
+
+      try {
+        if (piece != null) {
+          levelCount += piece.getLevel();
+          if (!piece.getCamp().equals(camp)) {
+            System.out.println("请摆在己方区域");
+            levelCount -= piece.getLevel();
+          } else if (levelCount > 10) {
+            System.out.println("总等级要等于 10");
+            levelCount -= piece.getLevel();
+          } else if (levelCount == 10 && !haveKing) {
+            System.out.println("棋盘缺少国王");
+            levelCount -= piece.getLevel();
+          } else if (findPiece(piece.getCode()) != null) {
+            System.out.println("棋盘上已经有了相同棋子");
+            levelCount -= piece.getLevel();
+          } else {
+            piece.placeTo(Chessboard.getChessboard());
+            if (piece.isKing()) {
+              haveKing = true;
+            }
+            System.out.println("当前棋子总等级: " + levelCount);
+            Chessboard.show();
+            Pieces.add(piece);
+            count++;
+          }
+        } else {
+          System.out.println("输入有误");
+        }
+      } catch (CanNotPlaceException e) {
+        System.out.println("无法放到该格");
+        levelCount -= piece.getLevel();
+      }
+    }
+  }
+
   public static boolean battleAction(ArrayList action, String camp) {
     Piece piece1 = (Piece) action.get(1);
-		if (!piece1.getCamp().equals(camp)) {
-			System.out.println("你没有这个棋子");
-			return false;
-		}
+    if (!piece1.getCamp().equals(camp)) {
+      System.out.println("你没有这个棋子");
+      return false;
+    }
     Piece piece2 = (Piece) action.get(2);
 
     if (piece1.getAttackType() == 0) {
@@ -233,7 +305,7 @@ public class Main {
               Piece haveChancePiece = findPiece(haveChanceChar);
               if (haveChancePiece != null) {
                 if (!haveChancePiece.getCamp().equals(piece.getCamp())) {
-                  haveChancePiece.opportunityBattleWith(piece, Chessboard.getChessboard());
+                  Loser = haveChancePiece.opportunityBattleWith(piece, Chessboard.getChessboard());
                 }
               }
             }

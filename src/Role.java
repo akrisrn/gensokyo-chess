@@ -28,8 +28,6 @@ public class Role {
   public Role(char code, int level) {
     if (level > 5) {
       level = 5;
-    } else if (level < 1) {
-      level = 1;
     }
     setRoleLevel(code, level);
   }
@@ -45,7 +43,6 @@ public class Role {
       System.exit(1);
     }
 
-    boolean NotFindCode = true;
     try {
       reader.readHeaders();
       while (reader.readRecord()) {
@@ -57,7 +54,6 @@ public class Role {
           BodyBonus = Integer.parseInt(reader.get("BodyBonus"));
           AttackType = Integer.parseInt(reader.get("AttackType"));
           Code = code;
-          NotFindCode = false;
           break;
         }
       }
@@ -66,11 +62,6 @@ public class Role {
       System.exit(1);
     } finally {
       reader.close();
-    }
-
-    if (NotFindCode) {
-      System.out.println("没有角色代码为: " + code);
-      System.exit(1);
     }
   }
 

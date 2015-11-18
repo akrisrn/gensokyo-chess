@@ -118,7 +118,7 @@ public class Battle {
   private static void print(String msg) {
     System.out.println(msg);
     try {
-      Thread.sleep(1200);
+      Thread.sleep(1500);
     } catch (InterruptedException ignored) {
     }
   }

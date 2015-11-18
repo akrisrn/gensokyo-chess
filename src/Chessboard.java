@@ -2,7 +2,6 @@ import java.util.ArrayList;
 
 public class Chessboard {
   private StringBuffer Chessboard;
-  private ArrayList<Piece> Pieces = new ArrayList<>();
 
   public Chessboard() {
     Chessboard = createChessboard();
@@ -12,22 +11,35 @@ public class Chessboard {
     System.out.println(Chessboard);
   }
 
-  public ArrayList<Piece> placePieces(String in) throws CanNotPlaceException {
-    String cmd[] = in.split("\\s+");
-
-    for (String aCmd : cmd) {
-      String tmp[] = aCmd.split("");
-
-      int x = Integer.parseInt(tmp[1]);
-      int y = Integer.parseInt(tmp[3]);
-      char code = tmp[4].charAt(0);
-      int level = Integer.parseInt(tmp[5]);
-
-      Piece piece = new Piece(x, y, code, level);
-      piece.placeTo(Chessboard);
-      Pieces.add(piece);
+  public Piece createPiece(String place) {
+    int par[] = new int[4];
+    String tmp[] = place.split("");
+    if (tmp.length != 6) {
+      return null;
     }
-    return Pieces;
+    try {
+      par[0] = Integer.parseInt(tmp[1]);
+      par[1] = Integer.parseInt(tmp[3]);
+      par[2] = (int) tmp[4].charAt(0);
+      par[3] = Integer.parseInt(tmp[5]);
+      return new Piece(par[0], par[1], (char) par[2], par[3]);
+    } catch (NumberFormatException e) {
+      return null;
+    }
+  }
+
+  public ArrayList<Piece> placePieces(String[] places) {
+    ArrayList<Piece> pieces = new ArrayList<>();
+
+    for (String place : places) {
+      try {
+        Piece piece = createPiece(place);
+        piece.placeTo(Chessboard);
+        pieces.add(piece);
+      } catch (CanNotPlaceException ignored) {
+      }
+    }
+    return pieces;
   }
 
   private StringBuffer createChessboard() {

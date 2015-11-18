@@ -15,6 +15,8 @@ public class Piece extends Role {
       Camp = "black";
     } else if (y > 0 && y < 5) {
       Camp = "red";
+    } else {
+      Camp = "";
     }
 
     if (IsKing = x == 5 && (y == 1 || y == 9)) {
