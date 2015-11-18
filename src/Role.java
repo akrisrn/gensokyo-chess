@@ -197,6 +197,10 @@ public class Role {
     return Name;
   }
 
+  public String getNameAndLV() {
+    return Name + "(LV:" + Level + ")";
+  }
+
   public char getCode() {
     return Code;
   }

@@ -1,34 +1,31 @@
 public class Battle {
-  private static char normalAtk(Role role1, Role role2) {
-    print(role1.getName() + " 的攻击击中了!");
+  private static void normalAtk(Role role1, Role role2) {
+    print(role1.getNameAndLV() + " 的攻击击中了!");
     int damage = role1.rollDamage();
     role2.hpReduce(damage);
-    print(role1.getName() + " 对 " + role2.getName() + " 造成了 " + damage + " 点伤害");
-    print(role2.getName() + " 的 HP 现在是:" + role2.getCurrentHP());
-    return defeated(role2);
+    print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() + " 造成了 " + damage + " 点伤害");
+    print(role2.getNameAndLV() + " 的 HP 现在是:" + role2.getCurrentHP());
+    defeated(role2);
   }
 
-  private static char criticalAtk(Role role1, Role role2) {
-    print(role1.getName() + " 造成了重击!");
+  private static void criticalAtk(Role role1, Role role2) {
+    print(role1.getNameAndLV() + " 造成了重击!");
     int damage = role1.rollDamage() + role1.rollDamage();
     role2.hpReduce(damage);
-    print(role1.getName() + " 对 " + role2.getName() + " 造成了 " + damage + " 点伤害");
-    print(role2.getName() + " 的 HP 现在是:" + role2.getCurrentHP());
-    return defeated(role2);
+    print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() + " 造成了 " + damage + " 点伤害");
+    print(role2.getNameAndLV() + " 的 HP 现在是:" + role2.getCurrentHP());
+    defeated(role2);
   }
 
-  private static char defeated(Role role2) {
+  private static void defeated(Role role2) {
     if (role2.getCurrentHP() <= 0) {
-      print(role2.getName() + " 被打倒了!");
+      print(role2.getNameAndLV() + " 被打倒了!");
       role2.setAlive(false);
       role2.recoverHP();
-      return role2.getCode();
-    } else {
-      return ' ';
     }
   }
 
-  private static char battleRound(Role role1, Role role2, int distance) {
+  private static void battleRound(Role role1, Role role2, int distance) {
     if (role1.getAttackType() == 1) {
       role1.recoverAB();
       role1.subRemoteAttack(distance);
@@ -36,84 +33,80 @@ public class Battle {
 
     int armorClass = role2.getArmorClass();
     int attackRoll = role1.rollAttack();
-    print(role1.getName() + " 的攻击检定为:" + attackRoll);
+    print(role1.getNameAndLV() + " 的攻击检定为:" + attackRoll);
 
     if (attackRoll - role1.getCurrentAB() == 1) {
-      print(role1.getName() + " 的攻击失手了!");
-      return ' ';
+      print(role1.getNameAndLV() + " 的攻击失手了!");
     } else if (attackRoll - role1.getCurrentAB() == 20) {
       if (role1.rollAttack() > armorClass) {
-        return criticalAtk(role1, role2);
+        criticalAtk(role1, role2);
       } else {
-        return normalAtk(role1, role2);
+        normalAtk(role1, role2);
       }
     } else if (attackRoll > armorClass) {
-      return normalAtk(role1, role2);
+      normalAtk(role1, role2);
     } else if (attackRoll == armorClass) {
       if (role1.getStrength() > role2.getStrength()) {
-        return normalAtk(role1, role2);
+        normalAtk(role1, role2);
       } else {
-        print(role1.getName() + " 的攻击失手了!");
-        return ' ';
+        print(role1.getNameAndLV() + " 的攻击失手了!");
       }
     } else {
-      print(role1.getName() + " 的攻击失手了!");
-      return ' ';
+      print(role1.getNameAndLV() + " 的攻击失手了!");
     }
   }
 
   private static boolean judgeInitiative(Role role1, Role role2) {
     int initiativeRoll1 = role1.rollInitiative();
     int initiativeRoll2 = role2.rollInitiative();
-    print(role1.getName() + " 的先攻检定为:" + initiativeRoll1);
-    print(role2.getName() + " 的先攻检定为:" + initiativeRoll2);
+    print(role1.getNameAndLV() + " 的先攻检定为:" + initiativeRoll1);
+    print(role2.getNameAndLV() + " 的先攻检定为:" + initiativeRoll2);
 
     if (initiativeRoll1 > initiativeRoll2) {
-      print(role1.getName() + " 先攻!");
+      print(role1.getNameAndLV() + " 先攻!");
       return true;
     } else if (initiativeRoll1 < initiativeRoll2) {
-      print(role2.getName() + " 先攻!");
+      print(role2.getNameAndLV() + " 先攻!");
     } else {
       if (role1.getDexterity() > role2.getDexterity()) {
-        print(role1.getName() + " 先攻!");
+        print(role1.getNameAndLV() + " 先攻!");
         return true;
       } else {
-        print(role2.getName() + " 先攻!");
+        print(role2.getNameAndLV() + " 先攻!");
       }
     }
     return false;
   }
 
-  public static char frontalBattle(Role role1, Role role2) {
-    print(role1.getName() + " 和 " + role2.getName() + " 展开正面战斗");
+  public static void frontalBattle(Role role1, Role role2) {
+    print(role1.getNameAndLV() + " 和 " + role2.getNameAndLV() + " 展开正面战斗");
 
     boolean isRole1First = judgeInitiative(role1, role2);
-    char loser;
 
     while (true) {
       if (isRole1First) {
-        loser = battleRound(role1, role2, 0);
-        if (loser != ' ') {
-          return loser;
+        battleRound(role1, role2, 0);
+        if (!role2.isAlive()) {
+          break;
         }
       } else {
-        loser = battleRound(role2, role1, 0);
-        if (loser != ' ') {
-          return loser;
+        battleRound(role2, role1, 0);
+        if (!role1.isAlive()) {
+          break;
         }
       }
       isRole1First = !isRole1First;
     }
   }
 
-  public static char remoteBattle(Role role1, Role role2, int distance) {
-    print(role1.getName() + " 对 " + role2.getName() + " 进行远程攻击");
-    return battleRound(role1, role2, distance);
+  public static void remoteBattle(Role role1, Role role2, int distance) {
+    print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() + " 进行远程攻击");
+    battleRound(role1, role2, distance);
   }
 
-  public static char opportunityBattle(Role role1, Role role2) {
-    print(role1.getName() + " 对 " + role2.getName() + " 进行借机攻击");
-    return battleRound(role1, role2, 0);
+  public static void opportunityBattle(Role role1, Role role2) {
+    print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() + " 进行借机攻击");
+    battleRound(role1, role2, 0);
   }
 
   private static void print(String msg) {

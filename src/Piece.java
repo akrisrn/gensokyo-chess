@@ -24,13 +24,12 @@ public class Piece extends Role {
     }
   }
 
-  private char removeLoser(Piece piece1, Piece piece2, char loser, StringBuffer chessboard) {
-    if (piece1.getCode() == loser) {
+  private void removeLoser(Piece piece1, Piece piece2, StringBuffer chessboard) {
+    if (!piece1.isAlive()) {
       piece1.removeFrom(chessboard);
-    } else if (piece2.getCode() == loser) {
+    } else if (!piece2.isAlive()) {
       piece2.removeFrom(chessboard);
     }
-    return loser;
   }
 
   private boolean isHaveObstacleBetween(Piece piece, boolean isXAxis, StringBuffer chessboard) {
@@ -52,36 +51,29 @@ public class Piece extends Role {
     return false;
   }
 
-  public char opportunityBattleWith(Piece piece, StringBuffer chessboard) {
-    char loser;
-
-    if (getAttackType() != 0 || isInRiver() || piece.isInRiver()) {
-      return ' ';
-    } else {
-      loser = Battle.opportunityBattle(this, piece);
-      return removeLoser(this, piece, loser, chessboard);
+  public void opportunityBattleWith(Piece piece, StringBuffer chessboard) {
+    if (getAttackType() == 0 && !isInRiver() && !piece.isInRiver()) {
+      Battle.opportunityBattle(this, piece);
+      removeLoser(this, piece, chessboard);
     }
   }
 
-  private char remoteBattle(Piece piece, int distance, StringBuffer chessboard) throws HaveObstacleException {
-    char loser;
-
+  private void remoteBattle(Piece piece, int distance, StringBuffer chessboard) throws HaveObstacleException {
     if (isHaveObstacleBetween(piece, false, chessboard)) {
       throw new HaveObstacleException();
     } else {
       if (distance == 0) {
-        loser = Battle.opportunityBattle(piece, this);
-        if (loser == ' ') {
-          loser = Battle.remoteBattle(this, piece, distance);
+        Battle.opportunityBattle(piece, this);
+        if (this.isAlive()) {
+          Battle.remoteBattle(this, piece, distance);
         }
       } else {
-        loser = Battle.remoteBattle(this, piece, distance);
+        Battle.remoteBattle(this, piece, distance);
       }
     }
-    return loser;
   }
 
-  public char remoteBattleWith(Piece piece, StringBuffer chessboard) throws ExceedAttackRangeException,
+  public void remoteBattleWith(Piece piece, StringBuffer chessboard) throws ExceedAttackRangeException,
           SameCampException, HaveObstacleException, InRiverException, KingSpellException {
     if (Camp.equals(piece.getCamp())) {
       throw new SameCampException();
@@ -95,21 +87,19 @@ public class Piece extends Role {
       }
     }
 
-    char loser;
-
     if (X == piece.getX()) {
       int distance = Math.abs(Y - piece.getY()) - 1;
-      loser = remoteBattle(piece, distance, chessboard);
+      remoteBattle(piece, distance, chessboard);
     } else if (Y == piece.getY()) {
       int distance = Math.abs(X - piece.getX()) - 1;
-      loser = remoteBattle(piece, distance, chessboard);
+      remoteBattle(piece, distance, chessboard);
     } else {
       throw new ExceedAttackRangeException();
     }
-    return removeLoser(this, piece, loser, chessboard);
+    removeLoser(this, piece, chessboard);
   }
 
-  public char frontalBattleWith(Piece piece, StringBuffer chessboard) throws ExceedAttackRangeException,
+  public void frontalBattleWith(Piece piece, StringBuffer chessboard) throws ExceedAttackRangeException,
           SameCampException, InRiverException {
     if (Math.abs(X - piece.getX()) > 1 || Math.abs(Y - piece.getY()) > 1) {
       throw new ExceedAttackRangeException();
@@ -123,8 +113,8 @@ public class Piece extends Role {
       throw new InRiverException();
     }
 
-    char loser = Battle.frontalBattle(this, piece);
-    return removeLoser(this, piece, loser, chessboard);
+    Battle.frontalBattle(this, piece);
+    removeLoser(this, piece, chessboard);
   }
 
   private char[] findHaveChanceChar(int x, int y, StringBuffer chessboard) {

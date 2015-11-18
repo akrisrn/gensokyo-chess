@@ -4,9 +4,10 @@ import java.util.Scanner;
 public class Main {
   private static Chessboard Chessboard = new Chessboard();
   private static ArrayList<Piece> Pieces = new ArrayList<>();
-  private static char Loser;
   private static boolean NoChance;
   private static boolean HaveBattle;
+  private static Piece RedKing;
+  private static Piece BlackKing;
 
   public static void main(String[] args) {
     Scanner in = new Scanner(System.in);
@@ -138,6 +139,11 @@ public class Main {
             Pieces.add(piece);
             if (piece.isKing()) {
               haveKing = true;
+              if (camp.equals("red")) {
+                RedKing = piece;
+              } else {
+                BlackKing = piece;
+              }
             }
             Chessboard.show();
             System.out.println("当前棋子总等级: " + levelCount);
@@ -171,6 +177,11 @@ public class Main {
             Pieces.add(piece);
             if (piece.isKing()) {
               haveKing = true;
+              if (camp.equals("red")) {
+                RedKing = piece;
+              } else {
+                BlackKing = piece;
+              }
             }
           }
         }
@@ -207,30 +218,25 @@ public class Main {
   }
 
   public static boolean isGameOver() {
-    Piece loser = findPiece(Loser);
-
-    if (loser != null) {
-      if (loser.getCamp().equals("red") && loser.isKing()) {
-        System.out.println("黑方胜利");
-        return true;
-      } else if (loser.getCamp().equals("black") && loser.isKing()) {
-        System.out.println("红方胜利");
-        return true;
-      } else {
-        int count = 0;
-        for (Piece piece : Pieces) {
-          if (piece.isAlive()) {
-            count++;
-            if (count > 2) {
-              return false;
-            }
+    if (!RedKing.isAlive()) {
+      System.out.println("黑方胜利");
+      return true;
+    } else if (!BlackKing.isAlive()) {
+      System.out.println("红方胜利");
+      return true;
+    } else {
+      int count = 0;
+      for (Piece piece : Pieces) {
+        if (piece.isAlive()) {
+          count++;
+          if (count > 2) {
+            return false;
           }
         }
-        System.out.println("平局");
-        return true;
       }
+      System.out.println("平局");
+      return true;
     }
-    return false;
   }
 
   @SuppressWarnings("unchecked")
@@ -301,7 +307,7 @@ public class Main {
 
   public static boolean remoteBattleAction(Piece piece1, Piece piece2) {
     try {
-      Loser = piece1.remoteBattleWith(piece2, Chessboard.getChessboard());
+      piece1.remoteBattleWith(piece2, Chessboard.getChessboard());
       return true;
     } catch (ExceedAttackRangeException e) {
       System.out.println("超出攻击范围");
@@ -323,7 +329,7 @@ public class Main {
 
   public static boolean frontalBattleAction(Piece piece1, Piece piece2) {
     try {
-      Loser = piece1.frontalBattleWith(piece2, Chessboard.getChessboard());
+      piece1.frontalBattleWith(piece2, Chessboard.getChessboard());
       return true;
     } catch (SameCampException e) {
       System.out.println("这是己方棋子");
@@ -349,7 +355,7 @@ public class Main {
               Piece haveChancePiece = findPiece(haveChanceChar);
               if (haveChancePiece != null) {
                 if (!haveChancePiece.getCamp().equals(piece.getCamp())) {
-                  Loser = haveChancePiece.opportunityBattleWith(piece, Chessboard.getChessboard());
+                  haveChancePiece.opportunityBattleWith(piece, Chessboard.getChessboard());
                 }
               }
             }
