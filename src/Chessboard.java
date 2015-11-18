@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public class Chessboard {
   private StringBuffer Chessboard;
 
@@ -26,20 +24,6 @@ public class Chessboard {
     } catch (NumberFormatException e) {
       return null;
     }
-  }
-
-  public ArrayList<Piece> placePieces(String[] places) {
-    ArrayList<Piece> pieces = new ArrayList<>();
-
-    for (String place : places) {
-      try {
-        Piece piece = createPiece(place);
-        piece.placeTo(Chessboard);
-        pieces.add(piece);
-      } catch (CanNotPlaceException ignored) {
-      }
-    }
-    return pieces;
   }
 
   private StringBuffer createChessboard() {

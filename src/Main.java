@@ -2,10 +2,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
-  private static final String PLACES[] = {"x1y1a1", "x2y1b1", "x3y1c1", "x4y1d1", "x5y1e1",
-          "x6y1f1", "x7y1g1", "x8y1h1", "x9y1i1", "x4y2j1", "x6y2k1",
-          "x1y9A1", "x2y9B1", "x3y9C1", "x4y9D1", "x5y9E1",
-          "x6y9F1", "x7y9G1", "x8y9H1", "x9y9I1", "x4y8J1", "x6y8K1"};
   private static Chessboard Chessboard = new Chessboard();
   private static ArrayList<Piece> Pieces = new ArrayList<>();
   private static char Loser;
@@ -15,9 +11,12 @@ public class Main {
   public static void main(String[] args) {
     Scanner in = new Scanner(System.in);
 
-    System.out.println("是否使用默认布局?(Y/N)");
+    System.out.println("是否使用随机布局?(Y/N)");
     if (in.nextLine().equalsIgnoreCase("y")) {
-      place();
+      place("red");
+      place("black");
+      System.out.println("自动填入棋子:");
+      Chessboard.show();
     } else {
       Chessboard.show();
       place(in, "red");
@@ -102,18 +101,13 @@ public class Main {
     }
   }
 
-  public static void place() {
-    Pieces = Chessboard.placePieces(PLACES);
-    System.out.println("自动填入棋子:");
-    Chessboard.show();
-  }
-
   public static void place(Scanner in, String camp) {
     int count = 1;
     int levelCount = 0;
     boolean haveKing = false;
 
     while (levelCount != 10) {
+      System.out.print("请布置");
       if (camp.equals("red")) {
         System.out.print("红方");
       } else {
@@ -141,12 +135,12 @@ public class Main {
             levelCount -= piece.getLevel();
           } else {
             piece.placeTo(Chessboard.getChessboard());
+            Pieces.add(piece);
             if (piece.isKing()) {
               haveKing = true;
             }
-            System.out.println("当前棋子总等级: " + levelCount);
             Chessboard.show();
-            Pieces.add(piece);
+            System.out.println("当前棋子总等级: " + levelCount);
             count++;
           }
         } else {
@@ -157,6 +151,44 @@ public class Main {
         levelCount -= piece.getLevel();
       }
     }
+  }
+
+  public static void place(String camp) {
+    int levelCount = 0;
+    boolean haveKing = false;
+
+    while (levelCount != 10) {
+      String place = rollPlace(camp);
+      Piece piece = Chessboard.createPiece(place);
+      try {
+        if (piece != null) {
+          levelCount += piece.getLevel();
+          if (!piece.getCamp().equals(camp) || levelCount > 10 ||
+                  levelCount == 10 && !haveKing || findPiece(piece.getCode()) != null) {
+            levelCount -= piece.getLevel();
+          } else {
+            piece.placeTo(Chessboard.getChessboard());
+            Pieces.add(piece);
+            if (piece.isKing()) {
+              haveKing = true;
+            }
+          }
+        }
+      } catch (CanNotPlaceException e) {
+        levelCount -= piece.getLevel();
+      }
+    }
+  }
+
+  public static String rollPlace(String camp) {
+    int bonus = 0;
+    if (camp.equals("black")) {
+      bonus = 5;
+    }
+    return "x" + (int) (Math.random() * 9 + 1) +
+            "y" + (int) (Math.random() * 4 + 1 + bonus) +
+            (char) (Math.random() * 94 + 33) +
+            (int) (Math.random() * 5 + 1);
   }
 
   public static boolean battleAction(ArrayList action, String camp) {
