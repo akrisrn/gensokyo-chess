@@ -24,6 +24,7 @@ public class Role {
   private int MaxDamage;
   private int MinDamage;
   private int DamageBonus;
+  private boolean Alive = true;
 
   public Role(char code, int level) {
     if (level > 5) {
@@ -239,6 +240,14 @@ public class Role {
 
   public int getDexterity() {
     return Dexterity;
+  }
+
+  public boolean isAlive() {
+    return Alive;
+  }
+
+  public void setAlive(boolean alive) {
+    Alive = alive;
   }
 
   public String getBodyType() {

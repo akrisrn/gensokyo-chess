@@ -216,6 +216,18 @@ public class Main {
       } else if (loser.getCamp().equals("black") && loser.isKing()) {
         System.out.println("红方胜利");
         return true;
+      } else {
+        int count = 0;
+        for (Piece piece : Pieces) {
+          if (piece.isAlive()) {
+            count++;
+            if (count > 2) {
+              return false;
+            }
+          }
+        }
+        System.out.println("平局");
+        return true;
       }
     }
     return false;

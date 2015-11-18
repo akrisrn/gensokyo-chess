@@ -20,6 +20,7 @@ public class Battle {
   private static char defeated(Role role2) {
     if (role2.getCurrentHP() <= 0) {
       print(role2.getName() + " 被打倒了!");
+      role2.setAlive(false);
       role2.recoverHP();
       return role2.getCode();
     } else {

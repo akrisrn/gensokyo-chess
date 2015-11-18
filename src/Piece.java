@@ -354,7 +354,7 @@ public class Piece extends Role {
   @Override
   public String toString() {
     String camp;
-    String king = "";
+    String state;
 
     if (getCamp().equals("red")) {
       camp = "红方";
@@ -363,10 +363,16 @@ public class Piece extends Role {
     }
 
     if (isKing()) {
-      king = "(国王)";
+      state = "(国王)";
+    } else {
+      if (isAlive()) {
+        state = "(存活)";
+      } else {
+        state = "(阵亡)";
+      }
     }
 
-    return "\n姓名: " + getName() + king + "\n" +
+    return "\n姓名: " + getName() + state + "\n" +
             "阵营: " + camp + "\n" +
             "等级: " + getLevel() + "\n" +
             "生命: " + getCurrentHP() + "\n" +
