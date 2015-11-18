@@ -193,12 +193,16 @@ public class Role {
     return CurrentHP;
   }
 
+  public int getHitPoint() {
+    return HitPoint;
+  }
+
   public String getName() {
     return Name;
   }
 
   public String getNameAndLV() {
-    return Name + "(LV:" + Level + ")";
+    return Name + "(Lv:" + Level + ")";
   }
 
   public char getCode() {
@@ -291,7 +295,7 @@ public class Role {
   public String toString() {
     return "\n姓名: " + getName() + "\n" +
             "等级: " + getLevel() + "\n" +
-            "生命: " + getCurrentHP() + "\n" +
+            "生命: " + getHitPoint() + "\n" +
             "伤害: " + getDamageRange() + "\n" +
             "力量: " + getStrength() + "\n" +
             "敏捷: " + getDexterity() + "\n" +

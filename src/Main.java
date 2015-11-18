@@ -6,6 +6,7 @@ public class Main {
   private static ArrayList<Piece> Pieces = new ArrayList<>();
   private static boolean NoChance;
   private static boolean HaveBattle;
+  private static boolean RandPlace = false;
   private static Piece RedKing;
   private static Piece BlackKing;
 
@@ -14,15 +15,14 @@ public class Main {
 
     System.out.println("是否使用随机布局?(Y/N)");
     if (in.nextLine().equalsIgnoreCase("y")) {
-      place("red");
-      place("black");
+      RandPlace = true;
       System.out.println("自动填入棋子:");
-      Chessboard.show();
-    } else {
-      Chessboard.show();
-      place(in, "red");
-      place(in, "black");
     }
+
+    place(in, "red");
+    place(in, "black");
+    Chessboard.show();
+
     round(in);
   }
 
@@ -106,33 +106,39 @@ public class Main {
     int count = 1;
     int levelCount = 0;
     boolean haveKing = false;
+    String place;
 
     while (levelCount != 10) {
-      System.out.print("请布置");
-      if (camp.equals("red")) {
-        System.out.print("红方");
+      if (!RandPlace) {
+        Chessboard.show();
+        controllablePrint("当前棋子总等级: " + levelCount);
+        System.out.print("请布置");
+        if (camp.equals("red")) {
+          System.out.print("红方");
+        } else {
+          System.out.print("黑方");
+        }
+        System.out.print("第 " + count + " 个棋子: ");
+        place = in.nextLine();
       } else {
-        System.out.print("黑方");
+        place = rollPlace(camp);
       }
-      System.out.print("第 " + count + " 个棋子: ");
-
-      String place = in.nextLine();
       Piece piece = Chessboard.createPiece(place);
 
       try {
         if (piece != null) {
           levelCount += piece.getLevel();
           if (!piece.getCamp().equals(camp)) {
-            System.out.println("请摆在己方区域");
+            controllablePrint("请摆在己方区域");
             levelCount -= piece.getLevel();
           } else if (levelCount > 10) {
-            System.out.println("总等级要等于 10");
+            controllablePrint("总等级要等于 10");
             levelCount -= piece.getLevel();
           } else if (levelCount == 10 && !haveKing) {
-            System.out.println("棋盘缺少国王");
+            controllablePrint("棋盘缺少国王");
             levelCount -= piece.getLevel();
           } else if (findPiece(piece.getCode()) != null) {
-            System.out.println("棋盘上已经有了相同棋子");
+            controllablePrint("棋盘上已经有了相同棋子");
             levelCount -= piece.getLevel();
           } else {
             piece.placeTo(Chessboard.getChessboard());
@@ -145,49 +151,21 @@ public class Main {
                 BlackKing = piece;
               }
             }
-            Chessboard.show();
-            System.out.println("当前棋子总等级: " + levelCount);
             count++;
           }
         } else {
-          System.out.println("输入有误");
+          controllablePrint("输入有误");
         }
       } catch (CanNotPlaceException e) {
-        System.out.println("无法放到该格");
+        controllablePrint("无法放到该格");
         levelCount -= piece.getLevel();
       }
     }
   }
 
-  public static void place(String camp) {
-    int levelCount = 0;
-    boolean haveKing = false;
-
-    while (levelCount != 10) {
-      String place = rollPlace(camp);
-      Piece piece = Chessboard.createPiece(place);
-      try {
-        if (piece != null) {
-          levelCount += piece.getLevel();
-          if (!piece.getCamp().equals(camp) || levelCount > 10 ||
-                  levelCount == 10 && !haveKing || findPiece(piece.getCode()) != null) {
-            levelCount -= piece.getLevel();
-          } else {
-            piece.placeTo(Chessboard.getChessboard());
-            Pieces.add(piece);
-            if (piece.isKing()) {
-              haveKing = true;
-              if (camp.equals("red")) {
-                RedKing = piece;
-              } else {
-                BlackKing = piece;
-              }
-            }
-          }
-        }
-      } catch (CanNotPlaceException e) {
-        levelCount -= piece.getLevel();
-      }
+  public static void controllablePrint(String msg) {
+    if (!RandPlace) {
+      System.out.println(msg);
     }
   }
 

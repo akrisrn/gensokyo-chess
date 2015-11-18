@@ -347,9 +347,9 @@ public class Piece extends Role {
     String state;
 
     if (getCamp().equals("red")) {
-      camp = "红方";
+      camp = "(红)";
     } else {
-      camp = "黑方";
+      camp = "(黑)";
     }
 
     if (isKing()) {
@@ -362,10 +362,8 @@ public class Piece extends Role {
       }
     }
 
-    return "\n姓名: " + getName() + state + "\n" +
-            "阵营: " + camp + "\n" +
-            "等级: " + getLevel() + "\n" +
-            "生命: " + getCurrentHP() + "\n" +
+    return "\n姓名: " + getNameAndLV() + state + camp + "\n" +
+            "生命: " + getCurrentHP() + "(" + getHitPoint() + ")" + "\n" +
             "伤害: " + getDamageRange() + "\n" +
             "力量: " + getStrength() + "\n" +
             "敏捷: " + getDexterity() + "\n" +
