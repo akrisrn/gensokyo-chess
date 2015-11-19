@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
+  private final static int MAX_LEVEL = 15;
   private static Chessboard Chessboard = new Chessboard();
   private static ArrayList<Piece> Pieces = new ArrayList<>();
   private static boolean NoChance;
@@ -110,7 +111,7 @@ public class Main {
     boolean haveKing = false;
     String place;
 
-    while (levelCount != 10) {
+    while (levelCount != MAX_LEVEL) {
       if (!RandPlace) {
         Chessboard.show();
         System.out.println("当前棋子总等级: " + levelCount);
@@ -133,10 +134,10 @@ public class Main {
           if (!piece.getCamp().equals(camp)) {
             controllablePrint("请摆在己方区域");
             levelCount -= piece.getLevel();
-          } else if (levelCount > 10) {
-            controllablePrint("总等级要等于 10");
+          } else if (levelCount > MAX_LEVEL) {
+            controllablePrint("总等级要等于 " + MAX_LEVEL);
             levelCount -= piece.getLevel();
-          } else if (levelCount == 10 && !haveKing) {
+          } else if (levelCount == MAX_LEVEL && !haveKing) {
             controllablePrint("棋盘缺少国王");
             levelCount -= piece.getLevel();
           } else if (findPiece(piece.getCode()) != null) {
