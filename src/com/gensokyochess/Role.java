@@ -1,3 +1,5 @@
+package com.gensokyochess;
+
 import com.csvreader.CsvReader;
 
 import java.io.FileNotFoundException;

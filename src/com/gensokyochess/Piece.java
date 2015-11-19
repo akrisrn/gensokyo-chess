@@ -1,3 +1,5 @@
+package com.gensokyochess;
+
 public class Piece extends Role {
   private int X;
   private int Y;

@@ -1,3 +1,5 @@
+package com.gensokyochess;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -111,7 +113,7 @@ public class Main {
     while (levelCount != 10) {
       if (!RandPlace) {
         Chessboard.show();
-        controllablePrint("当前棋子总等级: " + levelCount);
+        System.out.println("当前棋子总等级: " + levelCount);
         System.out.print("请布置");
         if (camp.equals("red")) {
           System.out.print("红方");

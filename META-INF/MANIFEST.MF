@@ -1,3 +1,5 @@
 Manifest-Version: 1.0
-Main-Class: Main
+Created-By: AkrISrn
+Class-Path: lib/javacsv.jar
+Main-Class: com.gensokyochess.Main
 

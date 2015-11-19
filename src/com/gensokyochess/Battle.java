@@ -1,3 +1,5 @@
+package com.gensokyochess;
+
 public class Battle {
   private static void normalAtk(Role role1, Role role2) {
     print(role1.getNameAndLV() + " 的攻击击中了!");

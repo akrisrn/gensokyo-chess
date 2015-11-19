@@ -1,3 +1,5 @@
+package com.gensokyochess;
+
 public class Chessboard {
   private StringBuffer Chessboard;
 

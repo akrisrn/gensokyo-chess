@@ -1,3 +1,5 @@
+package com.gensokyochess;
+
 class CanNotPlaceException extends Exception {
   public CanNotPlaceException() {
   }
