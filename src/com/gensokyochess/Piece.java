@@ -365,11 +365,11 @@ public class Piece extends Role {
     }
 
     return "\n姓名: " + getNameAndLV() + state + camp + "\n" +
-            "生命: " + getCurrentHP() + "(" + getHitPoint() + ")" + "\n" +
+            "生命: " + getCurrentHP() + "(" + getHitPoint() + ")" + "\t" +
             "伤害: " + getDamageRange() + "\n" +
-            "力量: " + getStrength() + "\n" +
+            "力量: " + getStrength() + "\t\t" +
             "敏捷: " + getDexterity() + "\n" +
-            "体质: " + getConstitution() + "\n" +
+            "体质: " + getConstitution() + "\t\t" +
             "体型: " + getBodyType() + "\n" +
             "攻击方式: " + getRawAttackType() + "\n";
   }

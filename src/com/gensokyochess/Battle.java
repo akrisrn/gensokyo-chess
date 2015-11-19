@@ -85,7 +85,8 @@ public class Battle {
 
     boolean isRole1First = judgeInitiative(role1, role2);
 
-    while (true) {
+    int i = 0;
+    while (i++ < 6) {
       if (isRole1First) {
         battleRound(role1, role2, 0);
         if (!role2.isAlive()) {
@@ -99,11 +100,13 @@ public class Battle {
       }
       isRole1First = !isRole1First;
     }
+    print("战斗结束");
   }
 
   public static void remoteBattle(Role role1, Role role2, int distance) {
     print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() + " 进行远程攻击");
     battleRound(role1, role2, distance);
+    print("战斗结束");
   }
 
   public static void opportunityBattle(Role role1, Role role2) {
