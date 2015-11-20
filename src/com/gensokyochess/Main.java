@@ -286,9 +286,26 @@ public class Main {
     return null;
   }
 
+  public static void opportunityBattleAction(char[] haveChanceChars, Piece piece) {
+    if (haveChanceChars != null) {
+      for (char haveChanceChar : haveChanceChars) {
+        if (haveChanceChar != ' ') {
+          Piece haveChancePiece = findPiece(haveChanceChar);
+          if (haveChancePiece != null && !haveChancePiece.getCamp().equals(piece.getCamp()) && piece.isAlive()) {
+            haveChancePiece.opportunityBattleWith(piece, Chessboard.getChessboard());
+          }
+        }
+      }
+    }
+  }
+
   public static boolean remoteBattleAction(Piece piece1, Piece piece2) {
     try {
-      piece1.remoteBattleWith(piece2, Chessboard.getChessboard());
+      char haveChanceChars[] = piece1.findHaveChanceChar(piece1.getX(), piece1.getY(), Chessboard.getChessboard());
+      opportunityBattleAction(haveChanceChars, piece1);
+      if (piece1.isAlive()) {
+        piece1.remoteBattleWith(piece2, Chessboard.getChessboard());
+      }
       return true;
     } catch (ExceedAttackRangeException e) {
       System.out.println("超出攻击范围");
@@ -330,18 +347,7 @@ public class Main {
     if (piece != null) {
       try {
         char haveChanceChars[] = piece.moveTo(x, y, Chessboard.getChessboard(), count, NoChance);
-        if (haveChanceChars != null) {
-          for (char haveChanceChar : haveChanceChars) {
-            if (haveChanceChar != ' ') {
-              Piece haveChancePiece = findPiece(haveChanceChar);
-              if (haveChancePiece != null) {
-                if (!haveChancePiece.getCamp().equals(piece.getCamp())) {
-                  haveChancePiece.opportunityBattleWith(piece, Chessboard.getChessboard());
-                }
-              }
-            }
-          }
-        }
+        opportunityBattleAction(haveChanceChars, piece);
         return true;
       } catch (CanNotPlaceException e) {
         System.out.println("无法放到该格");

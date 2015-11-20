@@ -35,19 +35,35 @@ public class Piece extends Role {
   }
 
   private boolean isHaveObstacleBetween(Piece piece, boolean isXAxis, StringBuffer chessboard) {
+    int min;
+    int max;
     if (isXAxis) {
-      for (int i = X + 1; i < piece.getX(); i++) {
-        char aimChar = chessboard.charAt(convert(i, Y));
-        if (aimChar != ' ' && aimChar != '*' && aimChar != '|') {
-          return true;
-        }
+      if (piece.getX() - X > 0) {
+        min = X + 1;
+        max = piece.getX();
+      } else {
+        min = piece.getX() + 1;
+        max = X;
       }
     } else {
-      for (int i = Y + 1; i < piece.getY(); i++) {
-        char aimChar = chessboard.charAt(convert(X, i));
-        if (aimChar != ' ' && aimChar != '*' && aimChar != '|') {
-          return true;
-        }
+      if (piece.getY() - Y > 0) {
+        min = Y + 1;
+        max = piece.getY();
+      } else {
+        min = piece.getY() + 1;
+        max = Y;
+      }
+    }
+
+    for (int i = min; i < max; i++) {
+      char aimChar;
+      if (isXAxis) {
+        aimChar = chessboard.charAt(convert(i, Y));
+      } else {
+        aimChar = chessboard.charAt(convert(X, i));
+      }
+      if (aimChar != ' ' && aimChar != '*' && aimChar != '|') {
+        return true;
       }
     }
     return false;
@@ -57,21 +73,6 @@ public class Piece extends Role {
     if (getAttackType() == 0 && !isInRiver() && !piece.isInRiver()) {
       Battle.opportunityBattle(this, piece);
       removeLoser(this, piece, chessboard);
-    }
-  }
-
-  private void remoteBattle(Piece piece, int distance, StringBuffer chessboard) throws HaveObstacleException {
-    if (isHaveObstacleBetween(piece, false, chessboard)) {
-      throw new HaveObstacleException();
-    } else {
-      if (distance == 0) {
-        Battle.opportunityBattle(piece, this);
-        if (this.isAlive()) {
-          Battle.remoteBattle(this, piece, distance);
-        }
-      } else {
-        Battle.remoteBattle(this, piece, distance);
-      }
     }
   }
 
@@ -90,11 +91,17 @@ public class Piece extends Role {
     }
 
     if (X == piece.getX()) {
+      if (isHaveObstacleBetween(piece, false, chessboard)) {
+        throw new HaveObstacleException();
+      }
       int distance = Math.abs(Y - piece.getY()) - 1;
-      remoteBattle(piece, distance, chessboard);
+      Battle.remoteBattle(this, piece, distance);
     } else if (Y == piece.getY()) {
+      if (isHaveObstacleBetween(piece, true, chessboard)) {
+        throw new HaveObstacleException();
+      }
       int distance = Math.abs(X - piece.getX()) - 1;
-      remoteBattle(piece, distance, chessboard);
+      Battle.remoteBattle(this, piece, distance);
     } else {
       throw new ExceedAttackRangeException();
     }
@@ -119,7 +126,7 @@ public class Piece extends Role {
     removeLoser(this, piece, chessboard);
   }
 
-  private char[] findHaveChanceChar(int x, int y, StringBuffer chessboard) {
+  public char[] findHaveChanceChar(int x, int y, StringBuffer chessboard) {
     char haveChanceChar[] = new char[5];
     char nearbyChar[] = findNearbyChar(chessboard);
     int direction = determineDirection(x, y);
@@ -151,6 +158,9 @@ public class Piece extends Role {
         break;
       case 7:
         System.arraycopy(nearbyChar, 1, haveChanceChar, 0, 5);
+        break;
+      case 8:
+        haveChanceChar = nearbyChar;
         break;
     }
     return haveChanceChar;
@@ -191,7 +201,7 @@ public class Piece extends Role {
   private int determineDirection(int x, int y) {
     /*
        701
-       6 2
+       682
        543
      */
     if (x > X) {
@@ -213,8 +223,10 @@ public class Piece extends Role {
     } else {
       if (y > Y) {
         return 0;
-      } else {
+      } else if (y < Y) {
         return 4;
+      } else {
+        return 8;
       }
     }
   }
