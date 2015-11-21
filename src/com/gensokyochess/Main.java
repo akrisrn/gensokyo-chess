@@ -4,16 +4,20 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
-  private final static int MAX_LEVEL = 15;
-  private static Chessboard Chessboard = new Chessboard();
-  private static ArrayList<Piece> Pieces = new ArrayList<>();
-  private static boolean NoChance;
-  private static boolean HaveBattle;
-  private static boolean RandPlace = false;
-  private static Piece RedKing;
-  private static Piece BlackKing;
+  private Chessboard Chessboard = new Chessboard();
+  private ArrayList<Piece> Pieces = new ArrayList<>();
+  private boolean NoChance;
+  private boolean HaveBattle;
+  private boolean RandPlace = false;
+  private Piece RedKing;
+  private Piece BlackKing;
 
   public static void main(String[] args) {
+    Main main = new Main();
+    main.start();
+  }
+
+  private void start() {
     Scanner in = new Scanner(System.in);
 
     System.out.println("是否使用随机布局?(Y/N)");
@@ -29,7 +33,7 @@ public class Main {
     round(in);
   }
 
-  public static void round(Scanner in) {
+  private void round(Scanner in) {
     String camp = "red";
     int round = 0;
     int count = 0;
@@ -59,7 +63,7 @@ public class Main {
     }
   }
 
-  public static boolean action(Scanner in, String camp, int i) {
+  private boolean action(Scanner in, String camp, int i) {
     boolean inputError;
     do {
       if (camp.equals("red")) {
@@ -82,7 +86,7 @@ public class Main {
     return true;
   }
 
-  public static boolean handleAction(ArrayList action, String camp, int i) {
+  private boolean handleAction(ArrayList action, String camp, int i) {
     if (action == null) {
       System.out.println("输入有误");
       return false;
@@ -105,13 +109,13 @@ public class Main {
     }
   }
 
-  public static void place(Scanner in, String camp) {
+  private void place(Scanner in, String camp) {
     int count = 1;
     int levelCount = 0;
     boolean haveKing = false;
     String place;
 
-    while (levelCount != MAX_LEVEL) {
+    while (levelCount != 15) {
       if (!RandPlace) {
         Chessboard.show();
         System.out.println("当前棋子总等级: " + levelCount);
@@ -134,10 +138,10 @@ public class Main {
           if (!piece.getCamp().equals(camp)) {
             controllablePrint("请摆在己方区域");
             levelCount -= piece.getLevel();
-          } else if (levelCount > MAX_LEVEL) {
-            controllablePrint("总等级要等于 " + MAX_LEVEL);
+          } else if (levelCount > 15) {
+            controllablePrint("总等级要等于 15");
             levelCount -= piece.getLevel();
-          } else if (levelCount == MAX_LEVEL && !haveKing) {
+          } else if (levelCount == 15 && !haveKing) {
             controllablePrint("棋盘缺少国王");
             levelCount -= piece.getLevel();
           } else if (findPiece(piece.getCode()) != null) {
@@ -166,13 +170,13 @@ public class Main {
     }
   }
 
-  public static void controllablePrint(String msg) {
+  private void controllablePrint(String msg) {
     if (!RandPlace) {
       System.out.println(msg);
     }
   }
 
-  public static String rollPlace(String camp) {
+  private String rollPlace(String camp) {
     int bonus = 0;
     if (camp.equals("black")) {
       bonus = 5;
@@ -183,7 +187,7 @@ public class Main {
             (int) (Math.random() * 5 + 1);
   }
 
-  public static boolean battleAction(ArrayList action, String camp) {
+  private boolean battleAction(ArrayList action, String camp) {
     Piece piece1 = (Piece) action.get(1);
     if (!piece1.getCamp().equals(camp)) {
       System.out.println("你没有这个棋子");
@@ -198,7 +202,7 @@ public class Main {
     }
   }
 
-  public static boolean isGameOver() {
+  private boolean isGameOver() {
     if (!RedKing.isAlive()) {
       System.out.println("黑方胜利");
       return true;
@@ -221,7 +225,7 @@ public class Main {
   }
 
   @SuppressWarnings("unchecked")
-  public static ArrayList handleInput(String in) {
+  private ArrayList handleInput(String in) {
     ArrayList action = new ArrayList();
     char tmp[] = in.toCharArray();
 
@@ -266,7 +270,7 @@ public class Main {
     return action;
   }
 
-  public static Piece findPiece(char code) {
+  private Piece findPiece(char code) {
     for (Piece piece : Pieces) {
       if (piece.getCode() == code) {
         return piece;
@@ -275,7 +279,7 @@ public class Main {
     return null;
   }
 
-  public static Piece findPiece(String camp, char code) {
+  private Piece findPiece(String camp, char code) {
     for (Piece piece : Pieces) {
       if (piece.getCamp().equals(camp)) {
         if (piece.getCode() == code) {
@@ -286,7 +290,7 @@ public class Main {
     return null;
   }
 
-  public static void opportunityBattleAction(char[] haveChanceChars, Piece piece) {
+  private void opportunityBattleAction(char[] haveChanceChars, Piece piece) {
     if (haveChanceChars != null) {
       for (char haveChanceChar : haveChanceChars) {
         if (haveChanceChar != ' ') {
@@ -299,7 +303,7 @@ public class Main {
     }
   }
 
-  public static boolean remoteBattleAction(Piece piece1, Piece piece2) {
+  private boolean remoteBattleAction(Piece piece1, Piece piece2) {
     try {
       char haveChanceChars[] = piece1.findHaveChanceChar(piece1.getX(), piece1.getY(), Chessboard.getChessboard());
       opportunityBattleAction(haveChanceChars, piece1);
@@ -325,7 +329,7 @@ public class Main {
     }
   }
 
-  public static boolean frontalBattleAction(Piece piece1, Piece piece2) {
+  private boolean frontalBattleAction(Piece piece1, Piece piece2) {
     try {
       piece1.frontalBattleWith(piece2, Chessboard.getChessboard());
       return true;
@@ -341,7 +345,7 @@ public class Main {
     }
   }
 
-  public static boolean moveAction(int x, int y, char code, String camp, int count) {
+  private boolean moveAction(int x, int y, char code, String camp, int count) {
     Piece piece = findPiece(camp, code);
 
     if (piece != null) {
