@@ -17,7 +17,7 @@ public class Main {
     main.start();
   }
 
-  private void start() {
+  protected void start() {
     Scanner in = new Scanner(System.in);
 
     System.out.println("是否使用随机布局?(Y/N)");
@@ -33,7 +33,7 @@ public class Main {
     round(in);
   }
 
-  private void round(Scanner in) {
+  protected void round(Scanner in) {
     String camp = "red";
     int round = 0;
     int count = 0;
@@ -63,7 +63,7 @@ public class Main {
     }
   }
 
-  private boolean action(Scanner in, String camp, int i) {
+  protected boolean action(Scanner in, String camp, int i) {
     boolean inputError;
     do {
       if (camp.equals("red")) {
@@ -86,7 +86,7 @@ public class Main {
     return true;
   }
 
-  private boolean handleAction(ArrayList action, String camp, int i) {
+  protected boolean handleAction(ArrayList action, String camp, int i) {
     if (action == null) {
       System.out.println("输入有误");
       return false;
@@ -109,7 +109,7 @@ public class Main {
     }
   }
 
-  private void place(Scanner in, String camp) {
+  protected void place(Scanner in, String camp) {
     int count = 1;
     int levelCount = 0;
     boolean haveKing = false;
@@ -170,13 +170,13 @@ public class Main {
     }
   }
 
-  private void controllablePrint(String msg) {
+  protected void controllablePrint(String msg) {
     if (!RandPlace) {
       System.out.println(msg);
     }
   }
 
-  private String rollPlace(String camp) {
+  protected String rollPlace(String camp) {
     int bonus = 0;
     if (camp.equals("black")) {
       bonus = 5;
@@ -187,7 +187,7 @@ public class Main {
             (int) (Math.random() * 5 + 1);
   }
 
-  private boolean battleAction(ArrayList action, String camp) {
+  protected boolean battleAction(ArrayList action, String camp) {
     Piece piece1 = (Piece) action.get(1);
     if (!piece1.getCamp().equals(camp)) {
       System.out.println("你没有这个棋子");
@@ -202,7 +202,7 @@ public class Main {
     }
   }
 
-  private boolean isGameOver() {
+  protected boolean isGameOver() {
     if (!RedKing.isAlive()) {
       System.out.println("黑方胜利");
       return true;
@@ -225,7 +225,7 @@ public class Main {
   }
 
   @SuppressWarnings("unchecked")
-  private ArrayList handleInput(String in) {
+  protected ArrayList handleInput(String in) {
     ArrayList action = new ArrayList();
     char tmp[] = in.toCharArray();
 
@@ -270,7 +270,7 @@ public class Main {
     return action;
   }
 
-  private Piece findPiece(char code) {
+  protected Piece findPiece(char code) {
     for (Piece piece : Pieces) {
       if (piece.getCode() == code) {
         return piece;
@@ -279,7 +279,7 @@ public class Main {
     return null;
   }
 
-  private Piece findPiece(String camp, char code) {
+  protected Piece findPiece(String camp, char code) {
     for (Piece piece : Pieces) {
       if (piece.getCamp().equals(camp)) {
         if (piece.getCode() == code) {
@@ -290,7 +290,7 @@ public class Main {
     return null;
   }
 
-  private void opportunityBattleAction(char[] haveChanceChars, Piece piece) {
+  protected void opportunityBattleAction(char[] haveChanceChars, Piece piece) {
     if (haveChanceChars != null) {
       for (char haveChanceChar : haveChanceChars) {
         if (haveChanceChar != ' ') {
@@ -303,7 +303,7 @@ public class Main {
     }
   }
 
-  private boolean remoteBattleAction(Piece piece1, Piece piece2) {
+  protected boolean remoteBattleAction(Piece piece1, Piece piece2) {
     try {
       char haveChanceChars[] = piece1.findHaveChanceChar(piece1.getX(), piece1.getY(), Chessboard.getChessboard());
       opportunityBattleAction(haveChanceChars, piece1);
@@ -329,7 +329,7 @@ public class Main {
     }
   }
 
-  private boolean frontalBattleAction(Piece piece1, Piece piece2) {
+  protected boolean frontalBattleAction(Piece piece1, Piece piece2) {
     try {
       piece1.frontalBattleWith(piece2, Chessboard.getChessboard());
       return true;
@@ -345,7 +345,7 @@ public class Main {
     }
   }
 
-  private boolean moveAction(int x, int y, char code, String camp, int count) {
+  protected boolean moveAction(int x, int y, char code, String camp, int count) {
     Piece piece = findPiece(camp, code);
 
     if (piece != null) {
