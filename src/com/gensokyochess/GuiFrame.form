@@ -29,7 +29,7 @@
             <properties>
               <autoscrolls value="true"/>
               <editable value="false"/>
-              <font name="Source Code Pro" size="16"/>
+              <font/>
             </properties>
           </component>
         </children>
@@ -41,7 +41,7 @@
           </grid>
         </constraints>
         <properties>
-          <font name="Source Code Pro"/>
+          <font/>
         </properties>
       </component>
       <scrollpane id="9a305">
@@ -64,7 +64,7 @@
               <alignmentX value="0.5"/>
               <columns value="0"/>
               <editable value="false"/>
-              <font name="思源黑体 CN Normal"/>
+              <font/>
               <lineWrap value="true"/>
               <margin top="5" left="5" bottom="5" right="5"/>
             </properties>

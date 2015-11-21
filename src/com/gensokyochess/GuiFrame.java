@@ -5,6 +5,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
 import java.util.Scanner;
 
 public class GuiFrame extends JFrame {
@@ -24,6 +25,17 @@ public class GuiFrame extends JFrame {
     setVisible(true);
 
     Chessboard chessboard = new Chessboard();
+
+    try {
+      File file = new File(System.getProperty("user.dir") + "/lib/SourceCodePro-Regular.ttf");
+      FileInputStream fi = new FileInputStream(file);
+      BufferedInputStream fb = new BufferedInputStream(fi);
+      Font nf = Font.createFont(Font.TRUETYPE_FONT, fb);
+      nf = nf.deriveFont(Font.PLAIN, 16);
+      Board.setFont(nf);
+    } catch (IOException | FontFormatException ignored) {
+    }
+
     Board.setText(String.valueOf(chessboard.getChessboard()));
 
     getRootPane().setDefaultButton(SendButton);
@@ -81,10 +93,10 @@ public class GuiFrame extends JFrame {
     Board = new JTextArea();
     Board.setAutoscrolls(true);
     Board.setEditable(false);
-    Board.setFont(new Font("Source Code Pro", Board.getFont().getStyle(), 16));
+    Board.setFont(new Font(Board.getFont().getName(), Board.getFont().getStyle(), Board.getFont().getSize()));
     scrollPane1.setViewportView(Board);
     InputArea = new JTextField();
-    InputArea.setFont(new Font("Source Code Pro", InputArea.getFont().getStyle(), InputArea.getFont().getSize()));
+    InputArea.setFont(new Font(InputArea.getFont().getName(), InputArea.getFont().getStyle(), InputArea.getFont().getSize()));
     MainPanel.add(InputArea, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_SOUTH, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(-1, 25), null, 0, false));
     final JScrollPane scrollPane2 = new JScrollPane();
     scrollPane2.setAutoscrolls(false);
@@ -96,7 +108,7 @@ public class GuiFrame extends JFrame {
     LogArea.setAlignmentX(0.5f);
     LogArea.setColumns(0);
     LogArea.setEditable(false);
-    LogArea.setFont(new Font("思源黑体 CN Normal", LogArea.getFont().getStyle(), LogArea.getFont().getSize()));
+    LogArea.setFont(new Font(LogArea.getFont().getName(), LogArea.getFont().getStyle(), LogArea.getFont().getSize()));
     LogArea.setLineWrap(true);
     LogArea.setMargin(new Insets(5, 5, 5, 5));
     scrollPane2.setViewportView(LogArea);
