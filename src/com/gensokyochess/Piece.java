@@ -102,6 +102,8 @@ public class Piece extends Role {
       }
       int distance = Math.abs(X - piece.getX()) - 1;
       Battle.remoteBattle(this, piece, distance);
+    } else if (Math.abs(X - piece.getX()) == 1 && Math.abs(Y - piece.getY()) == 1) {
+      Battle.remoteBattle(this, piece, 0);
     } else {
       throw new ExceedAttackRangeException();
     }
