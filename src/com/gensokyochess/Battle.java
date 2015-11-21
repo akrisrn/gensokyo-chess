@@ -1,6 +1,14 @@
 package com.gensokyochess;
 
 public class Battle {
+  private static GuiFrame GuiFrame;
+  private static boolean UseGui = false;
+
+  public static void setGuiFrame(GuiFrame guiFrame) {
+    GuiFrame = guiFrame;
+    UseGui = true;
+  }
+
   private static void normalAtk(Role role1, Role role2) {
     print(role1.getNameAndLV() + " 的攻击击中了!");
     int damage = role1.rollDamage();
@@ -115,7 +123,11 @@ public class Battle {
   }
 
   private static void print(String msg) {
-    System.out.println(msg);
+    if (!UseGui) {
+      System.out.println(msg);
+    } else {
+      GuiFrame.appendLog(msg, true);
+    }
     try {
       Thread.sleep(1500);
     } catch (InterruptedException ignored) {

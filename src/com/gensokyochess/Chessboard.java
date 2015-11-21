@@ -7,10 +7,6 @@ public class Chessboard {
     Chessboard = createChessboard();
   }
 
-  public void show() {
-    System.out.println(Chessboard);
-  }
-
   public Piece createPiece(String place) {
     int par[] = new int[4];
     String tmp[] = place.split("");

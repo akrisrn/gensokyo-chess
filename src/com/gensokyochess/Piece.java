@@ -376,7 +376,7 @@ public class Piece extends Role {
       }
     }
 
-    return "姓名: " + getNameAndLV() + state + camp + "\n" +
+    return "\n姓名: " + getNameAndLV() + state + camp + "\n" +
             "生命: " + getCurrentHP() + "(" + getHitPoint() + ")" + "\n" +
             "伤害: " + getDamageRange() + "\n" +
             "力量: " + getStrength() + "\n" +
