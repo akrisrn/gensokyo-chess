@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Created-By: AkrISrn
+Class-Path: lib/javacsv.jar lib/uiDesigner.jar
+Main-Class: com.gensokyochess.GuiMain
+
