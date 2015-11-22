@@ -23,6 +23,10 @@ public class GuiMain extends Main {
   protected String input() {
     String input;
     while (true) {
+      try {
+        Thread.sleep(100);
+      } catch (InterruptedException ignored) {
+      }
       input = uncheckedInput();
       if (input != null) {
         break;
