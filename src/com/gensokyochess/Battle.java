@@ -111,10 +111,13 @@ public class Battle {
     print("战斗结束");
   }
 
-  public static void remoteBattle(Role role1, Role role2, int distance) {
+  public static void remoteBattle(Role role1, Role role2, int distance) throws InRiverException {
     if (distance != 0) {
       print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() + " 进行远程攻击");
     } else {
+      if (role2.isInRiver()) {
+        throw new InRiverException();
+      }
       print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() + " 进行近战攻击");
     }
     battleRound(role1, role2, distance);

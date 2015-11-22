@@ -27,6 +27,7 @@ public class Role {
   private int MinDamage;
   private int DamageBonus;
   private boolean Alive = true;
+  private boolean InRiver = false;
 
   public Role(char code, int level) {
     if (level > 5) {
@@ -226,7 +227,7 @@ public class Role {
   public void subRemoteAttack(int gridNumber) {
     CurrentAB -= gridNumber + 2;
     if (gridNumber == 0) {
-      DistanceBonus = 4;
+      DistanceBonus = 5;
     } else {
       DistanceBonus = 0;
     }
@@ -258,6 +259,14 @@ public class Role {
 
   public void setAlive(boolean alive) {
     Alive = alive;
+  }
+
+  public boolean isInRiver() {
+    return InRiver;
+  }
+
+  public void setInRiver(boolean inRiver) {
+    InRiver = inRiver;
   }
 
   public String getBodyType() {

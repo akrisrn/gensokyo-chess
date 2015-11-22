@@ -5,7 +5,6 @@ public class Piece extends Role {
   private int Y;
   private String Camp;
   private boolean IsKing;
-  private boolean InRiver = false;
   private int SpecialMoveCheck = 0;
 
   public Piece(int x, int y, char code, int level) {
@@ -281,10 +280,10 @@ public class Piece extends Role {
     if (SpecialMoveCheck == 2) {
       if (into) {
         addRiverBonus();
-        InRiver = true;
+        setInRiver(true);
       } else {
         subRiverBonus();
-        InRiver = false;
+        setInRiver(false);
       }
 
       SpecialMoveCheck = 0;
@@ -330,10 +329,6 @@ public class Piece extends Role {
     } else {
       return 648 - (y - 1) * 76 + (x - 1) * 4;
     }
-  }
-
-  public boolean isInRiver() {
-    return InRiver;
   }
 
   public boolean isKing() {
