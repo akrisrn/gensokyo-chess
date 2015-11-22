@@ -37,7 +37,7 @@ public class Role {
   }
 
   private void init(char code) {
-    String path = System.getProperty("user.dir") + "/role.csv";
+    String path = System.getProperty("user.dir") + "/lib/role.csv";
     CsvReader reader = null;
 
     try {
