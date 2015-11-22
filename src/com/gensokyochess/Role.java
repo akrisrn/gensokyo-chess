@@ -43,7 +43,7 @@ public class Role {
     try {
       reader = new CsvReader(path, ',', Charset.forName("utf-8"));
     } catch (FileNotFoundException e) {
-      System.out.println("没有找到角色文件");
+      e.printStackTrace();
       System.exit(1);
     }
 
@@ -62,8 +62,7 @@ public class Role {
         }
       }
     } catch (IOException | NumberFormatException e) {
-      System.out.println("文件读取出错");
-      System.exit(1);
+      e.printStackTrace();
     } finally {
       reader.close();
     }
