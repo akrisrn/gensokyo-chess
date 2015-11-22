@@ -1,0 +1,6 @@
+*.iml
+gnc-2d.jar
+gnc-2d-gui.jar
+
+.idea/
+/out/
