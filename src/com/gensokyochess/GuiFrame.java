@@ -14,6 +14,8 @@ public class GuiFrame extends JFrame {
   private JTextField InputArea;
   private JTextArea LogArea;
   private JButton SendButton;
+  private JTextArea LeftLine;
+  private JTextArea BottomLine;
   private Scanner scanner = new Scanner("");
 
   public GuiFrame() {
@@ -33,10 +35,33 @@ public class GuiFrame extends JFrame {
       Font nf = Font.createFont(Font.TRUETYPE_FONT, fb);
       nf = nf.deriveFont(Font.PLAIN, 16);
       Board.setFont(nf);
+      LeftLine.setFont(nf);
+      BottomLine.setFont(nf);
     } catch (IOException | FontFormatException ignored) {
     }
 
     Board.setText(String.valueOf(chessboard.getChessboard()));
+    LeftLine.setText(" ┌\n" +
+            "9├\n" +
+            " │\n" +
+            "8├\n" +
+            " │\n" +
+            "7├\n" +
+            " │\n" +
+            "6├\n" +
+            " │\n" +
+            "5├\n" +
+            " │\n" +
+            "4├\n" +
+            " │\n" +
+            "3├\n" +
+            " │\n" +
+            "2├\n" +
+            " │\n" +
+            "1├\n" +
+            " └");
+    BottomLine.setText("└─┴───┴───┴───┴───┴───┴───┴───┴───┴─┘\n" +
+            "  1   2   3   4   5   6   7   8   9");
 
     getRootPane().setDefaultButton(SendButton);
     SendButton.addActionListener(actionEvent -> {
@@ -82,28 +107,28 @@ public class GuiFrame extends JFrame {
    */
   private void $$$setupUI$$$() {
     MainPanel = new JPanel();
-    MainPanel.setLayout(new GridLayoutManager(2, 3, new Insets(10, 10, 10, 10), -1, -1));
+    MainPanel.setLayout(new GridLayoutManager(2, 4, new Insets(10, 10, 10, 10), -1, -1));
     MainPanel.setAutoscrolls(false);
     MainPanel.setEnabled(true);
+    MainPanel.setPreferredSize(new Dimension(700, 490));
     final JScrollPane scrollPane1 = new JScrollPane();
     scrollPane1.setAutoscrolls(false);
     scrollPane1.setFocusable(true);
     scrollPane1.setWheelScrollingEnabled(true);
-    MainPanel.add(scrollPane1, new GridConstraints(0, 0, 2, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(375, 405), null, 0, false));
+    MainPanel.add(scrollPane1, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(373, 402), null, 0, false));
     Board = new JTextArea();
     Board.setAutoscrolls(true);
     Board.setEditable(false);
     Board.setFont(new Font(Board.getFont().getName(), Board.getFont().getStyle(), Board.getFont().getSize()));
+    Board.setMargin(new Insets(0, 0, 0, 0));
+    Board.setOpaque(true);
     scrollPane1.setViewportView(Board);
-    InputArea = new JTextField();
-    InputArea.setFont(new Font(InputArea.getFont().getName(), InputArea.getFont().getStyle(), InputArea.getFont().getSize()));
-    MainPanel.add(InputArea, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_SOUTH, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(-1, 25), null, 0, false));
     final JScrollPane scrollPane2 = new JScrollPane();
     scrollPane2.setAutoscrolls(false);
     scrollPane2.setFocusCycleRoot(false);
     scrollPane2.setVerticalScrollBarPolicy(20);
     scrollPane2.setWheelScrollingEnabled(false);
-    MainPanel.add(scrollPane2, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(250, -1), null, 0, false));
+    MainPanel.add(scrollPane2, new GridConstraints(0, 2, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(250, 402), null, 0, false));
     LogArea = new JTextArea();
     LogArea.setAlignmentX(0.5f);
     LogArea.setColumns(0);
@@ -111,12 +136,37 @@ public class GuiFrame extends JFrame {
     LogArea.setFont(new Font(LogArea.getFont().getName(), LogArea.getFont().getStyle(), LogArea.getFont().getSize()));
     LogArea.setLineWrap(true);
     LogArea.setMargin(new Insets(5, 5, 5, 5));
+    LogArea.setMinimumSize(new Dimension(0, 15));
+    LogArea.setOpaque(true);
+    LogArea.setPreferredSize(new Dimension(0, 15));
     scrollPane2.setViewportView(LogArea);
+    InputArea = new JTextField();
+    InputArea.setFont(new Font(InputArea.getFont().getName(), InputArea.getFont().getStyle(), InputArea.getFont().getSize()));
+    MainPanel.add(InputArea, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(-1, 25), null, 0, false));
     SendButton = new JButton();
     SendButton.setText("Send");
     SendButton.setMnemonic('S');
     SendButton.setDisplayedMnemonicIndex(0);
-    MainPanel.add(SendButton, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+    MainPanel.add(SendButton, new GridConstraints(1, 3, 1, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+    final JScrollPane scrollPane3 = new JScrollPane();
+    scrollPane3.setOpaque(false);
+    MainPanel.add(scrollPane3, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+    scrollPane3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), null));
+    LeftLine = new JTextArea();
+    LeftLine.setAlignmentY(0.5f);
+    LeftLine.setEditable(false);
+    LeftLine.setMargin(new Insets(10, 0, 0, 0));
+    LeftLine.setOpaque(false);
+    scrollPane3.setViewportView(LeftLine);
+    final JScrollPane scrollPane4 = new JScrollPane();
+    scrollPane4.setOpaque(false);
+    MainPanel.add(scrollPane4, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+    scrollPane4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), null));
+    BottomLine = new JTextArea();
+    BottomLine.setEditable(false);
+    BottomLine.setMargin(new Insets(0, 4, 0, 0));
+    BottomLine.setOpaque(false);
+    scrollPane4.setViewportView(BottomLine);
   }
 
   /**
