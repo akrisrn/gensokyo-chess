@@ -1,6 +1,7 @@
 package com.gensokyochess;
 
 import com.csvreader.CsvReader;
+import com.gensokyochess.exception.HaveNotSpellException;
 import com.gensokyochess.spell.Spell;
 
 import java.io.FileNotFoundException;

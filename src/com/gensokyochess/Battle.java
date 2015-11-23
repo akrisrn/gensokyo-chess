@@ -1,5 +1,7 @@
 package com.gensokyochess;
 
+import com.gensokyochess.exception.InRiverException;
+
 public class Battle {
   private static void normalAtk(Role role1, Role role2) {
     Tool.print(role1.getNameAndLV() + " 的攻击击中了!", 1);

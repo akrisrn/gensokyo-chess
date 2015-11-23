@@ -1,5 +1,7 @@
 package com.gensokyochess;
 
+import com.gensokyochess.exception.*;
+
 public class Piece extends Role {
   private int X;
   private int Y;

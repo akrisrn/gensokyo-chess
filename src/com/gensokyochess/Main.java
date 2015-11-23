@@ -1,5 +1,7 @@
 package com.gensokyochess;
 
+import com.gensokyochess.exception.*;
+
 import java.util.ArrayList;
 
 public class Main {
