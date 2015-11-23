@@ -37,36 +37,6 @@
           </component>
         </children>
       </scrollpane>
-      <scrollpane id="9a305">
-        <constraints>
-          <grid row="0" column="2" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="250" height="402"/>
-          </grid>
-        </constraints>
-        <properties>
-          <autoscrolls value="false"/>
-          <focusCycleRoot value="false"/>
-          <verticalScrollBarPolicy value="20"/>
-          <wheelScrollingEnabled value="false"/>
-        </properties>
-        <border type="none"/>
-        <children>
-          <component id="eb6b5" class="javax.swing.JTextArea" binding="LogArea">
-            <constraints/>
-            <properties>
-              <alignmentX value="0.5"/>
-              <columns value="0"/>
-              <editable value="false"/>
-              <font/>
-              <lineWrap value="true"/>
-              <margin top="5" left="5" bottom="5" right="5"/>
-              <minimumSize width="0" height="15"/>
-              <opaque value="true"/>
-              <preferredSize width="0" height="15"/>
-            </properties>
-          </component>
-        </children>
-      </scrollpane>
       <component id="8d8d5" class="javax.swing.JTextField" binding="InputArea">
         <constraints>
           <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="1" fill="1" indent="0" use-parent-layout="false">
@@ -124,6 +94,23 @@
           </component>
         </children>
       </scrollpane>
+      <scrollpane id="fb864">
+        <constraints>
+          <grid row="0" column="2" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="250" height="402"/>
+          </grid>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="17d9c" class="javax.swing.JTextArea" binding="LogArea">
+            <constraints/>
+            <properties>
+              <margin top="5" left="5" bottom="5" right="5"/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
     </children>
   </grid>
   <inspectionSuppressions>
@@ -136,5 +123,8 @@
     <suppress inspection="NoLabelFor" id="a04a1"/>
     <suppress inspection="NoLabelFor" id="8f5d5"/>
     <suppress inspection="NoLabelFor" id="e1ca1"/>
+    <suppress inspection="NoLabelFor" id="13d85"/>
+    <suppress inspection="NoLabelFor" id="17d9c"/>
+    <suppress inspection="NoLabelFor" id="fb864"/>
   </inspectionSuppressions>
 </form>
