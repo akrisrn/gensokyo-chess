@@ -134,6 +134,7 @@ public class GuiFrame extends JFrame {
     final JScrollPane scrollPane4 = new JScrollPane();
     MainPanel.add(scrollPane4, new GridConstraints(0, 2, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(250, 402), null, 0, false));
     LogArea = new JTextArea();
+    LogArea.setLineWrap(true);
     LogArea.setMargin(new Insets(5, 5, 5, 5));
     scrollPane4.setViewportView(LogArea);
   }

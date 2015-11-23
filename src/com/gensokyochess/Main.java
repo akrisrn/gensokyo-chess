@@ -132,7 +132,7 @@ public class Main {
 
       try {
         int move = Character.getNumericValue(tmp[1]);
-        if (move == 0) {
+        if (move < 1 || move > 9) {
           return null;
         }
         char code = tmp[0];

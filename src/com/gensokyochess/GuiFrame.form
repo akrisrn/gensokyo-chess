@@ -106,6 +106,7 @@
           <component id="17d9c" class="javax.swing.JTextArea" binding="LogArea">
             <constraints/>
             <properties>
+              <lineWrap value="true"/>
               <margin top="5" left="5" bottom="5" right="5"/>
             </properties>
           </component>
