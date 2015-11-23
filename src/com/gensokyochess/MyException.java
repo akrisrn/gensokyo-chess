@@ -39,3 +39,8 @@ class KingSpellException extends Exception {
   public KingSpellException() {
   }
 }
+
+class HaveNotSpellException extends Exception {
+  public HaveNotSpellException() {
+  }
+}

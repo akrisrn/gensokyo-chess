@@ -1,13 +1,12 @@
 package com.gensokyochess;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Main {
   private Chessboard Chessboard = new Chessboard();
   private ArrayList<Piece> Pieces = new ArrayList<>();
   private boolean NoChance;
-  private boolean HaveBattle;
+  private boolean HaveBattleOrSpell;
   private boolean RandPlace = false;
   private Piece RedKing;
   private Piece BlackKing;
@@ -15,27 +14,6 @@ public class Main {
   public static void main(String[] args) {
     Main main = new Main();
     main.start();
-  }
-
-  protected String input() {
-    Scanner in = new Scanner(System.in);
-    return in.nextLine();
-  }
-
-  private void print(String msg) {
-    print(msg, true);
-  }
-
-  private void print(String msg, boolean showMsg) {
-    print(msg, showMsg, true);
-  }
-
-  protected void print(String msg, boolean showMsg, boolean isALine) {
-    if (isALine && showMsg) {
-      System.out.println(msg);
-    } else if (showMsg) {
-      System.out.print(msg);
-    }
   }
 
   protected String getChessboard() {
@@ -47,10 +25,10 @@ public class Main {
   }
 
   protected void start() {
-    print("是否使用随机布局?(Y/N)");
-    if (input().equalsIgnoreCase("y")) {
+    Tool.print("是否使用随机布局?(Y/N)");
+    if (Tool.input().equalsIgnoreCase("y")) {
       RandPlace = true;
-      print("自动填入棋子:");
+      Tool.print("自动填入棋子:");
     }
 
     place("red");
@@ -70,16 +48,16 @@ public class Main {
         round++;
       }
       count++;
-      print("第 " + round + " 回合");
+      Tool.print("第 " + round + " 回合");
 
       NoChance = false;
-      HaveBattle = false;
+      HaveBattleOrSpell = false;
 
       for (int i = 1; i <= 2; i++) {
         if (!action(camp, i)) {
           return;
         }
-        NoChance = i == 1 && HaveBattle;
+        NoChance = i == 1 && HaveBattleOrSpell;
       }
 
       if (camp.equals("red")) {
@@ -94,13 +72,13 @@ public class Main {
     boolean inputError;
     do {
       if (camp.equals("red")) {
-        print("红方", true, false);
+        Tool.print("红方", false);
       } else {
-        print("黑方", true, false);
+        Tool.print("黑方", false);
       }
-      print("第 " + i + " 次行动:", true, false);
+      Tool.print("第 " + i + " 次行动:", false);
 
-      ArrayList action = handleInput(input());
+      ArrayList action = handleInput(Tool.input());
       inputError = !handleAction(action, camp, i);
 
       if (!inputError) {
@@ -121,7 +99,7 @@ public class Main {
     if (tmp.length == 1) {
       action.add(1);
 
-      Piece piece = findPiece(tmp[0]);
+      Piece piece = Tool.findPiece(tmp[0], Pieces);
       if (piece == null) {
         return null;
       } else {
@@ -145,14 +123,26 @@ public class Main {
     } else if (tmp.length == 3) {
       action.add(3);
 
-      Piece piece1 = findPiece(tmp[0]);
-      Piece piece2 = findPiece(tmp[2]);
+      Piece piece1 = Tool.findPiece(tmp[0], Pieces);
+      Piece piece2 = Tool.findPiece(tmp[2], Pieces);
 
       if (piece1 == null || piece2 == null) {
         return null;
       } else {
         action.add(piece1);
         action.add(piece2);
+      }
+    } else if (tmp.length == 4) {
+      action.add(4);
+
+      Piece piece = Tool.findPiece(tmp[2], Pieces);
+      String spellCode = String.valueOf(tmp[2]) + String.valueOf(tmp[3]);
+
+      if (piece == null) {
+        return null;
+      } else {
+        action.add(piece);
+        action.add(spellCode);
       }
     } else {
       return null;
@@ -162,7 +152,7 @@ public class Main {
 
   private boolean handleAction(ArrayList action, String camp, int i) {
     if (action == null) {
-      print("输入有误");
+      Tool.print("输入有误");
       return false;
     }
 
@@ -170,16 +160,19 @@ public class Main {
     if (id == 1) {
       Piece piece = (Piece) action.get(1);
       updateChessboard();
-      print(piece.toString());
+      Tool.print(piece.toString());
       return false;
     } else if (id == 2) {
       char code = (char) action.get(1);
       int move = (int) action.get(2);
       return moveAction(code, move, camp, i);
     } else if (id == 3) {
-      HaveBattle = true;
+      HaveBattleOrSpell = true;
       return battleAction(action, camp);
-    } else {
+    } else if (id == 4) {
+      HaveBattleOrSpell = true;
+      return spellAction(action, camp);
+    }else {
       return false;
     }
   }
@@ -193,16 +186,16 @@ public class Main {
     while (levelCount != 15) {
       if (!RandPlace) {
         updateChessboard();
-        print("当前棋子总等级: " + levelCount);
-        print("请布置", true, false);
+        Tool.print("当前棋子总等级: " + levelCount);
+        Tool.print("请布置", false);
         if (camp.equals("red")) {
-          print("红方", true, false);
+          Tool.print("红方", false);
         } else {
-          print("黑方", true, false);
+          Tool.print("黑方", false);
         }
-        print("第 " + count + " 个棋子: ", true, false);
+        Tool.print("第 " + count + " 个棋子: ", false);
 
-        place = input();
+        place = Tool.input();
       } else {
         place = rollPlace(camp);
       }
@@ -212,16 +205,16 @@ public class Main {
         if (piece != null) {
           levelCount += piece.getLevel();
           if (!piece.getCamp().equals(camp)) {
-            print("请摆在己方区域", !RandPlace);
+            Tool.print("请摆在己方区域", true, !RandPlace);
             levelCount -= piece.getLevel();
           } else if (levelCount > 15) {
-            print("总等级要等于 15", !RandPlace);
+            Tool.print("总等级要等于 15", true, !RandPlace);
             levelCount -= piece.getLevel();
           } else if (levelCount == 15 && !haveKing) {
-            print("棋盘缺少国王", !RandPlace);
+            Tool.print("棋盘缺少国王", true, !RandPlace);
             levelCount -= piece.getLevel();
-          } else if (findPiece(piece.getCode()) != null) {
-            print("棋盘上已经有了相同棋子", !RandPlace);
+          } else if (Tool.findPiece(piece.getCode(), Pieces) != null) {
+            Tool.print("棋盘上已经有了相同棋子", true, !RandPlace);
             levelCount -= piece.getLevel();
           } else {
             piece.placeTo(Chessboard.getChessboard());
@@ -237,10 +230,10 @@ public class Main {
             count++;
           }
         } else {
-          print("输入有误", !RandPlace);
+          Tool.print("输入有误", true, !RandPlace);
         }
       } catch (CanNotPlaceException e) {
-        print("无法放到该格", !RandPlace);
+        Tool.print("无法放到该格", true, !RandPlace);
         levelCount -= piece.getLevel();
       }
     }
@@ -257,10 +250,32 @@ public class Main {
             (int) (Math.random() * 5 + 1);
   }
 
+  private boolean spellAction(ArrayList action, String camp) {
+    Piece piece = (Piece) action.get(1);
+    if (!piece.getCamp().equals(camp)) {
+      Tool.print("你没有这个棋子");
+      return false;
+    }
+    String spellCode = (String) action.get(2);
+
+    if (spellCode.equals(piece.getSpellCode())) {
+      try {
+        piece.useSpell(Chessboard, Pieces);
+        return true;
+      } catch (HaveNotSpellException e) {
+        Tool.print("这个棋子没有技能");
+        return false;
+      }
+    } else {
+      Tool.print("没有这个技能");
+      return false;
+    }
+  }
+
   private boolean battleAction(ArrayList action, String camp) {
     Piece piece1 = (Piece) action.get(1);
     if (!piece1.getCamp().equals(camp)) {
-      print("你没有这个棋子");
+      Tool.print("你没有这个棋子");
       return false;
     }
     Piece piece2 = (Piece) action.get(2);
@@ -274,10 +289,10 @@ public class Main {
 
   private boolean isGameOver() {
     if (!RedKing.isAlive()) {
-      print("黑方胜利");
+      Tool.print("黑方胜利");
       return true;
     } else if (!BlackKing.isAlive()) {
-      print("红方胜利");
+      Tool.print("红方胜利");
       return true;
     } else {
       int count = 0;
@@ -289,36 +304,16 @@ public class Main {
           }
         }
       }
-      print("平局");
+      Tool.print("平局");
       return true;
     }
-  }
-
-  private Piece findPiece(char code) {
-    for (Piece piece : Pieces) {
-      if (piece.getCode() == code) {
-        return piece;
-      }
-    }
-    return null;
-  }
-
-  private Piece findPiece(String camp, char code) {
-    for (Piece piece : Pieces) {
-      if (piece.getCamp().equals(camp)) {
-        if (piece.getCode() == code) {
-          return piece;
-        }
-      }
-    }
-    return null;
   }
 
   private void opportunityBattleAction(char[] haveChanceChars, Piece piece) {
     if (haveChanceChars != null) {
       for (char haveChanceChar : haveChanceChars) {
         if (haveChanceChar != ' ') {
-          Piece haveChancePiece = findPiece(haveChanceChar);
+          Piece haveChancePiece = Tool.findPiece(haveChanceChar, Pieces);
           if (haveChancePiece != null && !haveChancePiece.getCamp().equals(piece.getCamp()) && piece.isAlive()) {
             haveChancePiece.opportunityBattleWith(piece, Chessboard.getChessboard());
           }
@@ -336,19 +331,19 @@ public class Main {
       }
       return true;
     } catch (ExceedAttackRangeException e) {
-      print("超出攻击范围");
+      Tool.print("超出攻击范围");
       return false;
     } catch (HaveObstacleException e) {
-      print("中间有障碍");
+      Tool.print("中间有障碍");
       return false;
     } catch (SameCampException e) {
-      print("这是己方棋子");
+      Tool.print("这是己方棋子");
       return false;
     } catch (InRiverException e) {
-      print("在河流中无法进行攻击");
+      Tool.print("在河流中无法进行攻击");
       return false;
     } catch (KingSpellException e) {
-      print("国王不受来自对面区域的攻击");
+      Tool.print("国王不受来自对面区域的攻击");
       return false;
     }
   }
@@ -358,37 +353,37 @@ public class Main {
       piece1.frontalBattleWith(piece2, Chessboard.getChessboard());
       return true;
     } catch (SameCampException e) {
-      print("这是己方棋子");
+      Tool.print("这是己方棋子");
       return false;
     } catch (ExceedAttackRangeException e) {
-      print("超出攻击范围");
+      Tool.print("超出攻击范围");
       return false;
     } catch (InRiverException e) {
-      print("在河流中无法进行攻击");
+      Tool.print("在河流中无法进行攻击");
       return false;
     }
   }
 
   private boolean moveAction(char code, int move, String camp, int count) {
-    Piece piece = findPiece(camp, code);
+    Piece piece = Tool.findPiece(camp, code, Pieces);
 
     if (piece != null) {
       try {
         if (move == 5) {
-          print(piece.getNameAndLV() + " 进行原地防御");
+          Tool.print(piece.getNameAndLV() + " 进行原地防御");
         }
         char haveChanceChars[] = piece.moveTo(move, Chessboard.getChessboard(), count, NoChance);
         opportunityBattleAction(haveChanceChars, piece);
         return true;
       } catch (CanNotPlaceException e) {
-        print("无法放到该格");
+        Tool.print("无法放到该格");
         return false;
       } catch (CanNotMoveException | KingMoveException e) {
-        print("超出移动范围");
+        Tool.print("超出移动范围");
         return false;
       }
     } else {
-      print("你没有这个棋子");
+      Tool.print("你没有这个棋子");
       return false;
     }
   }

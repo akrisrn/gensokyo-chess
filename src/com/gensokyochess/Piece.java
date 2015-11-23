@@ -25,9 +25,9 @@ public class Piece extends Role {
     }
   }
 
-  private void removeLoser(Piece piece1, Piece piece2, StringBuffer chessboard) {
-    if (!piece1.isAlive()) {
-      piece1.removeFrom(chessboard);
+  public void removeLoser(Piece piece2, StringBuffer chessboard) {
+    if (!this.isAlive()) {
+      this.removeFrom(chessboard);
     } else if (!piece2.isAlive()) {
       piece2.removeFrom(chessboard);
     }
@@ -71,7 +71,7 @@ public class Piece extends Role {
   public void opportunityBattleWith(Piece piece, StringBuffer chessboard) {
     if (getAttackType() == 0 && !isInRiver() && !piece.isInRiver()) {
       Battle.opportunityBattle(this, piece);
-      removeLoser(this, piece, chessboard);
+      removeLoser(piece, chessboard);
     }
   }
 
@@ -106,7 +106,7 @@ public class Piece extends Role {
     } else {
       throw new ExceedAttackRangeException();
     }
-    removeLoser(this, piece, chessboard);
+    removeLoser(piece, chessboard);
   }
 
   public void frontalBattleWith(Piece piece, StringBuffer chessboard) throws ExceedAttackRangeException,
@@ -124,7 +124,7 @@ public class Piece extends Role {
     }
 
     Battle.frontalBattle(this, piece);
-    removeLoser(this, piece, chessboard);
+    removeLoser(piece, chessboard);
   }
 
   public char[] findHaveChanceChar(int x, int y, StringBuffer chessboard) {
@@ -425,12 +425,13 @@ public class Piece extends Role {
     }
 
     return "\n姓名: " + getNameAndLV() + state + camp + "\n" +
-            "生命: " + getCurrentHP() + "(" + getHitPoint() + ")" + "\n" +
+            "生命: " + getCurrentHP() + "(" + getHitPoint() + ")\n" +
             "伤害: " + getDamageRange() + "\n" +
             "力量: " + getStrength() + "\n" +
             "敏捷: " + getDexterity() + "\n" +
             "体质: " + getConstitution() + "\n" +
             "体型: " + getBodyType() + "\n" +
-            "攻击方式: " + getRawAttackType() + "\n";
+            "攻击方式: " + getRawAttackType() + "\n" +
+            "技能: " + getSpell() + "\n";
   }
 }

@@ -1,10 +1,14 @@
 package com.gensokyochess;
 
 import com.csvreader.CsvReader;
+import com.gensokyochess.spell.Spell;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+
+import static com.gensokyochess.spell.Spell.switchSpell;
 
 public class Role {
   private final int RIVER_BONUS = 5;
@@ -30,12 +34,15 @@ public class Role {
   private int DamageBonus;
   private boolean Alive = true;
   private boolean InRiver = false;
+  private String SpellCode;
+  private Spell Spell;
 
   public Role(char code, int level) {
     if (level > 5) {
       level = 5;
     }
     setRoleLevel(code, level);
+    setSpell();
   }
 
   private void init(char code) {
@@ -60,6 +67,7 @@ public class Role {
           BodyBonus = Integer.parseInt(reader.get("BodyBonus"));
           AttackType = Integer.parseInt(reader.get("AttackType"));
           Code = code;
+          SpellCode = reader.get("SpellCode");
           break;
         }
       }
@@ -107,6 +115,33 @@ public class Role {
     }
     Level = level;
     calculateBonus();
+  }
+
+  public void useSpell(Chessboard chessboard, ArrayList<Piece> pieces) throws HaveNotSpellException {
+    if (Spell == null) {
+      throw new HaveNotSpellException();
+    }
+    Spell.use((Piece) this, chessboard, pieces);
+  }
+
+  public String getSpellCode() {
+    return SpellCode;
+  }
+
+  public String getSpellName() {
+    return Spell.getName();
+  }
+
+  public String getSpell() {
+    if (Spell == null) {
+      return "";
+    } else {
+      return Spell.toString();
+    }
+  }
+
+  private void setSpell() {
+    Spell = switchSpell(SpellCode);
   }
 
   private void increaseAttr(int rise) {
@@ -329,6 +364,7 @@ public class Role {
             "敏捷: " + getDexterity() + "\n" +
             "体质: " + getConstitution() + "\n" +
             "体型: " + getBodyType() + "\n" +
-            "攻击方式: " + getRawAttackType() + "\n";
+            "攻击方式: " + getRawAttackType() + "\n" +
+            "技能: " + getSpell();
   }
 }
