@@ -251,8 +251,8 @@ public class Main {
     if (camp.equals("black")) {
       bonus = 5;
     }
-    return "x" + (int) (Math.random() * 9 + 1) +
-            "y" + (int) (Math.random() * 4 + 1 + bonus) +
+    return "" + (int) (Math.random() * 9 + 1) +
+            "" + (int) (Math.random() * 4 + 1 + bonus) +
             (char) (Math.random() * 94 + 33) +
             (int) (Math.random() * 5 + 1);
   }
