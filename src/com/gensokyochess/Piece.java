@@ -232,11 +232,59 @@ public class Piece extends Role {
     }
   }
 
-  public char[] moveTo(int x, int y, StringBuffer chessboard, int count, boolean noChance) throws CanNotPlaceException,
+  public int[] handleMove(int move) {
+    int tmp[] = new int[2];
+    switch (move) {
+      case 1:
+        tmp[0] = X - 1;
+        tmp[1] = Y - 1;
+        return tmp;
+      case 2:
+        tmp[0] = X;
+        tmp[1] = Y - 1;
+        return tmp;
+      case 3:
+        tmp[0] = X + 1;
+        tmp[1] = Y - 1;
+        return tmp;
+      case 4:
+        tmp[0] = X - 1;
+        tmp[1] = Y;
+        return tmp;
+      case 5:
+        tmp[0] = X;
+        tmp[1] = Y;
+        return tmp;
+      case 6:
+        tmp[0] = X + 1;
+        tmp[1] = Y;
+        return tmp;
+      case 7:
+        tmp[0] = X - 1;
+        tmp[1] = Y + 1;
+        return tmp;
+      case 8:
+        tmp[0] = X;
+        tmp[1] = Y + 1;
+        return tmp;
+      case 9:
+        tmp[0] = X + 1;
+        tmp[1] = Y + 1;
+        return tmp;
+      default:
+        return null;
+    }
+  }
+
+  public char[] moveTo(int move, StringBuffer chessboard, int count, boolean noChance) throws CanNotPlaceException,
           CanNotMoveException, KingMoveException {
+    int tmp[] = handleMove(move);
+    int x = tmp[0];
+    int y = tmp[1];
+
     char aimChar = chessboard.charAt(convert(x, y));
 
-    if (Math.abs(x - X) > 1 || Math.abs(y - Y) > 1) {
+    if (x < 1 || x > 9 || y < 1 || y > 9) {
       throw new CanNotMoveException();
     }
     if (aimChar != ' ' && aimChar != '*' && aimChar != '|') {

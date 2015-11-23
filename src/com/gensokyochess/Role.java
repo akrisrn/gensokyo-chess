@@ -195,6 +195,10 @@ public class Role {
     return CurrentHP;
   }
 
+  public int getInitiative() {
+    return Initiative;
+  }
+
   public int getHitPoint() {
     return HitPoint;
   }

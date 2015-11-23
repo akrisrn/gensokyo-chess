@@ -113,6 +113,53 @@ public class Main {
     return true;
   }
 
+  @SuppressWarnings("unchecked")
+  private ArrayList handleInput(String in) {
+    ArrayList action = new ArrayList();
+    char tmp[] = in.toCharArray();
+
+    if (tmp.length == 1) {
+      action.add(1);
+
+      Piece piece = findPiece(tmp[0]);
+      if (piece == null) {
+        return null;
+      } else {
+        action.add(piece);
+      }
+    } else if (tmp.length == 2) {
+      action.add(2);
+
+      try {
+        int move = Character.getNumericValue(tmp[1]);
+        if (move == 0) {
+          return null;
+        }
+        char code = tmp[0];
+
+        action.add(code);
+        action.add(move);
+      } catch (NumberFormatException e) {
+        return null;
+      }
+    } else if (tmp.length == 3) {
+      action.add(3);
+
+      Piece piece1 = findPiece(tmp[0]);
+      Piece piece2 = findPiece(tmp[2]);
+
+      if (piece1 == null || piece2 == null) {
+        return null;
+      } else {
+        action.add(piece1);
+        action.add(piece2);
+      }
+    } else {
+      return null;
+    }
+    return action;
+  }
+
   private boolean handleAction(ArrayList action, String camp, int i) {
     if (action == null) {
       print("输入有误");
@@ -120,18 +167,19 @@ public class Main {
     }
 
     int id = (int) action.get(0);
-    if (id == 3) {
-      int x = (int) action.get(1);
-      int y = (int) action.get(2);
-      char code = (char) action.get(3);
-      return moveAction(x, y, code, camp, i);
-    } else if (id == 2) {
-      HaveBattle = true;
-      return battleAction(action, camp);
-    } else {
+    if (id == 1) {
       Piece piece = (Piece) action.get(1);
       updateChessboard();
       print(piece.toString());
+      return false;
+    } else if (id == 2) {
+      char code = (char) action.get(1);
+      int move = (int) action.get(2);
+      return moveAction(code, move, camp, i);
+    } else if (id == 3) {
+      HaveBattle = true;
+      return battleAction(action, camp);
+    } else {
       return false;
     }
   }
@@ -246,52 +294,6 @@ public class Main {
     }
   }
 
-  @SuppressWarnings("unchecked")
-  private ArrayList handleInput(String in) {
-    ArrayList action = new ArrayList();
-    char tmp[] = in.toCharArray();
-
-    if (tmp.length == 1) {
-      action.add(1);
-
-      Piece piece = findPiece(tmp[0]);
-      if (piece == null) {
-        return null;
-      } else {
-        action.add(piece);
-      }
-    } else if (tmp.length == 3) {
-      action.add(2);
-
-      Piece piece1 = findPiece(tmp[0]);
-      Piece piece2 = findPiece(tmp[2]);
-
-      if (piece1 == null || piece2 == null) {
-        return null;
-      } else {
-        action.add(piece1);
-        action.add(piece2);
-      }
-    } else if (tmp.length == 5) {
-      action.add(3);
-
-      try {
-        int x = Character.getNumericValue(tmp[1]);
-        int y = Character.getNumericValue(tmp[3]);
-        char p = tmp[4];
-
-        action.add(x);
-        action.add(y);
-        action.add(p);
-      } catch (NumberFormatException e) {
-        return null;
-      }
-    } else {
-      return null;
-    }
-    return action;
-  }
-
   private Piece findPiece(char code) {
     for (Piece piece : Pieces) {
       if (piece.getCode() == code) {
@@ -367,12 +369,12 @@ public class Main {
     }
   }
 
-  private boolean moveAction(int x, int y, char code, String camp, int count) {
+  private boolean moveAction(char code, int move, String camp, int count) {
     Piece piece = findPiece(camp, code);
 
     if (piece != null) {
       try {
-        char haveChanceChars[] = piece.moveTo(x, y, Chessboard.getChessboard(), count, NoChance);
+        char haveChanceChars[] = piece.moveTo(move, Chessboard.getChessboard(), count, NoChance);
         opportunityBattleAction(haveChanceChars, piece);
         return true;
       } catch (CanNotPlaceException e) {

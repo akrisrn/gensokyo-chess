@@ -20,9 +20,10 @@ public class Battle {
 
   private static void criticalAtk(Role role1, Role role2) {
     print(role1.getNameAndLV() + " 造成了重击!");
-    int damage = role1.rollDamage() + role1.rollDamage();
-    role2.hpReduce(damage);
-    print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() + " 造成了 " + damage + " 点伤害");
+    int damage1 = role1.rollDamage();
+    int damage2 = role1.rollDamage();
+    role2.hpReduce(damage1 + damage2);
+    print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() + " 造成了 " + damage1 + " + " + damage2 + " 点伤害");
     print(role2.getNameAndLV() + " 的 HP 现在是:" + role2.getCurrentHP());
     defeated(role2);
   }
@@ -35,6 +36,14 @@ public class Battle {
     }
   }
 
+  private static String handleSign(int bonus) {
+    if (bonus >= 0) {
+      return "+";
+    } else {
+      return "";
+    }
+  }
+
   private static void battleRound(Role role1, Role role2, int distance) {
     if (role1.getAttackType() == 1) {
       role1.recoverAB();
@@ -43,12 +52,20 @@ public class Battle {
 
     int armorClass = role2.getArmorClass();
     int attackRoll = role1.rollAttack();
-    print(role1.getNameAndLV() + " 的攻击检定为:" + attackRoll);
+    int attackBonus = role1.getCurrentAB();
+    String sign = handleSign(attackBonus);
+    int originalRoll = attackRoll - attackBonus;
 
-    if (attackRoll - role1.getCurrentAB() == 1) {
+    print(role1.getNameAndLV() + " 的攻击检定为:" + attackRoll + "(" + originalRoll + sign + attackBonus + ")");
+
+    if (originalRoll == 1) {
       print(role1.getNameAndLV() + " 的攻击失手了!");
-    } else if (attackRoll - role1.getCurrentAB() == 20) {
-      if (role1.rollAttack() > armorClass) {
+    } else if (originalRoll == 20) {
+      print(role1.getNameAndLV() + " 造成了重击威胁!");
+      attackRoll = role1.rollAttack();
+      originalRoll = attackRoll - attackBonus;
+      print(role1.getNameAndLV() + " 的第二次攻击检定为:" + attackRoll + "(" + originalRoll + sign + attackBonus + ")");
+      if (attackRoll > armorClass) {
         criticalAtk(role1, role2);
       } else {
         normalAtk(role1, role2);
@@ -68,9 +85,17 @@ public class Battle {
 
   private static boolean judgeInitiative(Role role1, Role role2) {
     int initiativeRoll1 = role1.rollInitiative();
+    int initiative1 = role1.getInitiative();
+    int originalRoll1 = initiativeRoll1 - initiative1;
+
     int initiativeRoll2 = role2.rollInitiative();
-    print(role1.getNameAndLV() + " 的先攻检定为:" + initiativeRoll1);
-    print(role2.getNameAndLV() + " 的先攻检定为:" + initiativeRoll2);
+    int initiative2 = role2.getInitiative();
+    int originalRoll2 = initiativeRoll2 - initiative2;
+
+    print(role1.getNameAndLV() + " 的先攻检定为:" +
+            initiativeRoll1 + "(" + originalRoll1 + handleSign(initiative1) + initiative1 + ")");
+    print(role2.getNameAndLV() + " 的先攻检定为:" +
+            initiativeRoll2 + "(" + originalRoll2 + handleSign(initiative2) + initiative2 + ")");
 
     if (initiativeRoll1 > initiativeRoll2) {
       print(role1.getNameAndLV() + " 先攻!");
@@ -136,7 +161,7 @@ public class Battle {
       GuiFrame.appendLog(msg, true);
     }
     try {
-      Thread.sleep(1500);
+      Thread.sleep(1200);
     } catch (InterruptedException ignored) {
     }
   }
