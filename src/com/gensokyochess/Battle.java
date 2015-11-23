@@ -135,6 +135,8 @@ public class Battle {
       isRole1First = !isRole1First;
     }
     print("战斗结束");
+    role1.subDefenseBonus();
+    role2.subDefenseBonus();
   }
 
   public static void remoteBattle(Role role1, Role role2, int distance) throws InRiverException {
@@ -148,6 +150,8 @@ public class Battle {
     }
     battleRound(role1, role2, distance);
     print("战斗结束");
+    role1.subDefenseBonus();
+    role2.subDefenseBonus();
   }
 
   public static void opportunityBattle(Role role1, Role role2) {
