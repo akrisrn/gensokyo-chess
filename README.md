@@ -2,20 +2,9 @@
 
 一个融合了东方 project 角色和 dnd3r 战斗规则的象棋类游戏。
 
-# 编译
+# 编译环境
 
-- 需求
-    - `jdk 1.8 环境`
-- windows
-    - 双击 `buildGui.bat` 编译打包 Gui 版本
-        - `java -jar gnc-2d-gui.jar` 执行
-    - 双击 `build.bat` 编译打包命令行版本
-        - `java -jar gnc-2d.jar` 执行
-- linux
-    - `sh buildGui.sh` 编译打包 Gui 版本
-        - `java -jar gnc-2d-gui.jar` 执行
-    - `sh build.sh` 编译打包命令行版本
-        - `java -jar gnc-2d.jar` 执行
+- `jdk 1.8`
 
 # 游戏说明
 ## 操作
