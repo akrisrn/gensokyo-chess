@@ -68,6 +68,7 @@ public class Battle {
       if (attackRoll > armorClass) {
         criticalAtk(role1, role2);
       } else {
+        print(role1.getNameAndLV() + " 未造成重击");
         normalAtk(role1, role2);
       }
     } else if (attackRoll > armorClass) {

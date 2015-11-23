@@ -374,6 +374,9 @@ public class Main {
 
     if (piece != null) {
       try {
+        if (move == 5) {
+          print(piece.getNameAndLV() + " 进行原地防御");
+        }
         char haveChanceChars[] = piece.moveTo(move, Chessboard.getChessboard(), count, NoChance);
         opportunityBattleAction(haveChanceChars, piece);
         return true;

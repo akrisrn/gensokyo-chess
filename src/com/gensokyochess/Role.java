@@ -8,6 +8,7 @@ import java.nio.charset.Charset;
 
 public class Role {
   private final int RIVER_BONUS = 5;
+  private int DefenceBonusCount = 0;
   private String Name;
   private char Code;
   private int Level;
@@ -185,6 +186,19 @@ public class Role {
 
   public void subRiverBonus() {
     ArmorClass -= RIVER_BONUS;
+  }
+
+  public void addDefenseBonus() {
+    int defenceBonus = 2;
+    if (DefenceBonusCount < 4) {
+      DefenceBonusCount += defenceBonus;
+      ArmorClass += defenceBonus;
+    }
+  }
+
+  public void subDefenseBonus() {
+    ArmorClass -= DefenceBonusCount;
+    DefenceBonusCount = 0;
   }
 
   private int getBonus(int attr) {

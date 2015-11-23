@@ -251,10 +251,6 @@ public class Piece extends Role {
         tmp[0] = X - 1;
         tmp[1] = Y;
         return tmp;
-      case 5:
-        tmp[0] = X;
-        tmp[1] = Y;
-        return tmp;
       case 6:
         tmp[0] = X + 1;
         tmp[1] = Y;
@@ -278,6 +274,11 @@ public class Piece extends Role {
 
   public char[] moveTo(int move, StringBuffer chessboard, int count, boolean noChance) throws CanNotPlaceException,
           CanNotMoveException, KingMoveException {
+    if (move == 5) {
+      addDefenseBonus();
+      return null;
+    }
+
     int tmp[] = handleMove(move);
     int x = tmp[0];
     int y = tmp[1];
@@ -308,6 +309,7 @@ public class Piece extends Role {
   }
 
   private char[] normallyMoveTo(int x, int y, StringBuffer chessboard, boolean noChance) {
+    subDefenseBonus();
     SpecialMoveCheck = 0;
     char haveChanceChars[] = null;
 
@@ -322,6 +324,7 @@ public class Piece extends Role {
   }
 
   private char[] speciallyMoveTo(int x, int y, StringBuffer chessboard, boolean into, int count) {
+    subDefenseBonus();
     char haveChanceChars[] = null;
     SpecialMoveCheck++;
 
