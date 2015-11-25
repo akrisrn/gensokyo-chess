@@ -37,9 +37,8 @@ public class MouseClick extends MouseAdapter {
         if (piece != null && X == piece.getX() && Y == piece.getY()) {
           Tool.print(piece.toString());
           if (piece.getCamp().equals(Tool.getCurCamp())) {
-            Tool.setActivatedPiece(piece);
             Tool.drawArrows(piece, true);
-            Tool.getFrame().setSpellButton1Text(Tool.getActivatedPiece().getSpellCode());
+            Tool.setActivatedPiece(piece);
           }
         }
       }

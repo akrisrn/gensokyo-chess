@@ -3,6 +3,8 @@ package com.gensokyochess.spell;
 import com.gensokyochess.Battle;
 import com.gensokyochess.Piece;
 import com.gensokyochess.Tool;
+import com.gensokyochess.exception.KingSpellException;
+import com.gensokyochess.exception.SameCampException;
 
 public class FantasySeal extends Spell {
   public FantasySeal(String code) {
@@ -10,9 +12,9 @@ public class FantasySeal extends Spell {
   }
 
   @Override
-  public boolean use(Piece piece1) {
-    int damage = 5;
-    Tool.print("请选择一个对方棋子(除国王)");
+  public boolean use(Piece piece1) throws KingSpellException, SameCampException {
+    int damage = 3;
+    Tool.print("请选择一个对方棋子");
     Tool.removeArrows();
 
     String input = Tool.input();
@@ -23,7 +25,13 @@ public class FantasySeal extends Spell {
     } else {
       piece2 = Tool.findPiece(input.charAt(0));
     }
-    if (piece2 != null && !piece1.getCamp().equals(piece2.getCamp()) && !piece2.isKing()) {
+    if (piece2 != null) {
+      if (piece1.getCamp().equals(piece2.getCamp())) {
+        throw new SameCampException();
+      }
+      if (piece2.isKing()) {
+        throw new KingSpellException();
+      }
       start(piece1);
       Battle.damage(piece1, piece2, damage);
       piece1.checkAlive(piece2);

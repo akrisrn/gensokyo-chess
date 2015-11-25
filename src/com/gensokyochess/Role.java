@@ -2,6 +2,8 @@ package com.gensokyochess;
 
 import com.csvreader.CsvReader;
 import com.gensokyochess.exception.HaveNotSpellException;
+import com.gensokyochess.exception.KingSpellException;
+import com.gensokyochess.exception.SameCampException;
 import com.gensokyochess.spell.Spell;
 
 import java.io.FileNotFoundException;
@@ -117,7 +119,7 @@ public class Role {
     calculateBonus();
   }
 
-  public boolean useSpell() throws HaveNotSpellException {
+  public boolean useSpell() throws HaveNotSpellException, KingSpellException, SameCampException {
     if (Spell == null) {
       throw new HaveNotSpellException();
     }

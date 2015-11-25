@@ -15,6 +15,11 @@ public class Tool {
 
   public static void setActivatedPiece(Piece piece) {
     ActivatedPiece = piece;
+    if (piece == null) {
+      Frame.setSpellButton1Text("空");
+    } else {
+      Frame.setSpellButton1Text(ActivatedPiece.getSpellCode());
+    }
   }
 
   public static Piece getActivatedPiece() {

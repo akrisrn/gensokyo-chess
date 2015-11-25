@@ -264,6 +264,12 @@ public class Main {
       } catch (HaveNotSpellException e) {
         Tool.print("这个棋子没有技能");
         return false;
+      } catch (KingSpellException e) {
+        Tool.print("国王不受技能影响");
+        return false;
+      } catch (SameCampException e) {
+        Tool.print("这是己方棋子");
+        return false;
       }
     } else {
       Tool.print("没有这个技能");

@@ -4,6 +4,8 @@ import com.csvreader.CsvReader;
 import com.gensokyochess.Piece;
 import com.gensokyochess.Role;
 import com.gensokyochess.Tool;
+import com.gensokyochess.exception.KingSpellException;
+import com.gensokyochess.exception.SameCampException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -42,7 +44,7 @@ public abstract class Spell {
     }
   }
 
-  public abstract boolean use(Piece piece1);
+  public abstract boolean use(Piece piece1) throws KingSpellException, SameCampException;
 
   public void start(Role role) {
     Tool.print(role.getNameAndLV() + " 使用了 " + role.getSpellName() + "!", 1);
