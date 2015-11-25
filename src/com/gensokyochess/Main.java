@@ -12,6 +12,7 @@ public class Main {
   private boolean RandPlace = false;
   private Piece RedKing;
   private Piece BlackKing;
+  private boolean CurCampIsRed = true;
 
   public static void main(String[] args) {
     Main main = new Main();
@@ -42,7 +43,6 @@ public class Main {
   }
 
   private void round() {
-    String camp = "red";
     int round = 0;
     int count = 0;
 
@@ -57,25 +57,21 @@ public class Main {
       HaveBattleOrSpell = false;
 
       for (int i = 1; i <= 2; i++) {
-        if (!action(camp, i)) {
+        if (!action(i)) {
           return;
         }
         NoChance = i == 1 && HaveBattleOrSpell;
       }
-
-      if (camp.equals("red")) {
-        camp = "black";
-      } else if (camp.equals("black")) {
-        camp = "red";
-      }
+      CurCampIsRed = !CurCampIsRed;
+      Tool.setCurCampIsRed(CurCampIsRed);
     }
   }
 
-  private boolean action(String camp, int i) {
+  private boolean action(int i) {
     boolean inputError;
     do {
       String cam;
-      if (camp.equals("red")) {
+      if (CurCampIsRed) {
         cam = "红方";
       } else {
         cam = "黑方";
@@ -83,7 +79,7 @@ public class Main {
       Tool.updateState(cam + "第 " + i + " 次行动:", false);
 
       ArrayList action = handleInput(Tool.input());
-      inputError = !handleAction(action, camp, i);
+      inputError = !handleAction(action, i);
 
       if (!inputError) {
         Tool.updateChessboard();
@@ -154,7 +150,7 @@ public class Main {
     return action;
   }
 
-  private boolean handleAction(ArrayList action, String camp, int i) {
+  private boolean handleAction(ArrayList action, int i) {
     if (action == null) {
       Tool.print("输入有误");
       return false;
@@ -169,13 +165,13 @@ public class Main {
     } else if (id == 2) {
       char code = (char) action.get(1);
       int move = (int) action.get(2);
-      return moveAction(code, move, camp, i);
+      return moveAction(code, move, i);
     } else if (id == 3) {
       HaveBattleOrSpell = true;
-      return battleAction(action, camp);
+      return battleAction(action);
     } else if (id == 4) {
       HaveBattleOrSpell = true;
-      return spellAction(action, camp);
+      return spellAction(action);
     }else {
       return false;
     }
@@ -254,9 +250,9 @@ public class Main {
             (int) (Math.random() * 5 + 1);
   }
 
-  private boolean spellAction(ArrayList action, String camp) {
+  private boolean spellAction(ArrayList action) {
     Piece piece = (Piece) action.get(1);
-    if (!piece.getCamp().equals(camp)) {
+    if (!piece.getCamp().equals(Tool.getCurCamp())) {
       Tool.print("你没有这个棋子");
       return false;
     }
@@ -276,9 +272,9 @@ public class Main {
     }
   }
 
-  private boolean battleAction(ArrayList action, String camp) {
+  private boolean battleAction(ArrayList action) {
     Piece piece1 = (Piece) action.get(1);
-    if (!piece1.getCamp().equals(camp)) {
+    if (!piece1.getCamp().equals(Tool.getCurCamp())) {
       Tool.print("你没有这个棋子");
       return false;
     }
@@ -368,8 +364,8 @@ public class Main {
     }
   }
 
-  private boolean moveAction(char code, int move, String camp, int count) {
-    Piece piece = Tool.findPiece(camp, code, Pieces);
+  private boolean moveAction(char code, int move, int count) {
+    Piece piece = Tool.findPiece(Tool.getCurCamp(), code, Pieces);
 
     if (piece != null) {
       try {

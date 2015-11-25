@@ -24,10 +24,14 @@ public class MouseClick extends MouseAdapter {
         Tool.getFrame().sendCmd(String.valueOf(ActivatedPiece.getCode()) + (5 * arrowIndex / 4 + 1));
       } else if (aimChar == ActivatedPiece.getCode()) {
         Tool.getFrame().sendCmd(String.valueOf(ActivatedPiece.getCode()) + 5);
-      } else if (aimChar == '*' && findSpecialPiece(index, '*')) {
-        Tool.getFrame().sendCmd(ActivatedPiece.getCode() + "+" + aimChar);
-      } else if (aimChar == '|' && findSpecialPiece(index, '|')) {
-        Tool.getFrame().sendCmd(ActivatedPiece.getCode() + "+" + aimChar);
+      } else if (aimChar == '*') {
+        if (findSpecialPiece(index, '*')) {
+          Tool.getFrame().sendCmd(ActivatedPiece.getCode() + "+" + aimChar);
+        }
+      } else if (aimChar == '|') {
+        if (findSpecialPiece(index, '|')) {
+          Tool.getFrame().sendCmd(ActivatedPiece.getCode() + "+" + aimChar);
+        }
       } else if (aimChar != ' '){
         Tool.getFrame().sendCmd(ActivatedPiece.getCode() + "+" + aimChar);
       }
@@ -38,7 +42,9 @@ public class MouseClick extends MouseAdapter {
         piece = Tool.findPiece(aimChar, Pieces);
         if (piece != null && X == piece.getX() && Y == piece.getY()) {
           Tool.print(piece.toString());
-          drawArrows(piece);
+          if (piece.getCamp().equals(Tool.getCurCamp())) {
+            drawArrows(piece);
+          }
         }
       }
     }

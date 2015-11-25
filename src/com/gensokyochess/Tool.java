@@ -8,6 +8,19 @@ public class Tool {
   private static GuiFrame Frame;
   private static boolean UseGui = false;
   private static StringBuffer Chessboard;
+  private static boolean CurCampIsRed = true;
+
+  public static void setCurCampIsRed(boolean curCampIsRed) {
+    CurCampIsRed = curCampIsRed;
+  }
+
+  public static String getCurCamp() {
+    if (CurCampIsRed) {
+      return "red";
+    } else {
+      return "black";
+    }
+  }
 
   public static GuiFrame getFrame() {
     return Frame;
