@@ -6,6 +6,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class GuiFrame extends JFrame {
@@ -16,7 +17,12 @@ public class GuiFrame extends JFrame {
   private JButton SendButton;
   private JTextArea LeftLine;
   private JTextArea BottomLine;
-  private Scanner scanner = new Scanner("");
+  private JButton SpellButton2;
+  private JButton SpellButton1;
+  private JLabel RoundLabel;
+  private JLabel ActionLabel;
+  private Scanner Scanner = new Scanner("");
+  private MouseClick Mouse = new MouseClick();
 
   public GuiFrame() {
     setTitle("Gensokyo & Chess");
@@ -25,8 +31,6 @@ public class GuiFrame extends JFrame {
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     pack();
     setVisible(true);
-
-    Chessboard chessboard = new Chessboard();
 
     try {
       File file = new File(System.getProperty("user.dir") + "/lib/SourceCodePro-Regular.ttf");
@@ -40,36 +44,58 @@ public class GuiFrame extends JFrame {
     } catch (IOException | FontFormatException ignored) {
     }
 
-    Board.setText(String.valueOf(chessboard.getChessboard()));
+    Board.setText(String.valueOf(new Chessboard().getChessboard()));
     LeftLine.setText(" ┌\n9├\n │\n8├\n │\n7├\n │\n6├\n │\n5├\n │\n4├\n │\n3├\n │\n2├\n │\n1├\n └");
     BottomLine.setText("└─┴───┴───┴───┴───┴───┴───┴───┴───┴─┘\n  1   2   3   4   5   6   7   8   9");
 
     getRootPane().setDefaultButton(SendButton);
     SendButton.addActionListener(actionEvent -> {
-      String line = InputArea.getText();
-      if (!(line.equals(""))) {
-        scanner = new Scanner(line);
-        appendLog(line, true);
+      String cmd = InputArea.getText();
+      if (!(cmd.equals(""))) {
+        Scanner = new Scanner(cmd);
+        appendLog("输入: " + cmd, true);
         InputArea.setText("");
       }
     });
+
+    Board.addMouseListener(Mouse);
+  }
+
+  public void sendCmd(String cmd) {
+    Scanner = new Scanner(cmd);
+  }
+
+  public void setPieces(ArrayList<Piece> pieces) {
+    Mouse.setPieces(pieces);
+  }
+
+  public void setChessboard(Chessboard chessboard) {
+    Mouse.setChessboard(chessboard);
   }
 
   public void updateChessboard(String chessboard) {
     Board.setText(chessboard);
   }
 
-  public void appendLog(String text, boolean isALine) {
+  public void appendLog(String log, boolean isALine) {
     if (isALine) {
-      LogArea.append(text + "\n");
+      LogArea.append(log + "\n");
     } else {
-      LogArea.append(text);
+      LogArea.append(log);
     }
     LogArea.setCaretPosition(LogArea.getText().length());
   }
 
+  public void updateRoundLabel(String msg) {
+    RoundLabel.setText(msg);
+  }
+
+  public void updateActionLabel(String msg) {
+    ActionLabel.setText(msg);
+  }
+
   public Scanner getScanner() {
-    return scanner;
+    return Scanner;
   }
 
   {
@@ -88,15 +114,15 @@ public class GuiFrame extends JFrame {
    */
   private void $$$setupUI$$$() {
     MainPanel = new JPanel();
-    MainPanel.setLayout(new GridLayoutManager(2, 4, new Insets(10, 10, 10, 10), -1, -1));
+    MainPanel.setLayout(new GridLayoutManager(3, 6, new Insets(10, 10, 20, 10), -1, -1));
     MainPanel.setAutoscrolls(false);
     MainPanel.setEnabled(true);
-    MainPanel.setPreferredSize(new Dimension(700, 490));
+    MainPanel.setPreferredSize(new Dimension(740, 530));
     final JScrollPane scrollPane1 = new JScrollPane();
     scrollPane1.setAutoscrolls(false);
     scrollPane1.setFocusable(true);
     scrollPane1.setWheelScrollingEnabled(true);
-    MainPanel.add(scrollPane1, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(373, 402), null, 0, false));
+    MainPanel.add(scrollPane1, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(373, 402), null, 0, false));
     Board = new JTextArea();
     Board.setAutoscrolls(true);
     Board.setEditable(false);
@@ -104,39 +130,52 @@ public class GuiFrame extends JFrame {
     Board.setMargin(new Insets(0, 0, 0, 0));
     Board.setOpaque(true);
     scrollPane1.setViewportView(Board);
-    InputArea = new JTextField();
-    InputArea.setFont(new Font(InputArea.getFont().getName(), InputArea.getFont().getStyle(), InputArea.getFont().getSize()));
-    MainPanel.add(InputArea, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(-1, 25), null, 0, false));
-    SendButton = new JButton();
-    SendButton.setText("Send");
-    SendButton.setMnemonic('S');
-    SendButton.setDisplayedMnemonicIndex(0);
-    MainPanel.add(SendButton, new GridConstraints(1, 3, 1, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     final JScrollPane scrollPane2 = new JScrollPane();
     scrollPane2.setOpaque(false);
-    MainPanel.add(scrollPane2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+    MainPanel.add(scrollPane2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_VERTICAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(-1, 402), null, 0, false));
     scrollPane2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), null));
     LeftLine = new JTextArea();
     LeftLine.setAlignmentY(0.5f);
     LeftLine.setEditable(false);
-    LeftLine.setMargin(new Insets(10, 0, 0, 0));
+    LeftLine.setMargin(new Insets(5, 0, 0, 0));
     LeftLine.setOpaque(false);
+    LeftLine.setText("");
     scrollPane2.setViewportView(LeftLine);
     final JScrollPane scrollPane3 = new JScrollPane();
-    scrollPane3.setOpaque(false);
-    MainPanel.add(scrollPane3, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-    scrollPane3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), null));
+    MainPanel.add(scrollPane3, new GridConstraints(0, 2, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(250, 402), null, 0, false));
+    LogArea = new JTextArea();
+    LogArea.setLineWrap(true);
+    LogArea.setMargin(new Insets(5, 5, 5, 5));
+    scrollPane3.setViewportView(LogArea);
+    SendButton = new JButton();
+    SendButton.setText("Send");
+    SendButton.setMnemonic('S');
+    SendButton.setDisplayedMnemonicIndex(0);
+    MainPanel.add(SendButton, new GridConstraints(2, 4, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+    InputArea = new JTextField();
+    InputArea.setFont(new Font(InputArea.getFont().getName(), InputArea.getFont().getStyle(), InputArea.getFont().getSize()));
+    MainPanel.add(InputArea, new GridConstraints(2, 2, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(-1, 25), null, 0, false));
+    RoundLabel = new JLabel();
+    RoundLabel.setText("第 0 回合");
+    MainPanel.add(RoundLabel, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+    final JScrollPane scrollPane4 = new JScrollPane();
+    scrollPane4.setOpaque(false);
+    MainPanel.add(scrollPane4, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(374, 45), null, 0, false));
+    scrollPane4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), null));
     BottomLine = new JTextArea();
     BottomLine.setEditable(false);
     BottomLine.setMargin(new Insets(0, 4, 0, 0));
     BottomLine.setOpaque(false);
-    scrollPane3.setViewportView(BottomLine);
-    final JScrollPane scrollPane4 = new JScrollPane();
-    MainPanel.add(scrollPane4, new GridConstraints(0, 2, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(250, 402), null, 0, false));
-    LogArea = new JTextArea();
-    LogArea.setLineWrap(true);
-    LogArea.setMargin(new Insets(5, 5, 5, 5));
-    scrollPane4.setViewportView(LogArea);
+    scrollPane4.setViewportView(BottomLine);
+    ActionLabel = new JLabel();
+    ActionLabel.setText("红方第 0 次行动:");
+    MainPanel.add(ActionLabel, new GridConstraints(1, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+    SpellButton2 = new JButton();
+    SpellButton2.setText("null");
+    MainPanel.add(SpellButton2, new GridConstraints(1, 5, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+    SpellButton1 = new JButton();
+    SpellButton1.setText("null");
+    MainPanel.add(SpellButton1, new GridConstraints(1, 4, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
   }
 
   /**

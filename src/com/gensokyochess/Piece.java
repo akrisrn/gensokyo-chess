@@ -59,9 +59,9 @@ public class Piece extends Role {
     for (int i = min; i < max; i++) {
       char aimChar;
       if (isXAxis) {
-        aimChar = chessboard.charAt(convert(i, Y));
+        aimChar = chessboard.charAt(Tool.convertToIndex(i, Y));
       } else {
-        aimChar = chessboard.charAt(convert(X, i));
+        aimChar = chessboard.charAt(Tool.convertToIndex(X, i));
       }
       if (aimChar != ' ' && aimChar != '*' && aimChar != '|') {
         return true;
@@ -132,37 +132,37 @@ public class Piece extends Role {
   public char[] findHaveChanceChar(int x, int y, StringBuffer chessboard) {
     char haveChanceChar[] = new char[5];
     char nearbyChar[] = findNearbyChar(chessboard);
-    int direction = determineDirection(x, y);
+    int direction = Tool.determineDirection(x, y, X, Y);
 
     switch (direction) {
-      case 0:
+      case 8:
         System.arraycopy(nearbyChar, 3, haveChanceChar, 0, 3);
         break;
-      case 1:
+      case 9:
         System.arraycopy(nearbyChar, 3, haveChanceChar, 0, 5);
         break;
-      case 2:
+      case 6:
         System.arraycopy(nearbyChar, 5, haveChanceChar, 0, 3);
         break;
       case 3:
         System.arraycopy(nearbyChar, 5, haveChanceChar, 0, 3);
         System.arraycopy(nearbyChar, 0, haveChanceChar, 3, 2);
         break;
-      case 4:
+      case 2:
         System.arraycopy(nearbyChar, 0, haveChanceChar, 0, 2);
         haveChanceChar[2] = nearbyChar[7];
         break;
-      case 5:
+      case 1:
         System.arraycopy(nearbyChar, 0, haveChanceChar, 0, 4);
         haveChanceChar[4] = nearbyChar[7];
         break;
-      case 6:
+      case 4:
         System.arraycopy(nearbyChar, 1, haveChanceChar, 0, 3);
         break;
       case 7:
         System.arraycopy(nearbyChar, 1, haveChanceChar, 0, 5);
         break;
-      case 8:
+      case 5:
         haveChanceChar = nearbyChar;
         break;
     }
@@ -176,7 +176,7 @@ public class Piece extends Role {
     for (int i = X + 1; i >= X - 1; i--) {
       for (int j = Y + 1; j >= Y - 1; j--) {
         if (!(i == X && j == Y)) {
-          int index = convert(i, j);
+          int index = Tool.convertToIndex(i, j);
           if (index == 0) {
             nearbyChar[count] = ' ';
           } else {
@@ -199,39 +199,6 @@ public class Piece extends Role {
     nearbyChar[7] = nearbyChar[5];
     nearbyChar[5] = tmp;
     return nearbyChar;
-  }
-
-  private int determineDirection(int x, int y) {
-    /*
-       701
-       682
-       543
-     */
-    if (x > X) {
-      if (y > Y) {
-        return 1;
-      } else if (y < Y) {
-        return 3;
-      } else {
-        return 2;
-      }
-    } else if (x < X) {
-      if (y > Y) {
-        return 7;
-      } else if (y < Y) {
-        return 5;
-      } else {
-        return 6;
-      }
-    } else {
-      if (y > Y) {
-        return 0;
-      } else if (y < Y) {
-        return 4;
-      } else {
-        return 8;
-      }
-    }
   }
 
   public int[] handleMove(int move) {
@@ -285,7 +252,7 @@ public class Piece extends Role {
     int x = tmp[0];
     int y = tmp[1];
 
-    char aimChar = chessboard.charAt(convert(x, y));
+    char aimChar = chessboard.charAt(Tool.convertToIndex(x, y));
 
     if (x < 1 || x > 9 || y < 1 || y > 9) {
       throw new CanNotMoveException();
@@ -320,7 +287,7 @@ public class Piece extends Role {
     }
 
     removeFrom(chessboard);
-    chessboard.setCharAt(convert(x, y), getCode());
+    chessboard.setCharAt(Tool.convertToIndex(x, y), getCode());
     setXY(x, y);
     return haveChanceChars;
   }
@@ -341,7 +308,7 @@ public class Piece extends Role {
 
       SpecialMoveCheck = 0;
       removeFrom(chessboard);
-      chessboard.setCharAt(convert(x, y), getCode());
+      chessboard.setCharAt(Tool.convertToIndex(x, y), getCode());
       setXY(x, y);
     } else if (count == 2) {
       if (into) {
@@ -359,29 +326,21 @@ public class Piece extends Role {
   private void removeFrom(StringBuffer chessboard) {
     if (Y == 5) {
       if (X == 2 || X == 5 || X == 8) {
-        chessboard.setCharAt(convert(X, Y), '|');
+        chessboard.setCharAt(Tool.convertToIndex(X, Y), '|');
       } else {
-        chessboard.setCharAt(convert(X, Y), '*');
+        chessboard.setCharAt(Tool.convertToIndex(X, Y), '*');
       }
     } else {
-      chessboard.setCharAt(convert(X, Y), ' ');
+      chessboard.setCharAt(Tool.convertToIndex(X, Y), ' ');
     }
     setXY(-1, -1);
   }
 
   public void placeTo(StringBuffer chessboard) throws CanNotPlaceException {
-    if (chessboard.charAt(convert(X, Y)) != ' ') {
+    if (chessboard.charAt(Tool.convertToIndex(X, Y)) != ' ') {
       throw new CanNotPlaceException();
     }
-    chessboard.setCharAt(convert(X, Y), getCode());
-  }
-
-  private int convert(int x, int y) {
-    if (x < 1 || y < 1 || x > 9 || y > 9) {
-      return 0;
-    } else {
-      return 648 - (y - 1) * 76 + (x - 1) * 4;
-    }
+    chessboard.setCharAt(Tool.convertToIndex(X, Y), getCode());
   }
 
   public boolean isKing() {

@@ -18,24 +18,25 @@ public class Main {
     main.start();
   }
 
-  protected String getChessboard() {
-    return String.valueOf(Chessboard.getChessboard());
+  public ArrayList<Piece> getPieces() {
+    return Pieces;
   }
 
-  protected void updateChessboard() {
-    System.out.println(getChessboard());
+  public Chessboard getChessboard() {
+    return Chessboard;
   }
 
   protected void start() {
-    Tool.print("是否使用随机布局?(Y/N)");
+    Tool.setChessboard(Chessboard.getChessboard());
+    Tool.print("是否使用随机布局?(Y/N)", true, 0);
     if (Tool.input().equalsIgnoreCase("y")) {
       RandPlace = true;
-      Tool.print("自动填入棋子:");
+      Tool.print("自动填入棋子");
     }
 
     place("red");
     place("black");
-    updateChessboard();
+    Tool.updateChessboard();
 
     round();
   }
@@ -50,7 +51,7 @@ public class Main {
         round++;
       }
       count++;
-      Tool.print("第 " + round + " 回合");
+      Tool.updateState("第 " + round + " 回合", true);
 
       NoChance = false;
       HaveBattleOrSpell = false;
@@ -73,18 +74,19 @@ public class Main {
   private boolean action(String camp, int i) {
     boolean inputError;
     do {
+      String cam;
       if (camp.equals("red")) {
-        Tool.print("红方", false);
+        cam = "红方";
       } else {
-        Tool.print("黑方", false);
+        cam = "黑方";
       }
-      Tool.print("第 " + i + " 次行动:", false);
+      Tool.updateState(cam + "第 " + i + " 次行动:", false);
 
       ArrayList action = handleInput(Tool.input());
       inputError = !handleAction(action, camp, i);
 
       if (!inputError) {
-        updateChessboard();
+        Tool.updateChessboard();
         if (isGameOver()) {
           return false;
         }
@@ -161,7 +163,7 @@ public class Main {
     int id = (int) action.get(0);
     if (id == 1) {
       Piece piece = (Piece) action.get(1);
-      updateChessboard();
+      Tool.updateChessboard();
       Tool.print(piece.toString());
       return false;
     } else if (id == 2) {
@@ -187,7 +189,7 @@ public class Main {
 
     while (levelCount != 15) {
       if (!RandPlace) {
-        updateChessboard();
+        Tool.updateChessboard();
         Tool.print("当前棋子总等级: " + levelCount);
         Tool.print("请布置", false);
         if (camp.equals("red")) {
@@ -195,7 +197,7 @@ public class Main {
         } else {
           Tool.print("黑方", false);
         }
-        Tool.print("第 " + count + " 个棋子: ", false);
+        Tool.print("第 " + count + " 个棋子: ", true);
 
         place = Tool.input();
       } else {
@@ -291,10 +293,10 @@ public class Main {
 
   private boolean isGameOver() {
     if (!RedKing.isAlive()) {
-      Tool.print("黑方胜利");
+      Tool.updateState("黑方胜利", false);
       return true;
     } else if (!BlackKing.isAlive()) {
-      Tool.print("红方胜利");
+      Tool.updateState("红方胜利", false);
       return true;
     } else {
       int count = 0;
@@ -306,7 +308,7 @@ public class Main {
           }
         }
       }
-      Tool.print("平局");
+      Tool.updateState("平局", false);
       return true;
     }
   }

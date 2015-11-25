@@ -1,16 +1,16 @@
 package com.gensokyochess;
 
 public class GuiMain extends Main {
-  private static GuiFrame GuiFrame = new GuiFrame();
-
   public static void main(String[] args) {
-    GuiMain guiMain = new GuiMain();
-    Tool.setGuiFrame(GuiFrame);
-    guiMain.start();
-  }
+    GuiFrame Frame = new GuiFrame();
+    Tool.setFrame(Frame);
 
-  @Override
-  protected void updateChessboard() {
-    GuiFrame.updateChessboard(getChessboard());
+    ConfirmDialog dialog = new ConfirmDialog(Frame);
+    dialog.setVisible(true);
+
+    GuiMain guiMain = new GuiMain();
+    Frame.setChessboard(guiMain.getChessboard());
+    Frame.setPieces(guiMain.getPieces());
+    guiMain.start();
   }
 }
