@@ -212,7 +212,7 @@ public class Role {
     CurrentHP = HitPoint;
   }
 
-  public void hpReduce(int damage) {
+  public void reduceHp(int damage) {
     CurrentHP -= damage;
   }
 

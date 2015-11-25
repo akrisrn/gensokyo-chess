@@ -2,6 +2,8 @@ package com.gensokyochess.spell;
 
 import com.csvreader.CsvReader;
 import com.gensokyochess.Piece;
+import com.gensokyochess.Role;
+import com.gensokyochess.Tool;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -41,6 +43,14 @@ public abstract class Spell {
   }
 
   public abstract void use(Piece piece);
+
+  public void start(Role role) {
+    Tool.print(role.getNameAndLV() + " 使用了 " + role.getSpellName() + "!", 1);
+  }
+
+  public void over() {
+    Tool.print("技能结束", 1);
+  }
 
   public String getCode() {
     return Code;

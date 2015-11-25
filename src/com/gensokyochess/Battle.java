@@ -3,28 +3,37 @@ package com.gensokyochess;
 import com.gensokyochess.exception.InRiverException;
 
 public class Battle {
-  private static void normalAtk(Role role1, Role role2) {
-    Tool.print(role1.getNameAndLV() + " 的攻击击中了!", 1);
-    int damage = role1.rollDamage();
-    role2.hpReduce(damage);
+  public static void damage(Role role1, Role role2, int damage) {
+    damage(role1, role2, damage, 0);
+  }
+
+  private static void damage(Role role1, Role role2, int damage1, int damage2) {
+    String damage;
+    if (damage2 != 0) {
+      damage = damage1 + damage2 + "(" + damage1 + "+" + damage2 + ")";
+    } else {
+      damage = "" + damage1;
+    }
+    role2.reduceHp(damage1 + damage2);
     Tool.print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() + " 造成了 " + damage + " 点伤害", 1);
     Tool.print(role2.getNameAndLV() + " 的 HP 现在是:" + role2.getCurrentHP(), 1);
     defeated(role2);
+  }
+
+  private static void normalAtk(Role role1, Role role2) {
+    Tool.print(role1.getNameAndLV() + " 的攻击击中了!", 1);
+    int damage = role1.rollDamage();
+    damage(role1, role2, damage);
   }
 
   private static void criticalAtk(Role role1, Role role2) {
     Tool.print(role1.getNameAndLV() + " 造成了重击!", 1);
     int damage1 = role1.rollDamage();
     int damage2 = role1.rollDamage();
-    int damage = damage1 + damage2;
-    role2.hpReduce(damage);
-    Tool.print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() +
-            " 造成了 " + damage + "(" + damage1 + "+" + damage2 + ") 点伤害", 1);
-    Tool.print(role2.getNameAndLV() + " 的 HP 现在是:" + role2.getCurrentHP(), 1);
-    defeated(role2);
+    damage(role1, role2, damage1, damage2);
   }
 
-  public static void defeated(Role role2) {
+  private static void defeated(Role role2) {
     if (role2.getCurrentHP() <= 0) {
       Tool.print(role2.getNameAndLV() + " 被打倒了!", 1);
       role2.setAlive(false);

@@ -117,6 +117,39 @@ public class Tool {
     }
   }
 
+  public static ArrayList<Piece> findPieces(boolean isXAxis, int commonValue, int startXOrY, int overXOrY) {
+    ArrayList<Piece> pieces = new ArrayList<>();
+    int reversal = 1;
+    if (startXOrY > overXOrY) {
+      reversal = -1;
+    }
+
+    char aimChar;
+    int index;
+    for (int i = startXOrY + reversal; i * reversal < overXOrY * reversal; i += reversal) {
+      if (isXAxis) {
+        index = convertToIndex(i, commonValue);
+        aimChar = Chessboard.charAt(index);
+      } else {
+        index = convertToIndex(commonValue, i);
+        aimChar = Chessboard.charAt(index);
+      }
+
+      if (aimChar == '*') {
+        if (findSpecialPiece(index, '*')) {
+          pieces.add(findPiece(aimChar));
+        }
+      } else if (aimChar == '|') {
+        if (findSpecialPiece(index, '|')) {
+          pieces.add(findPiece(aimChar));
+        }
+      } else if (aimChar != ' ') {
+        pieces.add(findPiece(aimChar));
+      }
+    }
+    return pieces;
+  }
+
   public static boolean findSpecialPiece(int index, char aimChar) {
     Piece piece = findPiece(aimChar);
     return piece != null && (index == convertToIndex(piece.getX(), piece.getY()));

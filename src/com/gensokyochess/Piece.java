@@ -37,38 +37,19 @@ public class Piece extends Role {
   }
 
   private boolean isHaveObstacleBetween(Piece piece, boolean isXAxis) {
-    int min;
-    int max;
+    int commonValue;
+    int startXOrY;
+    int overXOrY;
     if (isXAxis) {
-      if (piece.getX() - X > 0) {
-        min = X + 1;
-        max = piece.getX();
-      } else {
-        min = piece.getX() + 1;
-        max = X;
-      }
+      commonValue = Y;
+      startXOrY = X;
+      overXOrY = piece.getX();
     } else {
-      if (piece.getY() - Y > 0) {
-        min = Y + 1;
-        max = piece.getY();
-      } else {
-        min = piece.getY() + 1;
-        max = Y;
-      }
+      commonValue = X;
+      startXOrY = Y;
+      overXOrY = piece.getY();
     }
-
-    for (int i = min; i < max; i++) {
-      char aimChar;
-      if (isXAxis) {
-        aimChar = chessboard.charAt(Tool.convertToIndex(i, Y));
-      } else {
-        aimChar = chessboard.charAt(Tool.convertToIndex(X, i));
-      }
-      if (aimChar != ' ' && aimChar != '*' && aimChar != '|') {
-        return true;
-      }
-    }
-    return false;
+    return !Tool.findPieces(isXAxis, commonValue, startXOrY, overXOrY).isEmpty();
   }
 
   public void opportunityBattleWith(Piece piece) {
