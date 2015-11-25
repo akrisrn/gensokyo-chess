@@ -42,7 +42,7 @@ public abstract class Spell {
     }
   }
 
-  public abstract void use(Piece piece);
+  public abstract boolean use(Piece piece1);
 
   public void start(Role role) {
     Tool.print(role.getNameAndLV() + " 使用了 " + role.getSpellName() + "!", 1);
@@ -84,9 +84,9 @@ public abstract class Spell {
   public static Spell switchSpell(String code) {
     switch (code) {
       case "H1":
-        return new MusouFuuinnSpell("H1");
+        return new FantasySeal("H1");
       case "K1":
-        return new MasterSparkSpell("K1");
+        return new MasterSpark("K1");
       default:
         return null;
     }

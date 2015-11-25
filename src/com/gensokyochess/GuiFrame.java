@@ -50,13 +50,18 @@ public class GuiFrame extends JFrame {
     SendButton.addActionListener(actionEvent -> {
       String cmd = InputArea.getText();
       if (!(cmd.equals(""))) {
-        Scanner = new Scanner(cmd);
+        sendCmd(cmd);
         appendLog("输入: " + cmd, true);
         InputArea.setText("");
       }
     });
 
     Board.addMouseListener(new MouseClick());
+    SpellButton1.addActionListener(actionEvent -> {
+      if (!SpellButton1.getText().equals("空")) {
+        sendCmd("SP" + SpellButton1.getText());
+      }
+    });
   }
 
   public void sendCmd(String cmd) {

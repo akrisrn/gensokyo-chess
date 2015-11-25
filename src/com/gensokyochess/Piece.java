@@ -28,7 +28,7 @@ public class Piece extends Role {
     }
   }
 
-  public void remove(Piece piece2) {
+  public void checkAlive(Piece piece2) {
     if (!this.isAlive()) {
       this.remove();
     } else if (!piece2.isAlive()) {
@@ -55,7 +55,7 @@ public class Piece extends Role {
   public void opportunityBattleWith(Piece piece) {
     if (getAttackType() == 0 && !isInRiver() && !piece.isInRiver()) {
       Battle.opportunityBattle(this, piece);
-      remove(piece);
+      checkAlive(piece);
     }
   }
 
@@ -90,7 +90,7 @@ public class Piece extends Role {
     } else {
       throw new ExceedAttackRangeException();
     }
-    remove(piece);
+    checkAlive(piece);
   }
 
   public void frontalBattleWith(Piece piece) throws ExceedAttackRangeException,
@@ -108,7 +108,7 @@ public class Piece extends Role {
     }
 
     Battle.frontalBattle(this, piece);
-    remove(piece);
+    checkAlive(piece);
   }
 
   public char[] findHaveChanceChar(int x, int y) {

@@ -117,11 +117,11 @@ public class Role {
     calculateBonus();
   }
 
-  public void useSpell() throws HaveNotSpellException {
+  public boolean useSpell() throws HaveNotSpellException {
     if (Spell == null) {
       throw new HaveNotSpellException();
     }
-    Spell.use((Piece) this);
+    return Spell.use((Piece) this);
   }
 
   public String getSpellCode() {

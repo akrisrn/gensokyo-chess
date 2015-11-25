@@ -91,13 +91,17 @@ public class Main {
     char tmp[] = in.toCharArray();
 
     if (tmp.length == 1) {
-      action.add(1);
-
-      Piece piece = Tool.findPiece(tmp[0]);
-      if (piece == null) {
-        return null;
+      if (tmp[0] == ' ') {
+        action.add(0);
       } else {
-        action.add(piece);
+        action.add(1);
+
+        Piece piece = Tool.findPiece(tmp[0]);
+        if (piece == null) {
+          return null;
+        } else {
+          action.add(piece);
+        }
       }
     } else if (tmp.length == 2) {
       action.add(2);
@@ -151,7 +155,9 @@ public class Main {
     }
 
     int id = (int) action.get(0);
-    if (id == 1) {
+    if (id == 0) {
+      return false;
+    } else if (id == 1) {
       Piece piece = (Piece) action.get(1);
       Tool.updateChessboard();
       Tool.print(piece.toString());
@@ -254,8 +260,7 @@ public class Main {
 
     if (spellCode.equals(piece.getSpellCode())) {
       try {
-        piece.useSpell();
-        return true;
+        return piece.useSpell();
       } catch (HaveNotSpellException e) {
         Tool.print("这个棋子没有技能");
         return false;
