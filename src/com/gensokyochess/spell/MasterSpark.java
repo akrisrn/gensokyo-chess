@@ -20,13 +20,15 @@ public class MasterSpark extends Spell {
     Tool.drawArrows(piece1, false);
 
     String input = Tool.input();
-    if (input.equals(String.valueOf(piece1.getCode()) + 2)) {
+    Tool.setActivatedPiece(null);
+    Tool.removeArrows();
+    if (input.equals(piece1.getCode() + "2") || input.equals("2")) {
       pieces = Tool.findPieces(false, piece1.getX(), piece1.getY(), 0);
-    } else if (input.equals(String.valueOf(piece1.getCode()) + 8)) {
+    } else if (input.equals(piece1.getCode() + "8") || input.equals("8")) {
       pieces = Tool.findPieces(false, piece1.getX(), piece1.getY(), 10);
-    } else if (input.equals(String.valueOf(piece1.getCode()) + 4)) {
+    } else if (input.equals(piece1.getCode() + "4") || input.equals("4")) {
       pieces = Tool.findPieces(true, piece1.getY(), piece1.getX(), 0);
-    } else if (input.equals(String.valueOf(piece1.getCode()) + 6)) {
+    } else if (input.equals(piece1.getCode() + "6") || input.equals("6")) {
       pieces = Tool.findPieces(true, piece1.getY(), piece1.getX(), 10);
     } else {
       Tool.print("输入有误");

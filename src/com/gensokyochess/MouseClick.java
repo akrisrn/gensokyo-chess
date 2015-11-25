@@ -6,7 +6,6 @@ import java.awt.event.MouseEvent;
 public class MouseClick extends MouseAdapter {
   private int X;
   private int Y;
-  private Piece ActivatedPiece;
 
   @Override
   public void mouseClicked(MouseEvent e) {
@@ -14,26 +13,22 @@ public class MouseClick extends MouseAdapter {
     convert2XY(e.getX(), e.getY());
     int index = Tool.convertToIndex(X, Y);
     char aimChar = Tool.getChessboard().charAt(index);
-    if (ActivatedPiece != null) {
+    if (Tool.getActivatedPiece() != null) {
       int move = Tool.getMove(aimChar);
       if (move != 0) {
-        Tool.getFrame().sendCmd(String.valueOf(ActivatedPiece.getCode()) + move);
-      } else if (aimChar == ActivatedPiece.getCode()) {
-        Tool.getFrame().sendCmd(String.valueOf(ActivatedPiece.getCode()) + 5);
-      } else if (aimChar == '*') {
-        if (Tool.findSpecialPiece(index, '*') != null) {
-          Tool.getFrame().sendCmd(ActivatedPiece.getCode() + "+" + aimChar);
-        }
-      } else if (aimChar == '|') {
-        if (Tool.findSpecialPiece(index, '|') != null) {
-          Tool.getFrame().sendCmd(ActivatedPiece.getCode() + "+" + aimChar);
-        }
-      } else if (aimChar == ' '){
-        Tool.getFrame().sendCmd(" ");
+        Tool.getFrame().sendCmd(Tool.getActivatedPiece().getCode() + "" + move);
+      } else if (aimChar == Tool.getActivatedPiece().getCode()) {
+        Tool.getFrame().sendCmd(Tool.getActivatedPiece().getCode() + "5");
+      } else if (aimChar == '*' && Tool.findSpecialPiece(index, '*') != null) {
+        Tool.getFrame().sendCmd(Tool.getActivatedPiece().getCode() + "+" + aimChar);
+      } else if (aimChar == '|' && Tool.findSpecialPiece(index, '|') != null) {
+        Tool.getFrame().sendCmd(Tool.getActivatedPiece().getCode() + "+" + aimChar);
+      } else if (aimChar != ' ' && aimChar != '*' && aimChar != '|'){
+        Tool.getFrame().sendCmd(Tool.getActivatedPiece().getCode() + "+" + aimChar);
       } else {
-        Tool.getFrame().sendCmd(ActivatedPiece.getCode() + "+" + aimChar);
+        Tool.getFrame().sendCmd(" ");
       }
-      ActivatedPiece = null;
+      Tool.setActivatedPiece(null);
       Tool.removeArrows();
     } else {
       Piece piece;
@@ -42,9 +37,9 @@ public class MouseClick extends MouseAdapter {
         if (piece != null && X == piece.getX() && Y == piece.getY()) {
           Tool.print(piece.toString());
           if (piece.getCamp().equals(Tool.getCurCamp())) {
-            ActivatedPiece = piece;
+            Tool.setActivatedPiece(piece);
             Tool.drawArrows(piece, true);
-            Tool.getFrame().setSpellButton1Text(ActivatedPiece.getSpellCode());
+            Tool.getFrame().setSpellButton1Text(Tool.getActivatedPiece().getSpellCode());
           }
         }
       }

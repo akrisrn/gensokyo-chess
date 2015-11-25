@@ -16,9 +16,12 @@ public class FantasySeal extends Spell {
     Tool.removeArrows();
 
     String input = Tool.input();
-    Piece piece2 = null;
+    Tool.setActivatedPiece(null);
+    Piece piece2;
     if (input.length() == 3) {
       piece2 = Tool.findPiece(input.charAt(2));
+    } else {
+      piece2 = Tool.findPiece(input.charAt(0));
     }
     if (piece2 != null && !piece1.getCamp().equals(piece2.getCamp()) && !piece2.isKing()) {
       start(piece1);

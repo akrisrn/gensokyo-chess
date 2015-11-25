@@ -11,6 +11,15 @@ public class Tool {
   private static ArrayList<Piece> Pieces;
   private static boolean CurCampIsRed = true;
   private final static String Arrows = "↙↓↘←→↖↑↗";
+  private static Piece ActivatedPiece;
+
+  public static void setActivatedPiece(Piece piece) {
+    ActivatedPiece = piece;
+  }
+
+  public static Piece getActivatedPiece() {
+    return ActivatedPiece;
+  }
 
   public static void setCurCampIsRed(boolean curCampIsRed) {
     CurCampIsRed = curCampIsRed;
