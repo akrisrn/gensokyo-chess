@@ -9,8 +9,6 @@ public class GuiMain extends Main {
     dialog.setVisible(true);
 
     GuiMain guiMain = new GuiMain();
-    Frame.setChessboard(guiMain.getChessboard());
-    Frame.setPieces(guiMain.getPieces());
     guiMain.start();
   }
 }

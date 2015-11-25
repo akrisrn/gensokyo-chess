@@ -6,7 +6,6 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class GuiFrame extends JFrame {
@@ -22,7 +21,6 @@ public class GuiFrame extends JFrame {
   private JLabel RoundLabel;
   private JLabel ActionLabel;
   private Scanner Scanner = new Scanner("");
-  private MouseClick Mouse = new MouseClick();
 
   public GuiFrame() {
     setTitle("Gensokyo & Chess");
@@ -58,19 +56,11 @@ public class GuiFrame extends JFrame {
       }
     });
 
-    Board.addMouseListener(Mouse);
+    Board.addMouseListener(new MouseClick());
   }
 
   public void sendCmd(String cmd) {
     Scanner = new Scanner(cmd);
-  }
-
-  public void setPieces(ArrayList<Piece> pieces) {
-    Mouse.setPieces(pieces);
-  }
-
-  public void setChessboard(Chessboard chessboard) {
-    Mouse.setChessboard(chessboard);
   }
 
   public void updateChessboard(String chessboard) {

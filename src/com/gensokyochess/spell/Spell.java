@@ -1,13 +1,11 @@
 package com.gensokyochess.spell;
 
 import com.csvreader.CsvReader;
-import com.gensokyochess.Chessboard;
 import com.gensokyochess.Piece;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 
 public abstract class Spell {
   private String Code;
@@ -42,7 +40,7 @@ public abstract class Spell {
     }
   }
 
-  public abstract void use(Piece piece, Chessboard chessboard, ArrayList<Piece> pieces);
+  public abstract void use(Piece piece);
 
   public String getCode() {
     return Code;
@@ -77,6 +75,8 @@ public abstract class Spell {
     switch (code) {
       case "H1":
         return new MusouFuuinnSpell("H1");
+      case "K1":
+        return new MasterSparkSpell("K1");
       default:
         return null;
     }

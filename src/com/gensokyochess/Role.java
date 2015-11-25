@@ -7,7 +7,6 @@ import com.gensokyochess.spell.Spell;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 
 import static com.gensokyochess.spell.Spell.switchSpell;
 
@@ -118,11 +117,11 @@ public class Role {
     calculateBonus();
   }
 
-  public void useSpell(Chessboard chessboard, ArrayList<Piece> pieces) throws HaveNotSpellException {
+  public void useSpell() throws HaveNotSpellException {
     if (Spell == null) {
       throw new HaveNotSpellException();
     }
-    Spell.use((Piece) this, chessboard, pieces);
+    Spell.use((Piece) this);
   }
 
   public String getSpellCode() {

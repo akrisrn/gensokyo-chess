@@ -8,6 +8,7 @@ public class Tool {
   private static GuiFrame Frame;
   private static boolean UseGui = false;
   private static StringBuffer Chessboard;
+  private static ArrayList<Piece> Pieces;
   private static boolean CurCampIsRed = true;
 
   public static void setCurCampIsRed(boolean curCampIsRed) {
@@ -26,6 +27,10 @@ public class Tool {
     return Frame;
   }
 
+  public static StringBuffer getChessboard() {
+    return Chessboard;
+  }
+
   public static void setChessboard(StringBuffer chessboard) {
     Chessboard = chessboard;
   }
@@ -33,6 +38,10 @@ public class Tool {
   public static void setFrame(GuiFrame frame) {
     Frame = frame;
     UseGui = true;
+  }
+
+  public static void setPiece(ArrayList<Piece> pieces) {
+    Pieces = pieces;
   }
 
   public static void print(String msg) {
@@ -108,8 +117,13 @@ public class Tool {
     }
   }
 
-  public static Piece findPiece(char code, ArrayList<Piece> pieces) {
-    for (Piece piece : pieces) {
+  public static boolean findSpecialPiece(int index, char aimChar) {
+    Piece piece = findPiece(aimChar);
+    return piece != null && (index == convertToIndex(piece.getX(), piece.getY()));
+  }
+
+  public static Piece findPiece(char code) {
+    for (Piece piece : Pieces) {
       if (piece.getCode() == code) {
         return piece;
       }
@@ -117,8 +131,8 @@ public class Tool {
     return null;
   }
 
-  public static Piece findPiece(String camp, char code, ArrayList<Piece> pieces) {
-    for (Piece piece : pieces) {
+  public static Piece findPiece(String camp, char code) {
+    for (Piece piece : Pieces) {
       if (piece.getCamp().equals(camp)) {
         if (piece.getCode() == code) {
           return piece;

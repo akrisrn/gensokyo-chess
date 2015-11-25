@@ -8,6 +8,7 @@ public class Piece extends Role {
   private String Camp;
   private boolean IsKing;
   private int SpecialMoveCheck = 0;
+  private StringBuffer chessboard = Tool.getChessboard();
 
   public Piece(int x, int y, char code, int level) {
     super(code, level);
@@ -27,15 +28,15 @@ public class Piece extends Role {
     }
   }
 
-  public void removeLoser(Piece piece2, StringBuffer chessboard) {
+  public void remove(Piece piece2) {
     if (!this.isAlive()) {
-      this.removeFrom(chessboard);
+      this.remove();
     } else if (!piece2.isAlive()) {
-      piece2.removeFrom(chessboard);
+      piece2.remove();
     }
   }
 
-  private boolean isHaveObstacleBetween(Piece piece, boolean isXAxis, StringBuffer chessboard) {
+  private boolean isHaveObstacleBetween(Piece piece, boolean isXAxis) {
     int min;
     int max;
     if (isXAxis) {
@@ -70,14 +71,14 @@ public class Piece extends Role {
     return false;
   }
 
-  public void opportunityBattleWith(Piece piece, StringBuffer chessboard) {
+  public void opportunityBattleWith(Piece piece) {
     if (getAttackType() == 0 && !isInRiver() && !piece.isInRiver()) {
       Battle.opportunityBattle(this, piece);
-      removeLoser(piece, chessboard);
+      remove(piece);
     }
   }
 
-  public void remoteBattleWith(Piece piece, StringBuffer chessboard) throws ExceedAttackRangeException,
+  public void remoteBattleWith(Piece piece) throws ExceedAttackRangeException,
           SameCampException, HaveObstacleException, InRiverException, KingSpellException {
     if (Camp.equals(piece.getCamp())) {
       throw new SameCampException();
@@ -92,13 +93,13 @@ public class Piece extends Role {
     }
 
     if (X == piece.getX()) {
-      if (isHaveObstacleBetween(piece, false, chessboard)) {
+      if (isHaveObstacleBetween(piece, false)) {
         throw new HaveObstacleException();
       }
       int distance = Math.abs(Y - piece.getY()) - 1;
       Battle.remoteBattle(this, piece, distance);
     } else if (Y == piece.getY()) {
-      if (isHaveObstacleBetween(piece, true, chessboard)) {
+      if (isHaveObstacleBetween(piece, true)) {
         throw new HaveObstacleException();
       }
       int distance = Math.abs(X - piece.getX()) - 1;
@@ -108,10 +109,10 @@ public class Piece extends Role {
     } else {
       throw new ExceedAttackRangeException();
     }
-    removeLoser(piece, chessboard);
+    remove(piece);
   }
 
-  public void frontalBattleWith(Piece piece, StringBuffer chessboard) throws ExceedAttackRangeException,
+  public void frontalBattleWith(Piece piece) throws ExceedAttackRangeException,
           SameCampException, InRiverException {
     if (Math.abs(X - piece.getX()) > 1 || Math.abs(Y - piece.getY()) > 1) {
       throw new ExceedAttackRangeException();
@@ -126,12 +127,12 @@ public class Piece extends Role {
     }
 
     Battle.frontalBattle(this, piece);
-    removeLoser(piece, chessboard);
+    remove(piece);
   }
 
-  public char[] findHaveChanceChar(int x, int y, StringBuffer chessboard) {
+  public char[] findHaveChanceChar(int x, int y) {
     char haveChanceChar[] = new char[5];
-    char nearbyChar[] = findNearbyChar(chessboard);
+    char nearbyChar[] = findNearbyChar();
     int direction = Tool.determineDirection(x, y, X, Y);
 
     switch (direction) {
@@ -169,7 +170,7 @@ public class Piece extends Role {
     return haveChanceChar;
   }
 
-  private char[] findNearbyChar(StringBuffer chessboard) {
+  private char[] findNearbyChar() {
     char nearbyChar[] = new char[8];
     int count = 0;
 
@@ -241,7 +242,7 @@ public class Piece extends Role {
     }
   }
 
-  public char[] moveTo(int move, StringBuffer chessboard, int count, boolean noChance) throws CanNotPlaceException,
+  public char[] moveTo(int move, int count, boolean noChance) throws CanNotPlaceException,
           CanNotMoveException, KingMoveException {
     if (move == 5) {
       addDefenseBonus();
@@ -266,33 +267,33 @@ public class Piece extends Role {
 
     if (Y == 5 && X != 2 && X != 5 && X != 8) {
       if (aimChar != '*') {
-        return speciallyMoveTo(x, y, chessboard, false, count);
+        return speciallyMoveTo(x, y, false, count);
       } else {
-        return normallyMoveTo(x, y, chessboard, noChance);
+        return normallyMoveTo(x, y, noChance);
       }
     } else if (aimChar == '*') {
-      return speciallyMoveTo(x, y, chessboard, true, count);
+      return speciallyMoveTo(x, y, true, count);
     } else {
-      return normallyMoveTo(x, y, chessboard, noChance);
+      return normallyMoveTo(x, y, noChance);
     }
   }
 
-  private char[] normallyMoveTo(int x, int y, StringBuffer chessboard, boolean noChance) {
+  private char[] normallyMoveTo(int x, int y, boolean noChance) {
     subDefenseBonus();
     SpecialMoveCheck = 0;
     char haveChanceChars[] = null;
 
     if (!noChance) {
-      haveChanceChars = findHaveChanceChar(x, y, chessboard);
+      haveChanceChars = findHaveChanceChar(x, y);
     }
 
-    removeFrom(chessboard);
+    remove();
     chessboard.setCharAt(Tool.convertToIndex(x, y), getCode());
     setXY(x, y);
     return haveChanceChars;
   }
 
-  private char[] speciallyMoveTo(int x, int y, StringBuffer chessboard, boolean into, int count) {
+  private char[] speciallyMoveTo(int x, int y, boolean into, int count) {
     subDefenseBonus();
     char haveChanceChars[] = null;
     SpecialMoveCheck++;
@@ -307,23 +308,23 @@ public class Piece extends Role {
       }
 
       SpecialMoveCheck = 0;
-      removeFrom(chessboard);
+      remove();
       chessboard.setCharAt(Tool.convertToIndex(x, y), getCode());
       setXY(x, y);
     } else if (count == 2) {
       if (into) {
-        haveChanceChars = findHaveChanceChar(x, y, chessboard);
+        haveChanceChars = findHaveChanceChar(x, y);
       }
       SpecialMoveCheck = 0;
     } else {
       if (into) {
-        haveChanceChars = findHaveChanceChar(x, y, chessboard);
+        haveChanceChars = findHaveChanceChar(x, y);
       }
     }
     return haveChanceChars;
   }
 
-  private void removeFrom(StringBuffer chessboard) {
+  private void remove() {
     if (Y == 5) {
       if (X == 2 || X == 5 || X == 8) {
         chessboard.setCharAt(Tool.convertToIndex(X, Y), '|');
@@ -336,7 +337,7 @@ public class Piece extends Role {
     setXY(-1, -1);
   }
 
-  public void placeTo(StringBuffer chessboard) throws CanNotPlaceException {
+  public void place() throws CanNotPlaceException {
     if (chessboard.charAt(Tool.convertToIndex(X, Y)) != ' ') {
       throw new CanNotPlaceException();
     }
