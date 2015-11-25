@@ -46,6 +46,21 @@ public abstract class Spell {
 
   public abstract boolean use(Piece piece1) throws KingSpellException, SameCampException;
 
+  public Piece choiceAPiece() {
+    Tool.print("请选择一个对方棋子");
+    Tool.removeArrows();
+
+    String input = Tool.input();
+    Tool.setActivatedPiece(null);
+    Piece piece;
+    if (input.length() == 3) {
+      piece = Tool.findPiece(input.charAt(2));
+    } else {
+      piece = Tool.findPiece(input.charAt(0));
+    }
+    return piece;
+  }
+
   public void start(Role role) {
     Tool.print(role.getNameAndLV() + " 使用了 " + role.getSpellName() + "!", 1);
   }

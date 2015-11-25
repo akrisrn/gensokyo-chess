@@ -14,17 +14,8 @@ public class FantasySeal extends Spell {
   @Override
   public boolean use(Piece piece1) throws KingSpellException, SameCampException {
     int damage = 3;
-    Tool.print("请选择一个对方棋子");
-    Tool.removeArrows();
 
-    String input = Tool.input();
-    Tool.setActivatedPiece(null);
-    Piece piece2;
-    if (input.length() == 3) {
-      piece2 = Tool.findPiece(input.charAt(2));
-    } else {
-      piece2 = Tool.findPiece(input.charAt(0));
-    }
+    Piece piece2 = choiceAPiece();
     if (piece2 != null) {
       if (piece1.getCamp().equals(piece2.getCamp())) {
         throw new SameCampException();
