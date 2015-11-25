@@ -62,8 +62,8 @@
       </scrollpane>
       <scrollpane id="fb864">
         <constraints>
-          <grid row="0" column="2" row-span="1" col-span="4" vsize-policy="7" hsize-policy="7" anchor="0" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="250" height="402"/>
+          <grid row="0" column="2" row-span="1" col-span="4" vsize-policy="7" hsize-policy="7" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="305" height="402"/>
           </grid>
         </constraints>
         <properties/>
@@ -135,18 +135,22 @@
       </component>
       <component id="9fc4d" class="javax.swing.JButton" binding="SpellButton2">
         <constraints>
-          <grid row="1" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="60" height="-1"/>
+          </grid>
         </constraints>
         <properties>
-          <text value="n&amp;ull"/>
+          <text value="&amp;空"/>
         </properties>
       </component>
       <component id="77847" class="javax.swing.JButton" binding="SpellButton1">
         <constraints>
-          <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="60" height="-1"/>
+          </grid>
         </constraints>
         <properties>
-          <text value="&amp;null"/>
+          <text value="&amp;空"/>
         </properties>
       </component>
     </children>

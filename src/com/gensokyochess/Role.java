@@ -130,7 +130,11 @@ public class Role {
   }
 
   public String getSpellName() {
-    return Spell.getName();
+    if (Spell == null) {
+      return "";
+    } else {
+      return Spell.getName();
+    }
   }
 
   public String getSpell() {

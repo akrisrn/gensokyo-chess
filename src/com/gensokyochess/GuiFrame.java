@@ -94,6 +94,10 @@ public class GuiFrame extends JFrame {
     ActionLabel.setText(msg);
   }
 
+  public void setSpellButton1Text(String text) {
+    SpellButton1.setText(text);
+  }
+
   public Scanner getScanner() {
     return Scanner;
   }
@@ -142,7 +146,7 @@ public class GuiFrame extends JFrame {
     LeftLine.setText("");
     scrollPane2.setViewportView(LeftLine);
     final JScrollPane scrollPane3 = new JScrollPane();
-    MainPanel.add(scrollPane3, new GridConstraints(0, 2, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(250, 402), null, 0, false));
+    MainPanel.add(scrollPane3, new GridConstraints(0, 2, 1, 4, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(305, 402), null, 0, false));
     LogArea = new JTextArea();
     LogArea.setLineWrap(true);
     LogArea.setMargin(new Insets(5, 5, 5, 5));
@@ -171,15 +175,15 @@ public class GuiFrame extends JFrame {
     ActionLabel.setText("红方第 0 次行动:");
     MainPanel.add(ActionLabel, new GridConstraints(1, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     SpellButton2 = new JButton();
-    SpellButton2.setText("null");
-    SpellButton2.setMnemonic('U');
-    SpellButton2.setDisplayedMnemonicIndex(1);
-    MainPanel.add(SpellButton2, new GridConstraints(1, 5, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+    SpellButton2.setText("空");
+    SpellButton2.setMnemonic('空');
+    SpellButton2.setDisplayedMnemonicIndex(0);
+    MainPanel.add(SpellButton2, new GridConstraints(1, 5, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(60, -1), null, 0, false));
     SpellButton1 = new JButton();
-    SpellButton1.setText("null");
-    SpellButton1.setMnemonic('N');
+    SpellButton1.setText("空");
+    SpellButton1.setMnemonic('空');
     SpellButton1.setDisplayedMnemonicIndex(0);
-    MainPanel.add(SpellButton1, new GridConstraints(1, 4, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+    MainPanel.add(SpellButton1, new GridConstraints(1, 4, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(60, -1), null, 0, false));
   }
 
   /**

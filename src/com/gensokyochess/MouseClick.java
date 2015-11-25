@@ -44,6 +44,7 @@ public class MouseClick extends MouseAdapter {
           Tool.print(piece.toString());
           if (piece.getCamp().equals(Tool.getCurCamp())) {
             drawArrows(piece);
+            Tool.getFrame().setSpellButton1Text(ActivatedPiece.getSpellCode());
           }
         }
       }
