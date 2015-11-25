@@ -172,9 +172,13 @@ public class GuiFrame extends JFrame {
     MainPanel.add(ActionLabel, new GridConstraints(1, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     SpellButton2 = new JButton();
     SpellButton2.setText("null");
+    SpellButton2.setMnemonic('U');
+    SpellButton2.setDisplayedMnemonicIndex(1);
     MainPanel.add(SpellButton2, new GridConstraints(1, 5, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     SpellButton1 = new JButton();
     SpellButton1.setText("null");
+    SpellButton1.setMnemonic('N');
+    SpellButton1.setDisplayedMnemonicIndex(0);
     MainPanel.add(SpellButton1, new GridConstraints(1, 4, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
   }
 

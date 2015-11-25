@@ -16,9 +16,10 @@ public class Battle {
     Tool.print(role1.getNameAndLV() + " 造成了重击!", 1);
     int damage1 = role1.rollDamage();
     int damage2 = role1.rollDamage();
-    role2.hpReduce(damage1 + damage2);
+    int damage = damage1 + damage2;
+    role2.hpReduce(damage);
     Tool.print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() +
-            " 造成了 " + damage1 + " + " + damage2 + " 点伤害", 1);
+            " 造成了 " + damage + "(" + damage1 + "+" + damage2 + ") 点伤害", 1);
     Tool.print(role2.getNameAndLV() + " 的 HP 现在是:" + role2.getCurrentHP(), 1);
     defeated(role2);
   }
