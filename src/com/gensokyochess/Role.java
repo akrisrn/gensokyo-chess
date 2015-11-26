@@ -360,7 +360,7 @@ public class Role {
 
   @Override
   public String toString() {
-    return "\n--------" + getName() + "\n" +
+    return "\n-----" + getName() + "\n" +
             "等级: " + getLevel() + "\n" +
             "生命: " + getHitPoint() + "\n" +
             "伤害: " + getDamageRange() + "\n" +
@@ -369,6 +369,6 @@ public class Role {
             "体质: " + getConstitution() + "\n" +
             "体型: " + getBodyType() + "\n" +
             "攻击方式: " + getRawAttackType() + "\n" +
-            "--------技能" + getSpell();
+            "-----技能" + getSpell();
   }
 }

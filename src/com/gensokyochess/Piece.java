@@ -358,7 +358,7 @@ public class Piece extends Role {
       }
     }
 
-    return "\n--------" + getNameAndLv() + state + camp + "\n" +
+    return "\n-----" + getNameAndLv() + state + camp + "\n" +
             "生命: " + getCurrentHP() + "(" + getHitPoint() + ")\n" +
             "伤害: " + getDamageRange() + "\n" +
             "力量: " + getStrength() + "\n" +
@@ -366,6 +366,6 @@ public class Piece extends Role {
             "体质: " + getConstitution() + "\n" +
             "体型: " + getBodyType() + "\n" +
             "攻击方式: " + getRawAttackType() + "\n" +
-            "--------技能" + getSpell();
+            "-----技能" + getSpell();
   }
 }
