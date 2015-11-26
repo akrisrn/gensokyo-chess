@@ -36,18 +36,19 @@ public class Role {
   private int DamageBonus;
   private boolean Alive = true;
   private boolean InRiver = false;
-  private String SpellCode;
-  private Spell Spell;
+  private int SpellNumber;
+  private String[] SpellCode;
+  private Spell[] Spell;
 
   public Role(char code, int level) {
     if (level > 5) {
       level = 5;
     }
-    setRoleLevel(code, level);
-    setSpell();
+    initRole(code, level);
+    initSpell();
   }
 
-  private void init(char code) {
+  private void initLevel(char code) {
     String path = System.getProperty("user.dir") + "/lib/role.csv";
     CsvReader reader = null;
 
@@ -69,7 +70,11 @@ public class Role {
           BodyBonus = Integer.parseInt(reader.get("BodyBonus"));
           AttackType = Integer.parseInt(reader.get("AttackType"));
           Code = code;
-          SpellCode = reader.get("SpellCode");
+          SpellNumber = reader.getColumnCount() - 7;
+          SpellCode = new String[SpellNumber];
+          for (int i = 1; i <= SpellNumber; i++) {
+            SpellCode[i - 1] = reader.get("SpellCode" + i);
+          }
           break;
         }
       }
@@ -100,11 +105,11 @@ public class Role {
     CurrentAB = AttackBonus;
   }
 
-  protected void setRoleLevel(char code, int level) {
+  protected void initRole(char code, int level) {
     if (level <= 1) {
-      init(code);
+      initLevel(code);
     } else {
-      setRoleLevel(code, level - 1);
+      initRole(code, level - 1);
       if (Strength % 2 + Dexterity % 2 + Constitution % 2 == 3) {
         increaseAttr(3);
       } else if (Strength % 2 + Dexterity % 2 + Constitution % 2 == 2) {
@@ -119,35 +124,44 @@ public class Role {
     calculateBonus();
   }
 
-  public boolean useSpell() throws HaveNotSpellException, KingSpellException, SameCampException {
-    if (Spell == null) {
+  public boolean useSpell(int i) throws HaveNotSpellException, KingSpellException, SameCampException {
+    if (Spell[i - 1] == null) {
       throw new HaveNotSpellException();
     }
-    return Spell.use((Piece) this);
+    return Spell[i - 1].use((Piece) this);
   }
 
-  public String getSpellCode() {
-    return SpellCode;
+  public int getSpellNumber() {
+    return SpellNumber;
   }
 
-  public String getSpellName() {
-    if (Spell == null) {
+  public String getSpellCode(int i) {
+    return SpellCode[i - 1];
+  }
+
+  public String getSpellName(int i) {
+    if (Spell[i - 1] == null) {
       return "";
     } else {
-      return Spell.getName();
+      return Spell[i - 1].getName();
     }
   }
 
   public String getSpell() {
-    if (Spell == null) {
-      return "";
-    } else {
-      return Spell.toString();
+    String spell = "";
+    for (int i = 1; i <= SpellNumber; i++) {
+      if (Spell[i - 1] != null) {
+        spell += "\n" + Spell[i - 1].toString();
+      }
     }
+    return spell;
   }
 
-  private void setSpell() {
-    Spell = switchSpell(SpellCode);
+  private void initSpell() {
+    Spell = new Spell[SpellNumber];
+    for (int i = 1; i <= SpellNumber; i++) {
+      Spell[i - 1] = switchSpell(SpellCode[i - 1]);
+    }
   }
 
   private void increaseAttr(int rise) {

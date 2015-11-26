@@ -10,6 +10,7 @@ public class Piece extends Role {
   private int SpecialMoveCheck = 0;
   private StringBuffer chessboard = Tool.getChessboard();
   private boolean IsCanNotMove = false;
+  private int Duration = 0;
 
   public Piece(int x, int y, char code, int level) {
     super(code, level);
@@ -25,7 +26,7 @@ public class Piece extends Role {
     }
 
     if (IsKing = x == 5 && (y == 1 || y == 9)) {
-      setRoleLevel(code, 0);
+      initRole(code, 0);
     }
   }
 
@@ -237,6 +238,10 @@ public class Piece extends Role {
 
     char aimChar = chessboard.charAt(Tool.convertToIndex(x, y));
 
+    if (Tool.getRoundCount() > Duration) {
+      IsCanNotMove = false;
+    }
+
     if (IsCanNotMove || x < 1 || x > 9 || y < 1 || y > 9) {
       throw new CanNotMoveException();
     }
@@ -347,8 +352,12 @@ public class Piece extends Role {
     Y = y;
   }
 
-  public void setCanNotMove(boolean canNotMove) {
-    IsCanNotMove = canNotMove;
+  public void setCanNotMove(int duration) {
+    IsCanNotMove = true;
+    Duration = Tool.getRoundCount() + duration;
+    if (Tool.getCurCamp().equals("red")) {
+      Duration--;
+    }
   }
 
   @Override

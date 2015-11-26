@@ -14,6 +14,10 @@ public class Tool {
   private static Piece ActivatedPiece;
   private static int RoundCount = 0;
 
+  public static int getRoundCount() {
+    return RoundCount;
+  }
+
   public static void addRoundCount() {
     RoundCount++;
   }
@@ -21,9 +25,12 @@ public class Tool {
   public static void setActivatedPiece(Piece piece) {
     ActivatedPiece = piece;
     if (piece == null) {
-      Frame.setSpellButton1Text("空");
+      Frame.setSpellButtonText(0, "空");
     } else {
-      Frame.setSpellButton1Text(ActivatedPiece.getSpellCode());
+      Frame.setSpellButtonText(1, piece.getSpellCode(1));
+      if (piece.getSpellNumber() > 1) {
+        Frame.setSpellButtonText(2, piece.getSpellCode(2));
+      }
     }
   }
 

@@ -62,6 +62,11 @@ public class GuiFrame extends JFrame {
         sendCmd("SP" + SpellButton1.getText());
       }
     });
+    SpellButton2.addActionListener(actionEvent -> {
+      if (!SpellButton2.getText().equals("空")) {
+        sendCmd("SP" + SpellButton2.getText());
+      }
+    });
   }
 
   public void sendCmd(String cmd) {
@@ -89,8 +94,15 @@ public class GuiFrame extends JFrame {
     ActionLabel.setText(msg);
   }
 
-  public void setSpellButton1Text(String text) {
-    SpellButton1.setText(text);
+  public void setSpellButtonText(int i, String text) {
+    if (i == 1) {
+      SpellButton1.setText(text);
+    } else if (i == 2) {
+      SpellButton2.setText(text);
+    } else {
+      SpellButton1.setText(text);
+      SpellButton2.setText(text);
+    }
   }
 
   public Scanner getScanner() {

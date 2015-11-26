@@ -34,14 +34,14 @@ public class MasterSpark extends Spell {
       Tool.print("输入有误");
     }
     if (pieces != null) {
-      start(piece1);
+      start(piece1, 1);
       pieces.stream().filter(piece2 -> !piece2.isKing()).forEach(piece2 -> {
         Battle.damage(piece1, piece2, damage);
         piece1.checkAlive(piece2);
       });
-      over();
-      return true;
+      return over();
+    } else {
+      return false;
     }
-    return false;
   }
 }

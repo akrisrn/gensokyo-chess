@@ -1,5 +1,5 @@
-Code,Name,Str,Dex,Con,BodyBonus,AttackType,SpellCode
-H,博丽灵梦,11,15,9,0,0,H1
+Code,Name,Str,Dex,Con,BodyBonus,AttackType,SpellCode1,SpellCode2,SpellCode3
+H,博丽灵梦,11,15,9,0,0,H1,H2
 K,雾雨魔理沙,9,15,11,0,1,K1
 R,露米娅,12,10,10,1,0,R1
 {,大妖精,10,10,12,0,0,{1

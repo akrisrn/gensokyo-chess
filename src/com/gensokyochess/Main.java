@@ -243,19 +243,28 @@ public class Main {
             (int) (Math.random() * 5 + 1);
   }
 
+  private int checkSpell(Piece piece, ArrayList action) {
+    String spellCode = (String) action.get(2);
+    for (int i = 1; i <= piece.getSpellNumber(); i++) {
+      if (spellCode.equals(piece.getSpellCode(i))) {
+        return i;
+      }
+    }
+    return 0;
+  }
+
   private boolean spellAction(ArrayList action) {
     Piece piece = (Piece) action.get(1);
     if (!piece.getCamp().equals(Tool.getCurCamp())) {
       Tool.print("你没有这个棋子");
       return false;
     }
-    String spellCode = (String) action.get(2);
-
-    if (spellCode.equals(piece.getSpellCode())) {
+    int spellNum = checkSpell(piece, action);
+    if (spellNum != 0) {
       try {
-        return piece.useSpell();
+        return piece.useSpell(spellNum);
       } catch (HaveNotSpellException e) {
-        Tool.print("这个棋子没有技能");
+        Tool.print("技能未实装");
         return false;
       } catch (KingSpellException e) {
         Tool.print("国王不受技能影响");

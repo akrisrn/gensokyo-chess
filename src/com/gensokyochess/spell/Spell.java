@@ -2,7 +2,6 @@ package com.gensokyochess.spell;
 
 import com.csvreader.CsvReader;
 import com.gensokyochess.Piece;
-import com.gensokyochess.Role;
 import com.gensokyochess.Tool;
 import com.gensokyochess.exception.KingSpellException;
 import com.gensokyochess.exception.SameCampException;
@@ -64,12 +63,20 @@ public abstract class Spell {
     return piece;
   }
 
-  public void start(Role role) {
-    Tool.print(role.getNameAndLV() + " 使用了 " + role.getSpellName() + "!", 1);
+  public void start(Piece piece, int i) {
+    Tool.print(piece.getNameAndLV() + " 使用了 " + piece.getSpellName(i) + "!", 1);
   }
 
-  public void over() {
+  public void start(Piece piece1, Piece piece2, int i) throws KingSpellException {
+    if (piece2.isKing()) {
+      throw new KingSpellException();
+    }
+    Tool.print(piece1.getNameAndLV() + " 使用了 " + piece1.getSpellName(i) + "!", 1);
+  }
+
+  public boolean over() {
     Tool.print("技能结束", 1);
+    return true;
   }
 
   public String getCode() {
@@ -105,6 +112,8 @@ public abstract class Spell {
     switch (code) {
       case "H1":
         return new FantasySeal("H1");
+      case "H2":
+        return new EvilSealingCircle("H2");
       case "K1":
         return new MasterSpark("K1");
       default:
