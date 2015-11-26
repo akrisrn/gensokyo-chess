@@ -17,24 +17,16 @@ public class Role {
   private String Name;
   private char Code;
   private int Level;
-  private int Strength;
-  private int Dexterity;
-  private int Constitution;
-  private int HitPoint;
-  private int CurrentHP;
+  private int Strength, Dexterity, Constitution;
+  private int HitPoint, CurrentHP;
   private int ArmorClass;
   private int Initiative;
-  private int AttackBonus;
-  private int CurrentAB;
-  private int AttackType;
   private int BodyBonus;
-  private int DistanceBonus = 0;
-  private int MaxDamage;
-  private int MinDamage;
-  private int DamageBonus;
+  private int AttackBonus, CurrentAB, AttackType;
+  private int MaxDamage, MinDamage, DamageBonus, DistanceBonus = 0;
   private boolean Alive = true;
   private boolean InRiver = false;
-  private int SpellNumber;
+  private int TotalSpellNumber;
   private String[] SpellCode;
   private Spell[] Spell;
 
@@ -63,9 +55,9 @@ public class Role {
           BodyBonus = Integer.parseInt(reader.get("BodyBonus"));
           AttackType = Integer.parseInt(reader.get("AttackType"));
           Code = code;
-          SpellNumber = reader.getColumnCount() - 7;
-          SpellCode = new String[SpellNumber];
-          for (int i = 1; i <= SpellNumber; i++) {
+          TotalSpellNumber = reader.getColumnCount() - 7;
+          SpellCode = new String[TotalSpellNumber];
+          for (int i = 1; i <= TotalSpellNumber; i++) {
             SpellCode[i - 1] = reader.get("SpellCode" + i);
           }
           break;
@@ -124,8 +116,8 @@ public class Role {
     return Spell[i - 1].use((Piece) this);
   }
 
-  public int getSpellNumber() {
-    return SpellNumber;
+  public int getTotalSpellNumber() {
+    return TotalSpellNumber;
   }
 
   public String getSpellCode(int i) {
@@ -142,17 +134,17 @@ public class Role {
 
   public String getSpell() {
     String spell = "";
-    for (int i = 0; i < SpellNumber; i++) {
+    for (int i = 0; i < TotalSpellNumber; i++) {
       if (Spell[i] != null) {
         spell += "\n" + Spell[i].toString();
       }
     }
-    return spell;
+    return spell + "\n";
   }
 
   private void initSpell() {
-    Spell = new Spell[SpellNumber];
-    for (int i = 0; i < SpellNumber; i++) {
+    Spell = new Spell[TotalSpellNumber];
+    for (int i = 0; i < TotalSpellNumber; i++) {
       Spell[i] = choiceSpell(SpellCode[i]);
     }
   }
@@ -194,7 +186,6 @@ public class Role {
 
   public int roll(int x, int n) {
     int ran = 0;
-
     for (int i = 0; i < x; i++) {
       ran += (int) (Math.random() * n + 1);
     }
@@ -269,7 +260,7 @@ public class Role {
     return Name;
   }
 
-  public String getNameAndLV() {
+  public String getNameAndLv() {
     return Name + "(Lv:" + Level + ")";
   }
 
@@ -289,7 +280,7 @@ public class Role {
     CurrentAB = AttackBonus;
   }
 
-  public void subRemoteAttack(int gridNumber) {
+  public void weakenRemote(int gridNumber) {
     CurrentAB -= gridNumber + 2;
     if (gridNumber == 0) {
       DistanceBonus = 5;

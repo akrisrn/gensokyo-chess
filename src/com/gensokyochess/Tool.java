@@ -9,11 +9,11 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Tool {
-  private static GuiFrame Frame;
+  private static GuiFrame GuiFrame;
   private static boolean UseGui = false;
   private static StringBuffer Chessboard;
   private static ArrayList<Piece> Pieces;
-  private static boolean CurCampIsRed = true;
+  private static boolean CurrentCampIsRed = true;
   private final static String Arrows = "↙↓↘←→↖↑↗";
   private static Piece ActivatedPiece;
   private static int RoundCount = 0;
@@ -35,18 +35,18 @@ public class Tool {
     return RoundCount;
   }
 
-  public static void addRoundCount() {
+  public static void CountRound() {
     RoundCount++;
   }
 
   public static void setActivatedPiece(Piece piece) {
     ActivatedPiece = piece;
     if (piece == null) {
-      Frame.setSpellButtonText(0, "无");
+      GuiFrame.setSpellButtonText(0, "无");
     } else {
-      Frame.setSpellButtonText(1, piece.getSpellCode(1));
-      if (piece.getSpellNumber() > 1) {
-        Frame.setSpellButtonText(2, piece.getSpellCode(2));
+      GuiFrame.setSpellButtonText(1, piece.getSpellCode(1));
+      if (piece.getTotalSpellNumber() > 1) {
+        GuiFrame.setSpellButtonText(2, piece.getSpellCode(2));
       }
     }
   }
@@ -55,20 +55,16 @@ public class Tool {
     return ActivatedPiece;
   }
 
-  public static void setCurCampIsRed(boolean curCampIsRed) {
-    CurCampIsRed = curCampIsRed;
+  public static void setCurrentCampIsRed(boolean currentCampIsRed) {
+    CurrentCampIsRed = currentCampIsRed;
   }
 
-  public static String getCurCamp() {
-    if (CurCampIsRed) {
-      return "red";
-    } else {
-      return "black";
-    }
+  public static boolean getCurrentCamp() {
+    return CurrentCampIsRed;
   }
 
-  public static GuiFrame getFrame() {
-    return Frame;
+  public static GuiFrame getGuiFrame() {
+    return GuiFrame;
   }
 
   public static StringBuffer getChessboard() {
@@ -79,12 +75,12 @@ public class Tool {
     Chessboard = chessboard;
   }
 
-  public static void setFrame(GuiFrame frame) {
-    Frame = frame;
+  public static void setGuiFrame(GuiFrame guiFrame) {
+    GuiFrame = guiFrame;
     UseGui = true;
   }
 
-  public static void setPiece(ArrayList<Piece> pieces) {
+  public static void setPieces(ArrayList<Piece> pieces) {
     Pieces = pieces;
   }
 
@@ -121,7 +117,7 @@ public class Tool {
       }
     } else {
       if (showMsg) {
-        Frame.appendLog(msg, isALine);
+        GuiFrame.appendLog(msg, isALine);
       }
     }
     if (delay != 0) {
@@ -154,7 +150,7 @@ public class Tool {
 
   private static String uncheckedInput() {
     try {
-      Scanner in = Frame.getScanner();
+      Scanner in = GuiFrame.getScanner();
       return in.nextLine();
     } catch (NoSuchElementException e) {
       return null;
@@ -172,10 +168,10 @@ public class Tool {
     int index;
     for (int i = startXOrY + reversal; i * reversal < overXOrY * reversal; i += reversal) {
       if (isXAxis) {
-        index = convertToIndex(i, commonValue);
+        index = convert2Index(i, commonValue);
         aimChar = Chessboard.charAt(index);
       } else {
-        index = convertToIndex(commonValue, i);
+        index = convert2Index(commonValue, i);
         aimChar = Chessboard.charAt(index);
       }
 
@@ -196,7 +192,7 @@ public class Tool {
 
   public static Piece findSpecialPiece(int index, char aimChar) {
     Piece piece = findPiece(aimChar);
-    if (piece != null && (index == convertToIndex(piece.getX(), piece.getY()))) {
+    if (piece != null && (index == convert2Index(piece.getX(), piece.getY()))) {
       return piece;
     }
     else {
@@ -213,9 +209,9 @@ public class Tool {
     return null;
   }
 
-  public static Piece findPiece(String camp, char code) {
+  public static Piece findPiece(boolean camp, char code) {
     for (Piece piece : Pieces) {
-      if (piece.getCamp().equals(camp)) {
+      if (piece.getCamp() == camp) {
         if (piece.getCode() == code) {
           return piece;
         }
@@ -224,7 +220,7 @@ public class Tool {
     return null;
   }
 
-  public static int convertToIndex(int x, int y) {
+  public static int convert2Index(int x, int y) {
     if (x < 1 || y < 1 || x > 9 || y > 9) {
       return 0;
     } else {
@@ -233,11 +229,6 @@ public class Tool {
   }
 
   public static int determineDirection(int aimX, int aimY, int curX, int curY) {
-    /*
-       789
-       456
-       123
-     */
     if (aimX > curX) {
       if (aimY > curY) {
         return 9;
@@ -269,7 +260,7 @@ public class Tool {
     if (!UseGui) {
       System.out.println(Chessboard);
     } else {
-      Frame.updateChessboard(String.valueOf(Chessboard));
+      GuiFrame.updateChessboard(String.valueOf(Chessboard));
     }
   }
 
@@ -278,7 +269,7 @@ public class Tool {
     if (!UseGui) {
       System.out.println(msg);
     } else {
-      Frame.updateRoundLabel(msg);
+      GuiFrame.updateRoundLabel(msg);
     }
   }
 
@@ -298,7 +289,7 @@ public class Tool {
       }
     } else {
       String camp;
-      if (CurCampIsRed) {
+      if (CurrentCampIsRed) {
         camp = "红方";
       } else {
         camp = "黑方";
@@ -308,7 +299,7 @@ public class Tool {
     if (!UseGui) {
       System.out.println(msg);
     } else {
-      Frame.updateActionLabel(msg);
+      GuiFrame.updateActionLabel(msg);
     }
   }
 
@@ -323,18 +314,15 @@ public class Tool {
         if (!(i == x && j == y)) {
           for (int direction : directions) {
             if (Tool.determineDirection(i, j, x, y) == direction) {
-              if (!isAllArrows) {
-                if (k == 1 || k == 3 || k == 4 || k == 6) {
-                  Tool.getChessboard().setCharAt(Tool.convertToIndex(i, j), Arrows.charAt(k));
-                }
-              } else {
-                Tool.getChessboard().setCharAt(Tool.convertToIndex(i, j), Arrows.charAt(k));
-              }
+              Tool.getChessboard().setCharAt(Tool.convert2Index(i, j), Arrows.charAt(k));
             }
           }
           k++;
         }
       }
+    }
+    if (!isAllArrows) {
+      eraseArrows(false);
     }
     Tool.updateChessboard();
   }
@@ -344,7 +332,7 @@ public class Tool {
     for (int i = x - 1; i <= x + 1; i++) {
       for (int j = y - 1; j <= y + 1; j++) {
         if (!(i == x && j == y)) {
-          int index = Tool.convertToIndex(i, j);
+          int index = Tool.convert2Index(i, j);
           if (index != 0) {
             int direction = Tool.determineDirection(i, j, x, y);
             char aimChar = Tool.getChessboard().charAt(index);
@@ -362,16 +350,29 @@ public class Tool {
     return directions;
   }
 
-  public static void removeArrows() {
-    for (int i = 0; i < 8; i++) {
-      int index = Tool.getChessboard().indexOf(String.valueOf(Arrows.charAt(i)));
+  public static void eraseArrows() {
+    eraseArrows(true);
+  }
+
+  public static void eraseArrows(boolean isAll) {
+    String arrows;
+    int max;
+    if (isAll) {
+      arrows = Arrows;
+      max = 8;
+    } else {
+      arrows = "↙↘↖↗";
+      max = 4;
+    }
+    for (int i = 0; i < max; i++) {
+      int index = Tool.getChessboard().indexOf(String.valueOf(arrows.charAt(i)));
       if (index != -1) {
-        if (index == Tool.convertToIndex(2, 5) || index == Tool.convertToIndex(5, 5) ||
-                index == Tool.convertToIndex(8, 5)) {
+        if (index == Tool.convert2Index(2, 5) || index == Tool.convert2Index(5, 5) ||
+                index == Tool.convert2Index(8, 5)) {
           Tool.getChessboard().setCharAt(index, '|');
-        } else if (index == Tool.convertToIndex(1, 5) || index == Tool.convertToIndex(3, 5) ||
-                index == Tool.convertToIndex(4, 5) || index == Tool.convertToIndex(6, 5) ||
-                index == Tool.convertToIndex(7, 5) || index == Tool.convertToIndex(9, 5)) {
+        } else if (index == Tool.convert2Index(1, 5) || index == Tool.convert2Index(3, 5) ||
+                index == Tool.convert2Index(4, 5) || index == Tool.convert2Index(6, 5) ||
+                index == Tool.convert2Index(7, 5) || index == Tool.convert2Index(9, 5)) {
           Tool.getChessboard().setCharAt(index, '*');
         } else {
           Tool.getChessboard().setCharAt(index, ' ');
@@ -396,6 +397,19 @@ public class Tool {
       return new CsvReader(path, ',', Charset.forName("utf-8"));
     } catch (FileNotFoundException e) {
       e.printStackTrace();
+      return null;
+    }
+  }
+
+  public static Piece createPiece(String place) {
+    String tmp[] = place.split("");
+    if (tmp.length != 4) {
+      return null;
+    }
+    try {
+      return new Piece(Integer.parseInt(tmp[0]), Integer.parseInt(tmp[1]),
+              tmp[2].charAt(0), Integer.parseInt(tmp[3]));
+    } catch (NumberFormatException e) {
       return null;
     }
   }

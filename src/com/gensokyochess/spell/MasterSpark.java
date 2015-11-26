@@ -16,12 +16,12 @@ public class MasterSpark extends Spell {
     int damage = 3;
     ArrayList<Piece> pieces = null;
     Tool.print("请选择一个方向");
-    Tool.removeArrows();
+    Tool.eraseArrows();
     Tool.drawArrows(piece1, false);
 
     String input = Tool.input();
     Tool.setActivatedPiece(null);
-    Tool.removeArrows();
+    Tool.eraseArrows();
     if (input.equals(piece1.getCode() + "2") || input.equals("2")) {
       pieces = Tool.findPieces(false, piece1.getX(), piece1.getY(), 0);
     } else if (input.equals(piece1.getCode() + "8") || input.equals("8")) {
@@ -36,7 +36,7 @@ public class MasterSpark extends Spell {
     if (pieces != null) {
       start(piece1, 1);
       pieces.stream().filter(piece2 -> !piece2.isKing()).forEach(piece2 -> {
-        Battle.damage(piece1, piece2, damage);
+        Battle.damage(piece1, piece2, damage, 0);
         piece1.checkAlive(piece2);
       });
       return over();

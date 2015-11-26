@@ -12,32 +12,32 @@ public class MouseClick extends MouseAdapter {
     super.mouseClicked(e);
     if (!Tool.isLock()) {
       convert2XY(e.getX(), e.getY());
-      int index = Tool.convertToIndex(X, Y);
+      int index = Tool.convert2Index(X, Y);
       char aimChar = Tool.getChessboard().charAt(index);
       if (Tool.getActivatedPiece() != null) {
         int move = Tool.getMove(aimChar);
         if (move != 0) {
-          Tool.getFrame().sendCmd(Tool.getActivatedPiece().getCode() + "" + move);
+          Tool.getGuiFrame().sendCmd(Tool.getActivatedPiece().getCode() + "" + move);
         } else if (aimChar == Tool.getActivatedPiece().getCode()) {
-          Tool.getFrame().sendCmd(Tool.getActivatedPiece().getCode() + "5");
+          Tool.getGuiFrame().sendCmd(Tool.getActivatedPiece().getCode() + "5");
         } else if (aimChar == '*' && Tool.findSpecialPiece(index, '*') != null) {
-          Tool.getFrame().sendCmd(Tool.getActivatedPiece().getCode() + "+" + aimChar);
+          Tool.getGuiFrame().sendCmd(Tool.getActivatedPiece().getCode() + "+" + aimChar);
         } else if (aimChar == '|' && Tool.findSpecialPiece(index, '|') != null) {
-          Tool.getFrame().sendCmd(Tool.getActivatedPiece().getCode() + "+" + aimChar);
+          Tool.getGuiFrame().sendCmd(Tool.getActivatedPiece().getCode() + "+" + aimChar);
         } else if (aimChar != ' ' && aimChar != '*' && aimChar != '|') {
-          Tool.getFrame().sendCmd(Tool.getActivatedPiece().getCode() + "+" + aimChar);
+          Tool.getGuiFrame().sendCmd(Tool.getActivatedPiece().getCode() + "+" + aimChar);
         } else {
-          Tool.getFrame().sendCmd(" ");
+          Tool.getGuiFrame().sendCmd(" ");
         }
         Tool.setActivatedPiece(null);
-        Tool.removeArrows();
+        Tool.eraseArrows();
       } else {
         Piece piece;
         if (aimChar != ' ') {
           piece = Tool.findPiece(aimChar);
           if (piece != null && X == piece.getX() && Y == piece.getY()) {
             Tool.print(piece.toString());
-            if (piece.getCamp().equals(Tool.getCurCamp())) {
+            if (piece.getCamp() == Tool.getCurrentCamp()) {
               Tool.drawArrows(piece, true);
               Tool.setActivatedPiece(piece);
             }

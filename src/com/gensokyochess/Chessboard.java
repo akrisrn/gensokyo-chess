@@ -7,23 +7,6 @@ public class Chessboard {
     Chessboard = createChessboard();
   }
 
-  public Piece createPiece(String place) {
-    int par[] = new int[4];
-    String tmp[] = place.split("");
-    if (tmp.length != 4) {
-      return null;
-    }
-    try {
-      par[0] = Integer.parseInt(tmp[0]);
-      par[1] = Integer.parseInt(tmp[1]);
-      par[2] = (int) tmp[2].charAt(0);
-      par[3] = Integer.parseInt(tmp[3]);
-      return new Piece(par[0], par[1], (char) par[2], par[3]);
-    } catch (NumberFormatException e) {
-      return null;
-    }
-  }
-
   private StringBuffer createChessboard() {
     String chessboard = "";
 
@@ -61,7 +44,6 @@ public class Chessboard {
       chessboard += "───┴";
     }
     chessboard += "───┘";
-
     return new StringBuffer(chessboard);
   }
 

@@ -27,6 +27,7 @@ public class GuiFrame extends JFrame {
     setResizable(false);
     setContentPane(MainPanel);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    getRootPane().setDefaultButton(SendButton);
     pack();
     setVisible(true);
 
@@ -41,12 +42,10 @@ public class GuiFrame extends JFrame {
       BottomLine.setFont(nf);
     } catch (IOException | FontFormatException ignored) {
     }
-
     Board.setText(String.valueOf(new Chessboard().getChessboard()));
     LeftLine.setText(" ┌\n9├\n │\n8├\n │\n7├\n │\n6├\n │\n5├\n │\n4├\n │\n3├\n │\n2├\n │\n1├\n └");
     BottomLine.setText("└─┴───┴───┴───┴───┴───┴───┴───┴───┴─┘\n  1   2   3   4   5   6   7   8   9");
 
-    getRootPane().setDefaultButton(SendButton);
     SendButton.addActionListener(actionEvent -> {
       String cmd = InputArea.getText();
       if (!(cmd.equals(""))) {
@@ -56,7 +55,6 @@ public class GuiFrame extends JFrame {
       }
     });
 
-    Board.addMouseListener(new MouseClick());
     SpellButton1.addActionListener(actionEvent -> {
       if (!SpellButton1.getText().equals("无")) {
         sendCmd("SP" + SpellButton1.getText());
@@ -67,6 +65,8 @@ public class GuiFrame extends JFrame {
         sendCmd("SP" + SpellButton2.getText());
       }
     });
+
+    Board.addMouseListener(new MouseClick());
   }
 
   public void sendCmd(String cmd) {

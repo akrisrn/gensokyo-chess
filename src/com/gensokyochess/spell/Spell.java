@@ -49,10 +49,6 @@ public abstract class Spell {
     }
   }
 
-  public static HashMap<String, Spell> getSpellsMap() {
-    return SpellsMap;
-  }
-
   public static Spell choiceSpell(String code) {
     return SpellsMap.get(code);
   }
@@ -63,9 +59,9 @@ public abstract class Spell {
 
   public abstract boolean use(Piece piece1) throws KingSpellException, SameCampException;
 
-  public Piece choiceAPiece() {
+  public Piece choicePiece() {
     Tool.print("请选择一个对方棋子");
-    Tool.removeArrows();
+    Tool.eraseArrows();
 
     String input = Tool.input();
     Tool.setActivatedPiece(null);
@@ -83,7 +79,7 @@ public abstract class Spell {
 
   public void start(Piece piece, int i) {
     Tool.locked();
-    Tool.print(piece.getNameAndLV() + " 使用了 " + piece.getSpellName(i) + "!", 1);
+    Tool.print(piece.getNameAndLv() + " 使用了 " + piece.getSpellName(i) + "!", 1);
   }
 
   public void start(Piece piece1, Piece piece2, int i) throws KingSpellException {
@@ -91,7 +87,7 @@ public abstract class Spell {
     if (piece2.isKing()) {
       throw new KingSpellException();
     }
-    Tool.print(piece1.getNameAndLV() + " 使用了 " + piece1.getSpellName(i) + "!", 1);
+    Tool.print(piece1.getNameAndLv() + " 使用了 " + piece1.getSpellName(i) + "!", 1);
   }
 
   public boolean over() {

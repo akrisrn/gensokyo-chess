@@ -3,11 +3,7 @@ package com.gensokyochess;
 import com.gensokyochess.exception.InRiverException;
 
 public class Battle {
-  public static void damage(Role role1, Role role2, int damage) {
-    damage(role1, role2, damage, 0);
-  }
-
-  private static void damage(Role role1, Role role2, int damage1, int damage2) {
+  public static void damage(Role role1, Role role2, int damage1, int damage2) {
     String damage;
     if (damage2 != 0) {
       damage = damage1 + damage2 + "(" + damage1 + "+" + damage2 + ")";
@@ -15,29 +11,29 @@ public class Battle {
       damage = "" + damage1;
     }
     role2.reduceHp(damage1 + damage2);
-    Tool.print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() + " 造成了 " + damage + " 点伤害", 1);
-    Tool.print(role2.getNameAndLV() + " 的 HP 现在是:" + role2.getCurrentHP(), 1);
+    Tool.print(role1.getNameAndLv() + " 对 " + role2.getNameAndLv() + " 造成了 " + damage + " 点伤害", 1);
+    Tool.print(role2.getNameAndLv() + " 的 HP 现在是:" + role2.getCurrentHP(), 1);
     defeated(role2);
   }
 
   private static void normalAtk(Role role1, Role role2) {
-    Tool.print(role1.getNameAndLV() + " 的攻击击中了!", 1);
+    Tool.print(role1.getNameAndLv() + " 的攻击击中了!", 1);
     int damage = role1.rollDamage();
-    damage(role1, role2, damage);
+    damage(role1, role2, damage, 0);
   }
 
   private static void criticalAtk(Role role1, Role role2) {
-    Tool.print(role1.getNameAndLV() + " 造成了重击!", 1);
+    Tool.print(role1.getNameAndLv() + " 造成了重击!", 1);
     int damage1 = role1.rollDamage();
     int damage2 = role1.rollDamage();
     damage(role1, role2, damage1, damage2);
   }
 
-  private static void defeated(Role role2) {
-    if (role2.getCurrentHP() <= 0) {
-      Tool.print(role2.getNameAndLV() + " 被打倒了!", 1);
-      role2.setAlive(false);
-      role2.recoverHP();
+  private static void defeated(Role role) {
+    if (role.getCurrentHP() <= 0) {
+      Tool.print(role.getNameAndLv() + " 被打倒了!", 1);
+      role.setAlive(false);
+      role.recoverHP();
     }
   }
 
@@ -52,7 +48,7 @@ public class Battle {
   private static void battleRound(Role role1, Role role2, int distance) {
     if (role1.getAttackType() == 1) {
       role1.recoverAB();
-      role1.subRemoteAttack(distance);
+      role1.weakenRemote(distance);
     }
 
     int armorClass = role2.getArmorClass();
@@ -61,21 +57,21 @@ public class Battle {
     String sign = handleSign(attackBonus);
     int originalRoll = attackRoll - attackBonus;
 
-    Tool.print(role1.getNameAndLV() + " 的攻击检定为:" +
+    Tool.print(role1.getNameAndLv() + " 的攻击检定为:" +
             attackRoll + "(" + originalRoll + sign + attackBonus + ")", 1);
 
     if (originalRoll == 1) {
-      Tool.print(role1.getNameAndLV() + " 的攻击失手了!", 1);
+      Tool.print(role1.getNameAndLv() + " 的攻击失手了!", 1);
     } else if (originalRoll == 20) {
-      Tool.print(role1.getNameAndLV() + " 造成了重击威胁!", 1);
+      Tool.print(role1.getNameAndLv() + " 造成了重击威胁!", 1);
       attackRoll = role1.rollAttack();
       originalRoll = attackRoll - attackBonus;
-      Tool.print(role1.getNameAndLV() + " 的第二次攻击检定为:" +
+      Tool.print(role1.getNameAndLv() + " 的第二次攻击检定为:" +
               attackRoll + "(" + originalRoll + sign + attackBonus + ")", 1);
       if (attackRoll > armorClass) {
         criticalAtk(role1, role2);
       } else {
-        Tool.print(role1.getNameAndLV() + " 未造成重击", 1);
+        Tool.print(role1.getNameAndLv() + " 未造成重击", 1);
         normalAtk(role1, role2);
       }
     } else if (attackRoll > armorClass) {
@@ -84,14 +80,14 @@ public class Battle {
       if (role1.getStrength() > role2.getStrength()) {
         normalAtk(role1, role2);
       } else {
-        Tool.print(role1.getNameAndLV() + " 的攻击失手了!", 1);
+        Tool.print(role1.getNameAndLv() + " 的攻击失手了!", 1);
       }
     } else {
-      Tool.print(role1.getNameAndLV() + " 的攻击失手了!", 1);
+      Tool.print(role1.getNameAndLv() + " 的攻击失手了!", 1);
     }
   }
 
-  private static boolean judgeInitiative(Role role1, Role role2) {
+  private static boolean rivalInitiative(Role role1, Role role2) {
     int initiativeRoll1 = role1.rollInitiative();
     int initiative1 = role1.getInitiative();
     int originalRoll1 = initiativeRoll1 - initiative1;
@@ -100,22 +96,22 @@ public class Battle {
     int initiative2 = role2.getInitiative();
     int originalRoll2 = initiativeRoll2 - initiative2;
 
-    Tool.print(role1.getNameAndLV() + " 的先攻检定为:" +
+    Tool.print(role1.getNameAndLv() + " 的先攻检定为:" +
             initiativeRoll1 + "(" + originalRoll1 + handleSign(initiative1) + initiative1 + ")", 1);
-    Tool.print(role2.getNameAndLV() + " 的先攻检定为:" +
+    Tool.print(role2.getNameAndLv() + " 的先攻检定为:" +
             initiativeRoll2 + "(" + originalRoll2 + handleSign(initiative2) + initiative2 + ")", 1);
 
     if (initiativeRoll1 > initiativeRoll2) {
-      Tool.print(role1.getNameAndLV() + " 先攻!", 1);
+      Tool.print(role1.getNameAndLv() + " 先攻!", 1);
       return true;
     } else if (initiativeRoll1 < initiativeRoll2) {
-      Tool.print(role2.getNameAndLV() + " 先攻!", 1);
+      Tool.print(role2.getNameAndLv() + " 先攻!", 1);
     } else {
       if (role1.getDexterity() > role2.getDexterity()) {
-        Tool.print(role1.getNameAndLV() + " 先攻!", 1);
+        Tool.print(role1.getNameAndLv() + " 先攻!", 1);
         return true;
       } else {
-        Tool.print(role2.getNameAndLV() + " 先攻!", 1);
+        Tool.print(role2.getNameAndLv() + " 先攻!", 1);
       }
     }
     return false;
@@ -123,7 +119,7 @@ public class Battle {
 
   public static void frontalBattle(Role role1, Role role2) throws InRiverException {
     start(1, role1, role2, 0);
-    boolean isRole1First = judgeInitiative(role1, role2);
+    boolean isRole1First = rivalInitiative(role1, role2);
     int i = 0;
     while (i++ < 6) {
       if (isRole1First) {
@@ -165,15 +161,15 @@ public class Battle {
       throw new InRiverException();
     }
     if (battleType == 1) {
-      Tool.print(role1.getNameAndLV() + " 和 " + role2.getNameAndLV() + " 展开正面战斗", 1);
+      Tool.print(role1.getNameAndLv() + " 和 " + role2.getNameAndLv() + " 展开正面战斗", 1);
     } else if (battleType == 2) {
       if (distance != 0) {
-        Tool.print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() + " 进行远程攻击", 1);
+        Tool.print(role1.getNameAndLv() + " 对 " + role2.getNameAndLv() + " 进行远程攻击", 1);
       } else {
-        Tool.print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() + " 进行近战攻击", 1);
+        Tool.print(role1.getNameAndLv() + " 对 " + role2.getNameAndLv() + " 进行近战攻击", 1);
       }
     } else {
-      Tool.print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() + " 进行借机攻击", 1);
+      Tool.print(role1.getNameAndLv() + " 对 " + role2.getNameAndLv() + " 进行借机攻击", 1);
     }
   }
 

@@ -17,7 +17,6 @@ public class ConfirmDialog extends JDialog {
 
   public ConfirmDialog(GuiFrame guiFrame) {
     GuiFrame = guiFrame;
-
     setTitle("提醒");
     setContentPane(contentPane);
     setModal(true);
@@ -26,7 +25,6 @@ public class ConfirmDialog extends JDialog {
     pack();
 
     buttonOK.addActionListener(e -> onYes());
-
     buttonCancel.addActionListener(e -> onNo());
 
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
