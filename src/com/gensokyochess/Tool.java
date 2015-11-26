@@ -1,5 +1,9 @@
 package com.gensokyochess;
 
+import com.csvreader.CsvReader;
+
+import java.io.FileNotFoundException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -383,6 +387,16 @@ public class Tool {
       return 5 * arrowIndex / 4 + 1;
     } else {
       return 0;
+    }
+  }
+
+  public static CsvReader getCsvReader(String name) {
+    String path = System.getProperty("user.dir") + name;
+    try {
+      return new CsvReader(path, ',', Charset.forName("utf-8"));
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+      return null;
     }
   }
 }

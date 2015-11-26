@@ -6,8 +6,8 @@ import com.gensokyochess.exception.KingSpellException;
 import com.gensokyochess.exception.SameCampException;
 
 public class FantasySeal extends Spell {
-  public FantasySeal(String code) {
-    super(code);
+  public FantasySeal() {
+    super("H1");
   }
 
   @Override

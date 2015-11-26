@@ -6,8 +6,8 @@ import com.gensokyochess.exception.KingSpellException;
 import com.gensokyochess.exception.SameCampException;
 
 public class EvilSealingCircle extends Spell {
-  public EvilSealingCircle(String code) {
-    super(code);
+  public EvilSealingCircle() {
+    super("H2");
   }
 
   @Override

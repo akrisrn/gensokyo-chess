@@ -6,11 +6,9 @@ import com.gensokyochess.exception.KingSpellException;
 import com.gensokyochess.exception.SameCampException;
 import com.gensokyochess.spell.Spell;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.charset.Charset;
 
-import static com.gensokyochess.spell.Spell.switchSpell;
+import static com.gensokyochess.spell.Spell.choiceSpell;
 
 public class Role {
   private final int RIVER_BONUS = 5;
@@ -49,13 +47,8 @@ public class Role {
   }
 
   private void initLevel(char code) {
-    String path = System.getProperty("user.dir") + "/lib/role.csv";
-    CsvReader reader = null;
-
-    try {
-      reader = new CsvReader(path, ',', Charset.forName("utf-8"));
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
+    CsvReader reader = Tool.getCsvReader("/lib/role.csv");
+    if (reader == null) {
       System.exit(1);
     }
 
@@ -149,9 +142,9 @@ public class Role {
 
   public String getSpell() {
     String spell = "";
-    for (int i = 1; i <= SpellNumber; i++) {
-      if (Spell[i - 1] != null) {
-        spell += "\n" + Spell[i - 1].toString();
+    for (int i = 0; i < SpellNumber; i++) {
+      if (Spell[i] != null) {
+        spell += "\n" + Spell[i].toString();
       }
     }
     return spell;
@@ -159,8 +152,8 @@ public class Role {
 
   private void initSpell() {
     Spell = new Spell[SpellNumber];
-    for (int i = 1; i <= SpellNumber; i++) {
-      Spell[i - 1] = switchSpell(SpellCode[i - 1]);
+    for (int i = 0; i < SpellNumber; i++) {
+      Spell[i] = choiceSpell(SpellCode[i]);
     }
   }
 
@@ -376,7 +369,7 @@ public class Role {
 
   @Override
   public String toString() {
-    return "姓名: " + getName() + "\n" +
+    return "\n--------" + getName() + "\n" +
             "等级: " + getLevel() + "\n" +
             "生命: " + getHitPoint() + "\n" +
             "伤害: " + getDamageRange() + "\n" +
@@ -385,6 +378,6 @@ public class Role {
             "体质: " + getConstitution() + "\n" +
             "体型: " + getBodyType() + "\n" +
             "攻击方式: " + getRawAttackType() + "\n" +
-            "技能: " + getSpell();
+            "--------技能" + getSpell();
   }
 }

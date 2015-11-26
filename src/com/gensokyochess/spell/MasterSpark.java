@@ -7,8 +7,8 @@ import com.gensokyochess.Tool;
 import java.util.ArrayList;
 
 public class MasterSpark extends Spell {
-  public MasterSpark(String code) {
-    super(code);
+  public MasterSpark() {
+    super("K1");
   }
 
   @Override

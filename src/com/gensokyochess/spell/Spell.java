@@ -6,41 +6,59 @@ import com.gensokyochess.Tool;
 import com.gensokyochess.exception.KingSpellException;
 import com.gensokyochess.exception.SameCampException;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public abstract class Spell {
   private String Code;
   private String Name;
   private String Description;
+  private static HashMap<String, Spell> SpellsMap = new HashMap<>();
 
-  public Spell(String code) {
-    String path = System.getProperty("user.dir") + "/lib/spell.csv";
-    CsvReader reader = null;
+  static {
+    ArrayList<Spell> spells = new ArrayList<>();
+    spells.add(new EvilSealingCircle());
+    spells.add(new FantasySeal());
+    spells.add(new MasterSpark());
 
-    try {
-      reader = new CsvReader(path, ',', Charset.forName("utf-8"));
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
+    for (Spell spell : spells) {
+      SpellsMap.put(spell.getCode(), spell);
+    }
+  }
+
+  static {
+    CsvReader reader = Tool.getCsvReader("/lib/spell.csv");
+    if (reader == null) {
       System.exit(1);
     }
 
     try {
       reader.readHeaders();
       while (reader.readRecord()) {
-        if (reader.get("Code").equals(code)) {
-          setCode(code);
-          setName(reader.get("Name"));
-          setDescription(reader.get("Description"));
-          break;
+        Spell spell = SpellsMap.get(reader.get("Code"));
+        if (spell != null) {
+          spell.setName(reader.get("Name"));
+          spell.setDescription(reader.get("Description"));
         }
       }
-    } catch (IOException | NumberFormatException e) {
+    } catch (IOException e) {
       e.printStackTrace();
     } finally {
       reader.close();
     }
+  }
+
+  public static HashMap<String, Spell> getSpellsMap() {
+    return SpellsMap;
+  }
+
+  public static Spell choiceSpell(String code) {
+    return SpellsMap.get(code);
+  }
+
+  public Spell(String code) {
+    Code = code;
   }
 
   public abstract boolean use(Piece piece1) throws KingSpellException, SameCampException;
@@ -86,10 +104,6 @@ public abstract class Spell {
     return Code;
   }
 
-  public void setCode(String code) {
-    Code = code;
-  }
-
   public String getName() {
     return Name;
   }
@@ -109,18 +123,5 @@ public abstract class Spell {
   @Override
   public String toString() {
     return getName() + "(" + getCode() + "): " + getDescription();
-  }
-
-  public static Spell switchSpell(String code) {
-    switch (code) {
-      case "H1":
-        return new FantasySeal("H1");
-      case "H2":
-        return new EvilSealingCircle("H2");
-      case "K1":
-        return new MasterSpark("K1");
-      default:
-        return null;
-    }
   }
 }
