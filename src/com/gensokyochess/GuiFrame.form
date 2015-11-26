@@ -140,7 +140,7 @@
           </grid>
         </constraints>
         <properties>
-          <text value="&amp;空"/>
+          <text value="无"/>
         </properties>
       </component>
       <component id="77847" class="javax.swing.JButton" binding="SpellButton1">
@@ -150,7 +150,7 @@
           </grid>
         </constraints>
         <properties>
-          <text value="&amp;空"/>
+          <text value="无"/>
         </properties>
       </component>
     </children>

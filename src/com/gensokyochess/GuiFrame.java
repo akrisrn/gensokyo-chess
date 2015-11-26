@@ -58,12 +58,12 @@ public class GuiFrame extends JFrame {
 
     Board.addMouseListener(new MouseClick());
     SpellButton1.addActionListener(actionEvent -> {
-      if (!SpellButton1.getText().equals("空")) {
+      if (!SpellButton1.getText().equals("无")) {
         sendCmd("SP" + SpellButton1.getText());
       }
     });
     SpellButton2.addActionListener(actionEvent -> {
-      if (!SpellButton2.getText().equals("空")) {
+      if (!SpellButton2.getText().equals("无")) {
         sendCmd("SP" + SpellButton2.getText());
       }
     });
@@ -182,14 +182,10 @@ public class GuiFrame extends JFrame {
     ActionLabel.setText("红方第 0 次行动:");
     MainPanel.add(ActionLabel, new GridConstraints(1, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     SpellButton2 = new JButton();
-    SpellButton2.setText("空");
-    SpellButton2.setMnemonic('空');
-    SpellButton2.setDisplayedMnemonicIndex(0);
+    SpellButton2.setText("无");
     MainPanel.add(SpellButton2, new GridConstraints(1, 5, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(60, -1), null, 0, false));
     SpellButton1 = new JButton();
-    SpellButton1.setText("空");
-    SpellButton1.setMnemonic('空');
-    SpellButton1.setDisplayedMnemonicIndex(0);
+    SpellButton1.setText("无");
     MainPanel.add(SpellButton1, new GridConstraints(1, 4, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(60, -1), null, 0, false));
   }
 

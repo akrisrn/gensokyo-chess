@@ -38,7 +38,7 @@ public class Tool {
   public static void setActivatedPiece(Piece piece) {
     ActivatedPiece = piece;
     if (piece == null) {
-      Frame.setSpellButtonText(0, "空");
+      Frame.setSpellButtonText(0, "无");
     } else {
       Frame.setSpellButtonText(1, piece.getSpellCode(1));
       if (piece.getSpellNumber() > 1) {
