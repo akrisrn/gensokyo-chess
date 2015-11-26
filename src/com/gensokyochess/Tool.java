@@ -12,6 +12,11 @@ public class Tool {
   private static boolean CurCampIsRed = true;
   private final static String Arrows = "↙↓↘←→↖↑↗";
   private static Piece ActivatedPiece;
+  private static int RoundCount = 0;
+
+  public static void addRoundCount() {
+    RoundCount++;
+  }
 
   public static void setActivatedPiece(Piece piece) {
     ActivatedPiece = piece;
@@ -244,15 +249,42 @@ public class Tool {
     }
   }
 
-  public static void updateState(String msg, boolean isRound) {
+  public static void updateRoundMsg() {
+    String msg = "第 " + RoundCount + " 回合";
     if (!UseGui) {
       System.out.println(msg);
     } else {
-      if (isRound) {
-        Frame.updateRoundLabel(msg);
-      } else {
-        Frame.updateActionLabel(msg);
+      Frame.updateRoundLabel(msg);
+    }
+  }
+
+  public static void updateActionMsg(int count, int over) {
+    String msg;
+    if (count == 0) {
+      switch (over) {
+        case 1:
+          msg = "红方胜利";
+          break;
+        case -1:
+          msg = "黑方胜利";
+          break;
+        default:
+          msg = "平局";
+          break;
       }
+    } else {
+      String camp;
+      if (CurCampIsRed) {
+        camp = "红方";
+      } else {
+        camp = "黑方";
+      }
+      msg = camp + "第 " + count + " 次行动:";
+    }
+    if (!UseGui) {
+      System.out.println(msg);
+    } else {
+      Frame.updateActionLabel(msg);
     }
   }
 

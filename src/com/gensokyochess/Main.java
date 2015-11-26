@@ -37,15 +37,14 @@ public class Main {
   }
 
   private void round() {
-    int round = 0;
     int count = 0;
 
     while (true) {
       if (count % 2 != 1) {
-        round++;
+        Tool.addRoundCount();
       }
       count++;
-      Tool.updateState("第 " + round + " 回合", true);
+      Tool.updateRoundMsg();
 
       NoChance = false;
       HaveBattleOrSpell = false;
@@ -64,13 +63,7 @@ public class Main {
   private boolean action(int i) {
     boolean inputError;
     do {
-      String cam;
-      if (CurCampIsRed) {
-        cam = "红方";
-      } else {
-        cam = "黑方";
-      }
-      Tool.updateState(cam + "第 " + i + " 次行动:", false);
+      Tool.updateActionMsg(i, 0);
 
       ArrayList action = handleInput(Tool.input());
       inputError = !handleAction(action, i);
@@ -294,10 +287,10 @@ public class Main {
 
   private boolean isGameOver() {
     if (!RedKing.isAlive()) {
-      Tool.updateState("黑方胜利", false);
+      Tool.updateActionMsg(0, -1);
       return true;
     } else if (!BlackKing.isAlive()) {
-      Tool.updateState("红方胜利", false);
+      Tool.updateActionMsg(0, 1);
       return true;
     } else {
       int count = 0;
@@ -309,7 +302,7 @@ public class Main {
           }
         }
       }
-      Tool.updateState("平局", false);
+      Tool.updateActionMsg(0, 0);
       return true;
     }
   }
@@ -381,10 +374,10 @@ public class Main {
         opportunityBattleAction(haveChanceChars, piece);
         return true;
       } catch (CanNotPlaceException e) {
-        Tool.print("无法放到该格");
+        Tool.print("该格已有棋子");
         return false;
       } catch (CanNotMoveException | KingMoveException e) {
-        Tool.print("超出移动范围");
+        Tool.print("无法进行移动");
         return false;
       }
     } else {

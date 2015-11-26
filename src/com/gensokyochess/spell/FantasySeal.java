@@ -2,7 +2,6 @@ package com.gensokyochess.spell;
 
 import com.gensokyochess.Battle;
 import com.gensokyochess.Piece;
-import com.gensokyochess.Tool;
 import com.gensokyochess.exception.KingSpellException;
 import com.gensokyochess.exception.SameCampException;
 
@@ -29,7 +28,6 @@ public class FantasySeal extends Spell {
       over();
       return true;
     } else {
-      Tool.print("输入有误");
       return false;
     }
   }

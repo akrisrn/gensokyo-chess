@@ -58,6 +58,9 @@ public abstract class Spell {
     } else {
       piece = Tool.findPiece(input.charAt(0));
     }
+    if (piece == null) {
+      Tool.print("输入有误");
+    }
     return piece;
   }
 

@@ -9,6 +9,7 @@ public class Piece extends Role {
   private boolean IsKing;
   private int SpecialMoveCheck = 0;
   private StringBuffer chessboard = Tool.getChessboard();
+  private boolean IsCanNotMove = false;
 
   public Piece(int x, int y, char code, int level) {
     super(code, level);
@@ -236,7 +237,7 @@ public class Piece extends Role {
 
     char aimChar = chessboard.charAt(Tool.convertToIndex(x, y));
 
-    if (x < 1 || x > 9 || y < 1 || y > 9) {
+    if (IsCanNotMove || x < 1 || x > 9 || y < 1 || y > 9) {
       throw new CanNotMoveException();
     }
     if (aimChar != ' ' && aimChar != '*' && aimChar != '|') {
@@ -344,6 +345,10 @@ public class Piece extends Role {
   private void setXY(int x, int y) {
     X = x;
     Y = y;
+  }
+
+  public void setCanNotMove(boolean canNotMove) {
+    IsCanNotMove = canNotMove;
   }
 
   @Override
