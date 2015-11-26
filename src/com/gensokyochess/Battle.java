@@ -3,6 +3,10 @@ package com.gensokyochess;
 import com.gensokyochess.exception.InRiverException;
 
 public class Battle {
+  public static void damage(Role role1, Role role2, int damage) {
+    damage(role1, role2, damage, 0);
+  }
+
   public static void damage(Role role1, Role role2, int damage1, int damage2) {
     String damage;
     if (damage2 != 0) {
@@ -19,7 +23,7 @@ public class Battle {
   private static void normalAtk(Role role1, Role role2) {
     Tool.print(role1.getNameAndLv() + " 的攻击击中了!", 1);
     int damage = role1.rollDamage();
-    damage(role1, role2, damage, 0);
+    damage(role1, role2, damage);
   }
 
   private static void criticalAtk(Role role1, Role role2) {

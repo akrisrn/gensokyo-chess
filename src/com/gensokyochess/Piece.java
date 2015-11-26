@@ -180,29 +180,6 @@ public class Piece extends Role {
     return nearbyChar;
   }
 
-  public int[] handleMove(int move) {
-    switch (move) {
-      case 1:
-        return new int[]{X - 1, Y - 1};
-      case 2:
-        return new int[]{X, Y - 1};
-      case 3:
-        return new int[]{X + 1, Y - 1};
-      case 4:
-        return new int[]{X - 1, Y};
-      case 6:
-        return new int[]{X + 1, Y};
-      case 7:
-        return new int[]{X - 1, Y + 1};
-      case 8:
-        return new int[]{X, Y + 1};
-      case 9:
-        return new int[]{X + 1, Y + 1};
-      default:
-        return null;
-    }
-  }
-
   public char[] moveTo(int move, int count, boolean noChance) throws CanNotPlaceException,
           CanNotMoveException, KingMoveException {
     if (move == 5) {
@@ -210,7 +187,8 @@ public class Piece extends Role {
       return null;
     }
 
-    int[] tmp = handleMove(move);
+    int[] tmp = Tool.handleMove2XY(this, move);
+    assert tmp != null;
     int x = tmp[0];
     int y = tmp[1];
     char aimChar = Chessboard.charAt(Tool.convert2Index(x, y));

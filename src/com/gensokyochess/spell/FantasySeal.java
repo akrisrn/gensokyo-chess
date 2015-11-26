@@ -19,7 +19,7 @@ public class FantasySeal extends Spell {
         throw new SameCampException();
       }
       start(piece1, piece2, 1);
-      Battle.damage(piece1, piece2, damage, 0);
+      Battle.damage(piece1, piece2, damage);
       piece1.checkAlive(piece2);
       return over();
     } else {

@@ -15,20 +15,14 @@ public class MasterSpark extends Spell {
   public boolean use(Piece piece1) {
     int damage = 3;
     ArrayList<Piece> pieces = null;
-    Tool.print("请选择一个方向");
-    Tool.eraseArrows();
-    Tool.drawArrows(piece1, false);
-
-    String input = Tool.input();
-    Tool.setActivatedPiece(null);
-    Tool.eraseArrows();
-    if (input.equals(piece1.getCode() + "2") || input.equals("2")) {
+    int direction = choiceDirection(piece1, false);
+    if (direction == 2) {
       pieces = Tool.findPieces(false, piece1.getX(), piece1.getY(), 0);
-    } else if (input.equals(piece1.getCode() + "8") || input.equals("8")) {
+    } else if (direction == 8) {
       pieces = Tool.findPieces(false, piece1.getX(), piece1.getY(), 10);
-    } else if (input.equals(piece1.getCode() + "4") || input.equals("4")) {
+    } else if (direction == 4) {
       pieces = Tool.findPieces(true, piece1.getY(), piece1.getX(), 0);
-    } else if (input.equals(piece1.getCode() + "6") || input.equals("6")) {
+    } else if (direction == 6) {
       pieces = Tool.findPieces(true, piece1.getY(), piece1.getX(), 10);
     } else {
       Tool.print("输入有误");
@@ -36,7 +30,7 @@ public class MasterSpark extends Spell {
     if (pieces != null) {
       start(piece1, 1);
       pieces.stream().filter(piece2 -> !piece2.isKing()).forEach(piece2 -> {
-        Battle.damage(piece1, piece2, damage, 0);
+        Battle.damage(piece1, piece2, damage);
         piece1.checkAlive(piece2);
       });
       return over();

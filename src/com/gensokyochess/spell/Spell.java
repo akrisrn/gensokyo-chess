@@ -21,6 +21,7 @@ public abstract class Spell {
     spells.add(new EvilSealingCircle());
     spells.add(new FantasySeal());
     spells.add(new MasterSpark());
+    spells.add(new BlazingStar());
 
     for (Spell spell : spells) {
       SpellsMap.put(spell.getCode(), spell);
@@ -75,6 +76,36 @@ public abstract class Spell {
       Tool.print("输入有误");
     }
     return piece;
+  }
+
+  public int choiceDirection(Piece piece, boolean isAllArrows) {
+    Tool.print("请选择一个方向");
+    Tool.eraseArrows();
+    Tool.drawArrows(piece, isAllArrows);
+
+    String input = Tool.input();
+    Tool.setActivatedPiece(null);
+    Tool.eraseArrows();
+    Tool.print(input);
+    if (input.equals(piece.getCode() + "1") || input.equals("1")) {
+      return 1;
+    } else if (input.equals(piece.getCode() + "2") || input.equals("2")) {
+      return 2;
+    } else if (input.equals(piece.getCode() + "3") || input.equals("3")) {
+      return 3;
+    } else if (input.equals(piece.getCode() + "4") || input.equals("4")) {
+      return 4;
+    } else if (input.equals(piece.getCode() + "6") || input.equals("6")) {
+      return 6;
+    } else if (input.equals(piece.getCode() + "7") || input.equals("7")) {
+      return 7;
+    } else if (input.equals(piece.getCode() + "8") || input.equals("8")) {
+      return 8;
+    }else if (input.equals(piece.getCode() + "9") || input.equals("9")) {
+      return 9;
+    } else {
+      return 0;
+    }
   }
 
   public void start(Piece piece, int i) {

@@ -200,6 +200,10 @@ public class Tool {
     }
   }
 
+  public static Piece findPiece(int x, int y) {
+    return findPiece(Chessboard.charAt(convert2Index(x, y)));
+  }
+
   public static Piece findPiece(char code) {
     for (Piece piece : Pieces) {
       if (piece.getCode() == code) {
@@ -411,6 +415,29 @@ public class Tool {
               tmp[2].charAt(0), Integer.parseInt(tmp[3]));
     } catch (NumberFormatException e) {
       return null;
+    }
+  }
+
+  public static int[] handleMove2XY(Piece piece, int move) {
+    switch (move) {
+      case 1:
+        return new int[]{piece.getX() - 1, piece.getY() - 1};
+      case 2:
+        return new int[]{piece.getX(), piece.getY() - 1};
+      case 3:
+        return new int[]{piece.getX() + 1, piece.getY() - 1};
+      case 4:
+        return new int[]{piece.getX() - 1, piece.getY()};
+      case 6:
+        return new int[]{piece.getX() + 1, piece.getY()};
+      case 7:
+        return new int[]{piece.getX() - 1, piece.getY() + 1};
+      case 8:
+        return new int[]{piece.getX(), piece.getY() + 1};
+      case 9:
+        return new int[]{piece.getX() + 1, piece.getY() + 1};
+      default:
+        return null;
     }
   }
 }
