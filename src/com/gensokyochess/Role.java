@@ -240,7 +240,7 @@ public class Role {
     ArmorClass += RIVER_BONUS;
   }
 
-  public void subRiverBonus() {
+  public void clearRiverBonus() {
     ArmorClass -= RIVER_BONUS;
   }
 
@@ -251,7 +251,7 @@ public class Role {
     }
   }
 
-  public void subDefenseBonus() {
+  public void clearDefenseBonus() {
     ArmorClass -= DEFENCE_BONUS * DefenceBonusCount;
     DefenceBonusCount = 0;
   }

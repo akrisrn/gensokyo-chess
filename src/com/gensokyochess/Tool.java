@@ -13,6 +13,19 @@ public class Tool {
   private final static String Arrows = "↙↓↘←→↖↑↗";
   private static Piece ActivatedPiece;
   private static int RoundCount = 0;
+  private static boolean Lock = false;
+
+  public static void locked() {
+    Lock = true;
+  }
+
+  public static void unlock() {
+    Lock = false;
+  }
+
+  public static boolean isLock() {
+    return Lock;
+  }
 
   public static int getRoundCount() {
     return RoundCount;

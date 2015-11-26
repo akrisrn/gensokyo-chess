@@ -54,8 +54,8 @@ public class Piece extends Role {
     return !Tool.findPieces(isXAxis, commonValue, startXOrY, overXOrY).isEmpty();
   }
 
-  public void opportunityBattleWith(Piece piece) {
-    if (getAttackType() == 0 && !isInRiver() && !piece.isInRiver()) {
+  public void opportunityBattleWith(Piece piece) throws InRiverException {
+    if (getAttackType() == 0) {
       Battle.opportunityBattle(this, piece);
       checkAlive(piece);
     }
@@ -66,9 +66,7 @@ public class Piece extends Role {
     if (Camp.equals(piece.getCamp())) {
       throw new SameCampException();
     }
-    if (isInRiver()) {
-      throw new InRiverException();
-    }
+
     if (piece.isKing()) {
       if ((piece.getY() < 5 && Y > 5) || (piece.getY() > 5 && Y < 5)) {
         throw new KingSpellException();
@@ -103,10 +101,6 @@ public class Piece extends Role {
 
     if (Camp.equals(piece.getCamp())) {
       throw new SameCampException();
-    }
-
-    if (isInRiver() || piece.isInRiver()) {
-      throw new InRiverException();
     }
 
     Battle.frontalBattle(this, piece);
@@ -270,7 +264,7 @@ public class Piece extends Role {
   }
 
   private char[] normallyMoveTo(int x, int y, boolean noChance) {
-    subDefenseBonus();
+    clearDefenseBonus();
     SpecialMoveCheck = 0;
     char haveChanceChars[] = null;
 
@@ -285,7 +279,7 @@ public class Piece extends Role {
   }
 
   private char[] speciallyMoveTo(int x, int y, boolean into, int count) {
-    subDefenseBonus();
+    clearDefenseBonus();
     char haveChanceChars[] = null;
     SpecialMoveCheck++;
 
@@ -294,7 +288,7 @@ public class Piece extends Role {
         addRiverBonus();
         setInRiver(true);
       } else {
-        subRiverBonus();
+        clearRiverBonus();
         setInRiver(false);
       }
 

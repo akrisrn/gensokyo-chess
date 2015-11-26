@@ -121,11 +121,9 @@ public class Battle {
     return false;
   }
 
-  public static void frontalBattle(Role role1, Role role2) {
-    Tool.print(role1.getNameAndLV() + " 和 " + role2.getNameAndLV() + " 展开正面战斗", 1);
-
+  public static void frontalBattle(Role role1, Role role2) throws InRiverException {
+    start(1, role1, role2, 0);
     boolean isRole1First = judgeInitiative(role1, role2);
-
     int i = 0;
     while (i++ < 6) {
       if (isRole1First) {
@@ -141,28 +139,46 @@ public class Battle {
       }
       isRole1First = !isRole1First;
     }
-    Tool.print("战斗结束", 1);
-    role1.subDefenseBonus();
-    role2.subDefenseBonus();
+    over();
+    role1.clearDefenseBonus();
+    role2.clearDefenseBonus();
   }
 
   public static void remoteBattle(Role role1, Role role2, int distance) throws InRiverException {
-    if (distance != 0) {
-      Tool.print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() + " 进行远程攻击", 1);
-    } else {
-      if (role2.isInRiver()) {
-        throw new InRiverException();
-      }
-      Tool.print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() + " 进行近战攻击", 1);
-    }
+    start(2, role1, role2, distance);
     battleRound(role1, role2, distance);
-    Tool.print("战斗结束", 1);
-    role1.subDefenseBonus();
-    role2.subDefenseBonus();
+    over();
+    role1.clearDefenseBonus();
+    role2.clearDefenseBonus();
   }
 
-  public static void opportunityBattle(Role role1, Role role2) {
-    Tool.print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() + " 进行借机攻击", 1);
+  public static void opportunityBattle(Role role1, Role role2) throws InRiverException {
+    start(0, role1, role2, 0);
     battleRound(role1, role2, 0);
+    over();
+  }
+
+  private static void start(int battleType, Role role1, Role role2, int distance) throws InRiverException {
+    Tool.locked();
+    if (distance == 0 && (role1.isInRiver() || role2.isInRiver())) {
+      Tool.unlock();
+      throw new InRiverException();
+    }
+    if (battleType == 1) {
+      Tool.print(role1.getNameAndLV() + " 和 " + role2.getNameAndLV() + " 展开正面战斗", 1);
+    } else if (battleType == 2) {
+      if (distance != 0) {
+        Tool.print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() + " 进行远程攻击", 1);
+      } else {
+        Tool.print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() + " 进行近战攻击", 1);
+      }
+    } else {
+      Tool.print(role1.getNameAndLV() + " 对 " + role2.getNameAndLV() + " 进行借机攻击", 1);
+    }
+  }
+
+  private static void over() {
+    Tool.print("战斗结束", 1);
+    Tool.unlock();
   }
 }

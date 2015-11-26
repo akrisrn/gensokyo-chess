@@ -64,10 +64,12 @@ public abstract class Spell {
   }
 
   public void start(Piece piece, int i) {
+    Tool.locked();
     Tool.print(piece.getNameAndLV() + " 使用了 " + piece.getSpellName(i) + "!", 1);
   }
 
   public void start(Piece piece1, Piece piece2, int i) throws KingSpellException {
+    Tool.locked();
     if (piece2.isKing()) {
       throw new KingSpellException();
     }
@@ -76,6 +78,7 @@ public abstract class Spell {
 
   public boolean over() {
     Tool.print("技能结束", 1);
+    Tool.unlock();
     return true;
   }
 

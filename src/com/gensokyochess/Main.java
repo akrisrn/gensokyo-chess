@@ -324,7 +324,10 @@ public class Main {
         if (haveChanceChar != ' ') {
           Piece haveChancePiece = Tool.findPiece(haveChanceChar);
           if (haveChancePiece != null && !haveChancePiece.getCamp().equals(piece.getCamp()) && piece.isAlive()) {
-            haveChancePiece.opportunityBattleWith(piece);
+            try {
+              haveChancePiece.opportunityBattleWith(piece);
+            } catch (InRiverException ignored) {
+            }
           }
         }
       }
