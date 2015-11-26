@@ -165,7 +165,11 @@ public class Piece extends Role {
             nearbyChar[count] = ' ';
           } else {
             char aimChar = chessboard.charAt(index);
-            if (aimChar != ' ' && aimChar != '*' && aimChar != '|') {
+            if (aimChar == '*' && Tool.findSpecialPiece(index, '*') != null) {
+              nearbyChar[count] = aimChar;
+            } else if (aimChar == '|' && Tool.findSpecialPiece(index, '|') != null) {
+              nearbyChar[count] = aimChar;
+            } else if (aimChar != ' ' && aimChar != '*' && aimChar != '|') {
               nearbyChar[count] = aimChar;
             } else {
               nearbyChar[count] = ' ';

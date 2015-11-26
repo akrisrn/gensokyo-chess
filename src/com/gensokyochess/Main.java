@@ -262,7 +262,9 @@ public class Main {
     int spellNum = checkSpell(piece, action);
     if (spellNum != 0) {
       try {
-        return piece.useSpell(spellNum);
+        char haveChanceChars[] = piece.findHaveChanceChar(piece.getX(), piece.getY());
+        opportunityBattleAction(haveChanceChars, piece);
+        return !piece.isAlive() || piece.useSpell(spellNum);
       } catch (HaveNotSpellException e) {
         Tool.print("技能未实装");
         return false;
