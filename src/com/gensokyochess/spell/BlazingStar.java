@@ -38,8 +38,10 @@ public class BlazingStar extends Spell {
         int[] tmp = Tool.convertMove2XY(piece1.getX(), piece1.getY(), direction);
         assert tmp != null;
         Piece piece2 = Tool.findPiece(tmp[0], tmp[1]);
+        assert piece2 != null;
         if (!piece2.isKing()) {
           Battle.damage(piece1, piece2, damage);
+          piece1.checkAlive(piece2);
         }
         break;
       } catch (CanNotMoveException | KingMoveException e) {

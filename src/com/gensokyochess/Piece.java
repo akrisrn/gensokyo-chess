@@ -52,6 +52,7 @@ public class Piece extends Role {
     } else if (!piece.isAlive()) {
       piece.remove();
     }
+    Tool.updateChessboard();
   }
 
   /**
