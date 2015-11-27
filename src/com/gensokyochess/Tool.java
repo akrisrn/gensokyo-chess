@@ -305,7 +305,17 @@ public class Tool {
    * @return 找到的棋子 ，没找到则返回 null
    */
   public static Piece findPiece(int x, int y) {
-    return findPiece(Chessboard.charAt(convertXY2Index(x, y)));
+    int index = convertXY2Index(x, y);
+    char aimChar = Chessboard.charAt(index);
+    if (aimChar == ' ') {
+      return null;
+    } else if (aimChar == '*') {
+      return findSpecialPiece(index, '*');
+    } else if (aimChar == '|') {
+      return findSpecialPiece(index, '|');
+    } else {
+      return findPiece(aimChar);
+    }
   }
 
   /**
@@ -489,7 +499,7 @@ public class Tool {
    * @param y y 坐标
    * @return 方向列表 array list
    */
-  private static ArrayList<Integer> markDirection(int x, int y) {
+  public static ArrayList<Integer> markDirection(int x, int y) {
     ArrayList<Integer> directions = new ArrayList<>();
     for (int i = x - 1; i <= x + 1; i++) {
       for (int j = y - 1; j <= y + 1; j++) {

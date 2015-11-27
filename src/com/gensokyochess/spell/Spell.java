@@ -26,6 +26,7 @@ public abstract class Spell {
     spells.add(new MasterSpark());
     spells.add(new BlazingStar());
     spells.add(new Darkness());
+    spells.add(new PerfectFreeze());
 
     for (Spell spell : spells) {
       SpellsMap.put(spell.getCode(), spell);
