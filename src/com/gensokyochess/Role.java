@@ -109,11 +109,15 @@ public class Role {
     calculateBonus();
   }
 
-  public boolean useSpell(int i) throws HaveNotSpellException, KingSpellException, SameCampException {
+  public void useSpell(int i) throws HaveNotSpellException, KingSpellException, SameCampException {
     if (Spell[i - 1] == null) {
       throw new HaveNotSpellException();
     }
-    return Spell[i - 1].use((Piece) this);
+    while (true) {
+      if (Spell[i - 1].use((Piece) this)) {
+        break;
+      }
+    }
   }
 
   public int getTotalSpellNumber() {

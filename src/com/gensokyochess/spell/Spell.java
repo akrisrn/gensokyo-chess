@@ -61,19 +61,15 @@ public abstract class Spell {
   public abstract boolean use(Piece piece1) throws KingSpellException, SameCampException;
 
   public Piece choicePiece() {
-    Tool.print("请选择一个对方棋子");
+    Tool.print("请选择一个棋子");
     Tool.eraseArrows();
 
     String input = Tool.input();
-    Tool.setActivatedPiece(null);
     Piece piece;
     if (input.length() == 3) {
       piece = Tool.findPiece(input.charAt(2));
     } else {
       piece = Tool.findPiece(input.charAt(0));
-    }
-    if (piece == null) {
-      Tool.print("输入有误");
     }
     return piece;
   }
@@ -84,9 +80,7 @@ public abstract class Spell {
     Tool.drawArrows(piece, isAllArrows);
 
     String input = Tool.input();
-    Tool.setActivatedPiece(null);
     Tool.eraseArrows();
-    Tool.print(input);
     if (input.equals(piece.getCode() + "1") || input.equals("1")) {
       return 1;
     } else if (input.equals(piece.getCode() + "2") || input.equals("2")) {
@@ -116,15 +110,29 @@ public abstract class Spell {
   public void start(Piece piece1, Piece piece2, int i) throws KingSpellException {
     Tool.locked();
     if (piece2.isKing()) {
+      Tool.unlock();
       throw new KingSpellException();
     }
     Tool.print(piece1.getNameAndLv() + " 使用了 " + piece1.getSpellName(i) + "!", 1);
   }
 
   public boolean over() {
+    Tool.setActivatedPiece(null);
     Tool.print("技能结束", 1);
     Tool.unlock();
     return true;
+  }
+
+  public boolean error(Piece piece, int type) {
+    if (type == 1) {
+      Tool.print("这是己方棋子");
+    } else if (type == 2) {
+      Tool.print("国王不受技能影响");
+    }
+    Tool.setActivatedPiece(piece);
+    Tool.unlock();
+    Tool.print("输入有误");
+    return false;
   }
 
   public String getCode() {

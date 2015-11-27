@@ -17,8 +17,7 @@ public class BlazingStar extends Spell {
     int damage = 5;
     int direction = choiceDirection(piece1, false);
     if (direction != 2 && direction != 4 && direction != 6 && direction !=8) {
-      Tool.print("输入有误");
-      return false;
+      return error(piece1, 0);
     }
 
     start(piece1, 2);
@@ -31,7 +30,9 @@ public class BlazingStar extends Spell {
         int[] tmp = Tool.handleMove2XY(piece1, direction);
         assert tmp != null;
         Piece piece2 = Tool.findPiece(tmp[0], tmp[1]);
-        Battle.damage(piece1, piece2, damage);
+        if (!piece2.isKing()) {
+          Battle.damage(piece1, piece2, damage);
+        }
         break;
       } catch (CanNotMoveException | KingMoveException e) {
         break;

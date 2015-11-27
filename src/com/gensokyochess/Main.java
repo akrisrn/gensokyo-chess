@@ -253,7 +253,12 @@ public class Main {
     if (spellNumber != 0) {
       try {
         opportunityBattleAction(piece.findHaveChanceChar(piece.getX(), piece.getY()), piece);
-        return !piece.isAlive() || piece.useSpell(spellNumber);
+        if (piece.isAlive()) {
+          piece.useSpell(spellNumber);
+        } else {
+          Tool.eraseArrows();
+        }
+        return true;
       } catch (HaveNotSpellException e) {
         Tool.print("技能未实装");
         return false;
@@ -328,6 +333,8 @@ public class Main {
       opportunityBattleAction(piece1.findHaveChanceChar(piece1.getX(), piece1.getY()), piece1);
       if (piece1.isAlive()) {
         piece1.remoteBattleWith(piece2);
+      } else {
+        Tool.eraseArrows();
       }
       return true;
     } catch (ExceedAttackRangeException e) {

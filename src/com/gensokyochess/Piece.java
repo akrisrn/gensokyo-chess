@@ -25,6 +25,8 @@ public class Piece extends Role {
 
     if (IsKing = x == 5 && (y == 1 || y == 9)) {
       initRole(code, 0);
+    } else if (level == 0) {
+      initRole(code, 1);
     }
   }
 

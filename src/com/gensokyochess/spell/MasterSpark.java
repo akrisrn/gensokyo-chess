@@ -24,8 +24,6 @@ public class MasterSpark extends Spell {
       pieces = Tool.findPieces(true, piece1.getY(), piece1.getX(), 0);
     } else if (direction == 6) {
       pieces = Tool.findPieces(true, piece1.getY(), piece1.getX(), 10);
-    } else {
-      Tool.print("输入有误");
     }
     if (pieces != null) {
       start(piece1, 1);
@@ -35,7 +33,7 @@ public class MasterSpark extends Spell {
       });
       return over();
     } else {
-      return false;
+      return error(piece1, 0);
     }
   }
 }
