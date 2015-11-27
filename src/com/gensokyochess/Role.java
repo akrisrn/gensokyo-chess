@@ -129,13 +129,13 @@ public class Role {
     } else {
       initRole(code, level - 1);
       if (Strength % 2 + Dexterity % 2 + Constitution % 2 == 3) {
-        improveAttr(3);
+        increaseAttr(3);
       } else if (Strength % 2 + Dexterity % 2 + Constitution % 2 == 2) {
-        improveAttr(0, 1, 3);
+        increaseAttr(0, 1, 3);
       } else if (Strength % 2 + Dexterity % 2 + Constitution % 2 == 1) {
-        improveAttr(1, 3, 1);
+        increaseAttr(1, 3, 1);
       } else {
-        improveAttr(5);
+        increaseAttr(5);
       }
     }
     Level = level;
@@ -149,7 +149,7 @@ public class Role {
    * @param improve1 第一种提高值
    * @param improve2 第二种提高值
    */
-  private void improveAttr(int odevity, int improve1, int improve2) {
+  private void increaseAttr(int odevity, int improve1, int improve2) {
     if (Strength % 2 == odevity) {
       Strength += improve1;
       if (Dexterity <= Constitution) {
@@ -196,15 +196,15 @@ public class Role {
   /**
    * 提高属性
    *
-   * @param improve 提高值
+   * @param increase 提高值
    */
-  private void improveAttr(int improve) {
+  private void increaseAttr(int increase) {
     if (Strength >= Dexterity && Strength >= Constitution) {
-      Strength += improve;
+      Strength += increase;
     } else if (Dexterity >= Strength && Dexterity >= Constitution) {
-      Dexterity += improve;
+      Dexterity += increase;
     } else {
-      Constitution += improve;
+      Constitution += increase;
     }
   }
 
@@ -321,6 +321,44 @@ public class Role {
   public void clearDefenseBonus() {
     ArmorClass -= DEFENCE_BONUS * DefenceBonusCount;
     DefenceBonusCount = 0;
+  }
+
+  /**
+   * 增加防御等级
+   *
+   * @param increase 增加值
+   */
+  public void addArmorClass(int increase) {
+    ArmorClass += increase;
+  }
+
+  /**
+   * 减少防御等级
+   *
+   * @param decrease 减少值
+   */
+  public void subArmorClass(int decrease) {
+    ArmorClass -= decrease;
+  }
+
+  /**
+   * 增加攻击加值
+   *
+   * @param increase 增加值
+   */
+  public void addAttackBonus(int increase) {
+    AttackBonus += increase;
+    recoverAB();
+  }
+
+  /**
+   * 减少攻击加值
+   *
+   * @param decrease 减少值
+   */
+  public void subAttackBonus(int decrease) {
+    AttackBonus -= decrease;
+    recoverAB();
   }
 
   /**

@@ -25,6 +25,7 @@ public abstract class Spell {
     spells.add(new FantasySeal());
     spells.add(new MasterSpark());
     spells.add(new BlazingStar());
+    spells.add(new Darkness());
 
     for (Spell spell : spells) {
       SpellsMap.put(spell.getCode(), spell);
