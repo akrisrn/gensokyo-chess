@@ -14,18 +14,18 @@ public class BlazingStar extends Spell {
 
   @Override
   public boolean use(Piece piece1) {
-    int damage = 5;
     int direction = choiceDirection(piece1, false);
     if (direction != 2 && direction != 4 && direction != 6 && direction !=8) {
       return error(piece1, 0);
     }
 
+    int damage = 0;
     start(piece1, 2);
     while (true) {
       try {
-        piece1.moveTo(direction, 0, true);
+        piece1.moveTo(direction, 0, true, true);
         Tool.updateChessboard();
-        Thread.sleep(800);
+        Thread.sleep(800 - 100 * damage);
       } catch (CanNotPlaceException e) {
         int[] tmp = Tool.handleMove2XY(piece1, direction);
         assert tmp != null;
@@ -38,6 +38,7 @@ public class BlazingStar extends Spell {
         break;
       } catch (InterruptedException ignored) {
       }
+      damage++;
     }
     return over();
   }

@@ -182,7 +182,12 @@ public class Piece extends Role {
     return nearbyChar;
   }
 
-  public char[] moveTo(int move, int count, boolean noChance) throws CanNotPlaceException,
+  public char[] moveTo(int move, int count, boolean noChance) throws CanNotMoveException,
+          CanNotPlaceException, KingMoveException {
+    return moveTo(move, count, noChance, false);
+  }
+
+  public char[] moveTo(int move, int count, boolean noChance, boolean noSpecial) throws CanNotPlaceException,
           CanNotMoveException, KingMoveException {
     if (move == 5) {
       addDefenseBonus();
@@ -209,16 +214,20 @@ public class Piece extends Role {
       throw new KingMoveException();
     }
 
-    if (Y == 5 && X != 2 && X != 5 && X != 8) {
-      if (aimChar != '*') {
-        return speciallyMoveTo(x, y, false, count);
+    if (noSpecial) {
+      return normallyMoveTo(x, y, noChance);
+    } else {
+      if (Y == 5 && X != 2 && X != 5 && X != 8) {
+        if (aimChar != '*') {
+          return speciallyMoveTo(x, y, false, count);
+        } else {
+          return normallyMoveTo(x, y, noChance);
+        }
+      } else if (aimChar == '*') {
+        return speciallyMoveTo(x, y, true, count);
       } else {
         return normallyMoveTo(x, y, noChance);
       }
-    } else if (aimChar == '*') {
-      return speciallyMoveTo(x, y, true, count);
-    } else {
-      return normallyMoveTo(x, y, noChance);
     }
   }
 
