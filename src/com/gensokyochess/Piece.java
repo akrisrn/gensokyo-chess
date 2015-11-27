@@ -2,6 +2,9 @@ package com.gensokyochess;
 
 import com.gensokyochess.exception.*;
 
+/**
+ * 棋子类
+ */
 public class Piece extends Role {
   private int X;
   private int Y;
@@ -12,6 +15,14 @@ public class Piece extends Role {
   private boolean IsCanNotMove = false;
   private int Duration = 0;
 
+  /**
+   * 实例化一个棋子，根据初始坐标来判断阵营和是否是国王
+   *
+   * @param x     棋子的初始 x 坐标
+   * @param y     棋子的初始 y 坐标
+   * @param code  棋子代码
+   * @param level 棋子等级
+   */
   public Piece(int x, int y, char code, int level) {
     super(code, level);
     X = x;
@@ -30,14 +41,26 @@ public class Piece extends Role {
     }
   }
 
-  public void checkAlive(Piece piece2) {
+  /**
+   * 检查当前棋子和另一个棋子是否存活，如果阵亡则从棋盘上移去
+   *
+   * @param piece 检查的另一个棋子
+   */
+  public void checkAlive(Piece piece) {
     if (!isAlive()) {
       remove();
-    } else if (!piece2.isAlive()) {
-      piece2.remove();
+    } else if (!piece.isAlive()) {
+      piece.remove();
     }
   }
 
+  /**
+   * 检查直线距离上是否有障碍在当前棋子和另一个棋子之间
+   *
+   * @param piece   另一个棋子
+   * @param isXAxis 是否都在 x 轴上
+   * @return 是否有障碍
+   */
   private boolean isHaveObstacleBetween(Piece piece, boolean isXAxis) {
     int commonValue;
     int startXOrY;
@@ -54,6 +77,12 @@ public class Piece extends Role {
     return !Tool.findPieces(isXAxis, commonValue, startXOrY, overXOrY).isEmpty();
   }
 
+  /**
+   * 对一个棋子进行借机攻击
+   *
+   * @param piece 被借机的棋子
+   * @throws InRiverException 有棋子在河流中
+   */
   public void opportunityBattleWith(Piece piece) throws InRiverException {
     if (getAttackType() == 0) {
       Battle.opportunityBattle(this, piece);
@@ -61,6 +90,16 @@ public class Piece extends Role {
     }
   }
 
+  /**
+   * 对一个棋子进行远程攻击
+   *
+   * @param piece 被攻击的棋子
+   * @throws ExceedAttackRangeException 超出攻击范围
+   * @throws SameCampException          相同阵营
+   * @throws HaveObstacleException      棋子之间有障碍
+   * @throws InRiverException           被攻击棋子在河流中
+   * @throws KingSpellException         国王技能
+   */
   public void remoteBattleWith(Piece piece) throws ExceedAttackRangeException,
           SameCampException, HaveObstacleException, InRiverException, KingSpellException {
     if (getCamp() == piece.getCamp()) {
@@ -93,6 +132,14 @@ public class Piece extends Role {
     checkAlive(piece);
   }
 
+  /**
+   * 对一个棋子进行正面攻击
+   *
+   * @param piece 被攻击的棋子
+   * @throws ExceedAttackRangeException 超出攻击范围
+   * @throws SameCampException          相同阵营
+   * @throws InRiverException           有棋子在河流中
+   */
   public void frontalBattleWith(Piece piece) throws ExceedAttackRangeException,
           SameCampException, InRiverException {
     if (Math.abs(X - piece.getX()) > 1 || Math.abs(Y - piece.getY()) > 1) {
@@ -107,10 +154,17 @@ public class Piece extends Role {
     checkAlive(piece);
   }
 
+  /**
+   * 寻找在棋子移动、远程攻击和使用技能时有机会进行借机的棋子
+   *
+   * @param x 移动到的 x 坐标
+   * @param y 移动到的 y 坐标
+   * @return 有机会进行借机的棋子
+   */
   public char[] findHaveChanceChar(int x, int y) {
     char[] haveChanceChar = new char[5];
     char[] nearbyChar = findNearbyChar();
-    int direction = Tool.determineDirection(x, y, X, Y);
+    int direction = Tool.decideDirection(x, y, X, Y);
 
     switch (direction) {
       case 8:
@@ -147,6 +201,11 @@ public class Piece extends Role {
     return haveChanceChar;
   }
 
+  /**
+   * 寻找当前棋子威胁区域内的所有棋子，对没有棋子的格子返回一个空格
+   *
+   * @return 威胁区域内的棋子列表
+   */
   private char[] findNearbyChar() {
     char[] nearbyChar = new char[8];
     int count = 0;
@@ -154,7 +213,7 @@ public class Piece extends Role {
     for (int i = X + 1; i >= X - 1; i--) {
       for (int j = Y + 1; j >= Y - 1; j--) {
         if (!(i == X && j == Y)) {
-          int index = Tool.convert2Index(i, j);
+          int index = Tool.convertXY2Index(i, j);
           if (index == 0) {
             nearbyChar[count] = ' ';
           } else {
@@ -182,11 +241,34 @@ public class Piece extends Role {
     return nearbyChar;
   }
 
+  /**
+   * 使当前棋子进行移动
+   *
+   * @param move     移动方向
+   * @param count    第几回合
+   * @param noChance 是否没有可能引发借机
+   * @return 有可能进行借机的棋子，没有则返回 null
+   * @throws CanNotMoveException  要移动的格子已经有棋子
+   * @throws CanNotPlaceException 超出棋盘范围
+   * @throws KingMoveException    国王离开了己方区域
+   */
   public char[] moveTo(int move, int count, boolean noChance) throws CanNotMoveException,
           CanNotPlaceException, KingMoveException {
     return moveTo(move, count, noChance, false);
   }
 
+  /**
+   * 使当前棋子进行移动
+   *
+   * @param move      移动方向
+   * @param count     第几回合
+   * @param noChance  是否没有可能引发借机
+   * @param noSpecial 是否不进行特殊移动
+   * @return 有可能进行借机的棋子，没有则返回 null
+   * @throws CanNotMoveException  要移动的格子已经有棋子
+   * @throws CanNotPlaceException 超出棋盘范围
+   * @throws KingMoveException    国王离开了己方区域
+   */
   public char[] moveTo(int move, int count, boolean noChance, boolean noSpecial) throws CanNotPlaceException,
           CanNotMoveException, KingMoveException {
     if (move == 5) {
@@ -194,11 +276,11 @@ public class Piece extends Role {
       return null;
     }
 
-    int[] tmp = Tool.handleMove2XY(this, move);
+    int[] tmp = Tool.convertMove2XY(X, Y, move);
     assert tmp != null;
     int x = tmp[0];
     int y = tmp[1];
-    char aimChar = Chessboard.charAt(Tool.convert2Index(x, y));
+    char aimChar = Chessboard.charAt(Tool.convertXY2Index(x, y));
 
     if (Tool.getRoundCount() > Duration) {
       IsCanNotMove = false;
@@ -231,6 +313,14 @@ public class Piece extends Role {
     }
   }
 
+  /**
+   * 普通移动
+   *
+   * @param x        要移动的 x 坐标
+   * @param y        要移动的 x 坐标
+   * @param noChance 是否没有可能引发借机
+   * @return 有可能进行借机的棋子，没有则返回 null
+   */
   private char[] normallyMoveTo(int x, int y, boolean noChance) {
     clearDefenseBonus();
     SpecialMoveCheck = 0;
@@ -241,11 +331,20 @@ public class Piece extends Role {
     }
 
     remove();
-    Chessboard.setCharAt(Tool.convert2Index(x, y), getCode());
+    Chessboard.setCharAt(Tool.convertXY2Index(x, y), getCode());
     setXY(x, y);
     return haveChanceChars;
   }
 
+  /**
+   * 特殊移动（进河或出河）
+   *
+   * @param x     要移动的 x 坐标
+   * @param y     要移动的 x 坐标
+   * @param into  是否是进河
+   * @param count 第几回合
+   * @return 有可能进行借机的棋子，没有则返回 null
+   */
   private char[] speciallyMoveTo(int x, int y, boolean into, int count) {
     clearDefenseBonus();
     SpecialMoveCheck++;
@@ -262,7 +361,7 @@ public class Piece extends Role {
 
       SpecialMoveCheck = 0;
       remove();
-      Chessboard.setCharAt(Tool.convert2Index(x, y), getCode());
+      Chessboard.setCharAt(Tool.convertXY2Index(x, y), getCode());
       setXY(x, y);
     } else if (count == 2) {
       if (into) {
@@ -277,24 +376,32 @@ public class Piece extends Role {
     return haveChanceChars;
   }
 
+  /**
+   * 从棋盘上移除棋子
+   */
   private void remove() {
     if (Y == 5) {
       if (X == 2 || X == 5 || X == 8) {
-        Chessboard.setCharAt(Tool.convert2Index(X, Y), '|');
+        Chessboard.setCharAt(Tool.convertXY2Index(X, Y), '|');
       } else {
-        Chessboard.setCharAt(Tool.convert2Index(X, Y), '*');
+        Chessboard.setCharAt(Tool.convertXY2Index(X, Y), '*');
       }
     } else {
-      Chessboard.setCharAt(Tool.convert2Index(X, Y), ' ');
+      Chessboard.setCharAt(Tool.convertXY2Index(X, Y), ' ');
     }
     setXY(-1, -1);
   }
 
+  /**
+   * 放置棋子到棋盘上
+   *
+   * @throws CanNotPlaceException 放置的格子不为空
+   */
   public void place() throws CanNotPlaceException {
-    if (Chessboard.charAt(Tool.convert2Index(X, Y)) != ' ') {
+    if (Chessboard.charAt(Tool.convertXY2Index(X, Y)) != ' ') {
       throw new CanNotPlaceException();
     }
-    Chessboard.setCharAt(Tool.convert2Index(X, Y), getCode());
+    Chessboard.setCharAt(Tool.convertXY2Index(X, Y), getCode());
   }
 
   public boolean isKing() {
@@ -318,6 +425,11 @@ public class Piece extends Role {
     Y = y;
   }
 
+  /**
+   * 使棋子无法移动
+   *
+   * @param duration 持续的回合数
+   */
   public void setCanNotMove(int duration) {
     IsCanNotMove = true;
     Duration = Tool.getRoundCount() + duration;

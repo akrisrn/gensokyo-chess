@@ -8,6 +8,9 @@ import java.awt.*;
 import java.io.*;
 import java.util.Scanner;
 
+/**
+ * Gui 框架类
+ */
 public class GuiFrame extends JFrame {
   private JPanel MainPanel;
   private JTextArea Board;
@@ -22,6 +25,9 @@ public class GuiFrame extends JFrame {
   private JLabel ActionLabel;
   private Scanner Scanner = new Scanner("");
 
+  /**
+   * 实例化一个 Gui 框架
+   */
   public GuiFrame() {
     setTitle("Gensokyo & Chess");
     setResizable(false);
@@ -69,14 +75,30 @@ public class GuiFrame extends JFrame {
     Board.addMouseListener(new MouseClick());
   }
 
+  /**
+   * 输入指令到扫描器
+   *
+   * @param cmd the cmd
+   */
   public void sendCmd(String cmd) {
     Scanner = new Scanner(cmd);
   }
 
+  /**
+   * 刷新棋盘
+   *
+   * @param chessboard 不可变的棋盘字符串
+   */
   public void updateChessboard(String chessboard) {
     Board.setText(chessboard);
   }
 
+  /**
+   * 添加记录
+   *
+   * @param log     记录信息
+   * @param isALine 结尾是否有换行符
+   */
   public void appendLog(String log, boolean isALine) {
     if (isALine) {
       LogArea.append(log + "\n");
@@ -86,25 +108,46 @@ public class GuiFrame extends JFrame {
     LogArea.setCaretPosition(LogArea.getText().length());
   }
 
+  /**
+   * 更新回合标签
+   *
+   * @param msg 更新信息
+   */
   public void updateRoundLabel(String msg) {
     RoundLabel.setText(msg);
   }
 
+  /**
+   * 更新行动标签
+   *
+   * @param msg 更新信息
+   */
   public void updateActionLabel(String msg) {
     ActionLabel.setText(msg);
   }
 
-  public void setSpellButtonText(int i, String text) {
-    if (i == 1) {
-      SpellButton1.setText(text);
-    } else if (i == 2) {
-      SpellButton2.setText(text);
+  /**
+   * 设置技能按钮的文本
+   *
+   * @param num  技能编号
+   * @param code 技能代码
+   */
+  public void setSpellButtonText(int num, String code) {
+    if (num == 1) {
+      SpellButton1.setText(code);
+    } else if (num == 2) {
+      SpellButton2.setText(code);
     } else {
-      SpellButton1.setText(text);
-      SpellButton2.setText(text);
+      SpellButton1.setText(code);
+      SpellButton2.setText(code);
     }
   }
 
+  /**
+   * 获取输入指令的扫描器
+   *
+   * @return 扫描器
+   */
   public Scanner getScanner() {
     return Scanner;
   }

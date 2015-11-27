@@ -4,7 +4,15 @@ import com.gensokyochess.Battle;
 import com.gensokyochess.Piece;
 import com.gensokyochess.exception.KingSpellException;
 
+/**
+ * 技能：梦想封印
+ * 代码：H1
+ * 作用：对一个对方棋子造成 3 点伤害
+ */
 public class FantasySeal extends Spell {
+  /**
+   * 实例化技能
+   */
   public FantasySeal() {
     super("H1");
   }

@@ -6,7 +6,15 @@ import com.gensokyochess.Tool;
 
 import java.util.ArrayList;
 
+/**
+ * 技能：极限火花
+ * 代码：K1
+ * 作用：对直线距离上的所有棋子造成 3 点伤害
+ */
 public class MasterSpark extends Spell {
+  /**
+   * 实例化技能
+   */
   public MasterSpark() {
     super("K1");
   }

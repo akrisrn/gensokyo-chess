@@ -3,6 +3,9 @@ package com.gensokyochess;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+/**
+ * 鼠标点击事件类
+ */
 public class MouseClick extends MouseAdapter {
   private int X;
   private int Y;
@@ -11,8 +14,8 @@ public class MouseClick extends MouseAdapter {
   public void mouseClicked(MouseEvent e) {
     super.mouseClicked(e);
     if (!Tool.isLock()) {
-      convert2XY(e.getX(), e.getY());
-      int index = Tool.convert2Index(X, Y);
+      convertXY2GridXY(e.getX(), e.getY());
+      int index = Tool.convertXY2Index(X, Y);
       char aimChar = Tool.getChessboard().charAt(index);
       if (Tool.getActivatedPiece() != null) {
         int move = Tool.getMove(aimChar);
@@ -47,7 +50,13 @@ public class MouseClick extends MouseAdapter {
     }
   }
 
-  private void convert2XY(int x, int y) {
+  /**
+   * 将鼠标点击时的坐标转换为棋盘上的格子坐标
+   *
+   * @param x 鼠标点击时的 x 坐标
+   * @param y 鼠标点击时的 y 坐标
+   */
+  private void convertXY2GridXY(int x, int y) {
     if (x <= 6 || x >= 366 || y <= 12 || y >= 390) {
       X = 0;
       Y = 0;

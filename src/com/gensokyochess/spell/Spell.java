@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * 技能类
+ */
 public abstract class Spell {
   private String Code;
   private String Name;
@@ -50,16 +53,40 @@ public abstract class Spell {
     }
   }
 
-  public static Spell choiceSpell(String code) {
-    return SpellsMap.get(code);
-  }
-
+  /**
+   * 实例化技能
+   *
+   * @param code 技能代码
+   */
   public Spell(String code) {
     Code = code;
   }
 
+  /**
+   * 选择一个技能
+   *
+   * @param code 技能代码
+   * @return 技能
+   */
+  public static Spell choiceSpell(String code) {
+    return SpellsMap.get(code);
+  }
+
+  /**
+   * 使用技能
+   *
+   * @param piece1 使用技能的棋子
+   * @return 是否使用成功
+   * @throws KingSpellException 国王技能
+   * @throws SameCampException  相同阵营
+   */
   public abstract boolean use(Piece piece1) throws KingSpellException, SameCampException;
 
+  /**
+   * 选择一个棋子
+   *
+   * @return 棋子
+   */
   public Piece choicePiece() {
     Tool.print("请选择一个棋子");
     Tool.eraseArrows();
@@ -74,6 +101,13 @@ public abstract class Spell {
     return piece;
   }
 
+  /**
+   * 选择一个方向
+   *
+   * @param piece       要选择方向的棋子
+   * @param isAllArrows 是否画出所有的箭头
+   * @return 方向值
+   */
   public int choiceDirection(Piece piece, boolean isAllArrows) {
     Tool.print("请选择一个方向");
     Tool.eraseArrows();
@@ -102,20 +136,39 @@ public abstract class Spell {
     }
   }
 
-  public void start(Piece piece, int i) {
+  /**
+   * 技能开始
+   *
+   * @param piece 使用技能的棋子
+   * @param num   技能编号
+   */
+  public void start(Piece piece, int num) {
     Tool.locked();
-    Tool.print(piece.getNameAndLv() + " 使用了 " + piece.getSpellName(i) + "!", 1);
+    Tool.print(piece.getNameAndLv() + " 使用了 " + piece.getSpellName(num) + "!", 1);
   }
 
-  public void start(Piece piece1, Piece piece2, int i) throws KingSpellException {
+  /**
+   * 技能开始
+   *
+   * @param piece1 使用技能的棋子
+   * @param piece2 技能目标的棋子
+   * @param num    技能编号
+   * @throws KingSpellException 国王技能
+   */
+  public void start(Piece piece1, Piece piece2, int num) throws KingSpellException {
     Tool.locked();
     if (piece2.isKing()) {
       Tool.unlock();
       throw new KingSpellException();
     }
-    Tool.print(piece1.getNameAndLv() + " 使用了 " + piece1.getSpellName(i) + "!", 1);
+    Tool.print(piece1.getNameAndLv() + " 使用了 " + piece1.getSpellName(num) + "!", 1);
   }
 
+  /**
+   * 技能结束
+   *
+   * @return true
+   */
   public boolean over() {
     Tool.setActivatedPiece(null);
     Tool.print("技能结束", 1);
@@ -123,6 +176,13 @@ public abstract class Spell {
     return true;
   }
 
+  /**
+   * 技能错误
+   *
+   * @param piece 使用技能的棋子
+   * @param type  错误类型（0：无，1：相同阵营，2：国王技能）
+   * @return false
+   */
   public boolean error(Piece piece, int type) {
     if (type == 1) {
       Tool.print("这是己方棋子");

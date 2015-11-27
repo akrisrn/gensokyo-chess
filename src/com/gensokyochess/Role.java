@@ -10,6 +10,9 @@ import java.io.IOException;
 
 import static com.gensokyochess.spell.Spell.choiceSpell;
 
+/**
+ * 角色类
+ */
 public class Role {
   private final int RIVER_BONUS = 5;
   private final int DEFENCE_BONUS = 2;
@@ -23,13 +26,19 @@ public class Role {
   private int Initiative;
   private int BodyBonus;
   private int AttackBonus, CurrentAB, AttackType;
-  private int MaxDamage, MinDamage, DamageBonus, DistanceBonus = 0;
+  private int MaxDamage, MinDamage, DamageBonus, MeleeBonus = 0;
   private boolean Alive = true;
   private boolean InRiver = false;
   private int TotalSpellNumber;
   private String[] SpellCode;
   private Spell[] Spell;
 
+  /**
+   * 实例化一个角色
+   *
+   * @param code  角色代码
+   * @param level 角色等级
+   */
   public Role(char code, int level) {
     if (level > 5) {
       level = 5;
@@ -38,7 +47,12 @@ public class Role {
     initSpell();
   }
 
-  private void initLevel(char code) {
+  /**
+   * 读取 role.csv 文件初始化棋子 1 级时的属性
+   *
+   * @param code 角色代码
+   */
+  private void initAttribute(char code) {
     CsvReader reader = Tool.getCsvReader("/lib/role.csv");
     if (reader == null) {
       System.exit(1);
@@ -70,6 +84,9 @@ public class Role {
     }
   }
 
+  /**
+   * 计算属性调整值
+   */
   private void calculateBonus() {
     HitPoint = 10 + getBonus(Constitution) + (Level - 1) * 3;
     CurrentHP = HitPoint;
@@ -90,62 +107,9 @@ public class Role {
     CurrentAB = AttackBonus;
   }
 
-  protected void initRole(char code, int level) {
-    if (level <= 1) {
-      initLevel(code);
-    } else {
-      initRole(code, level - 1);
-      if (Strength % 2 + Dexterity % 2 + Constitution % 2 == 3) {
-        increaseAttr(3);
-      } else if (Strength % 2 + Dexterity % 2 + Constitution % 2 == 2) {
-        increaseAttr(0, 1, 3);
-      } else if (Strength % 2 + Dexterity % 2 + Constitution % 2 == 1) {
-        increaseAttr(1, 3, 1);
-      } else {
-        increaseAttr(5);
-      }
-    }
-    Level = level;
-    calculateBonus();
-  }
-
-  public void useSpell(int i) throws HaveNotSpellException, KingSpellException, SameCampException {
-    if (Spell[i - 1] == null) {
-      throw new HaveNotSpellException();
-    }
-    while (true) {
-      if (Spell[i - 1].use((Piece) this)) {
-        break;
-      }
-    }
-  }
-
-  public int getTotalSpellNumber() {
-    return TotalSpellNumber;
-  }
-
-  public String getSpellCode(int i) {
-    return SpellCode[i - 1];
-  }
-
-  public String getSpellName(int i) {
-    if (Spell[i - 1] == null) {
-      return "";
-    } else {
-      return Spell[i - 1].getName();
-    }
-  }
-
-  public String getSpell() {
-    String spell = "";
-    for (int i = 0; i < TotalSpellNumber; i++) {
-      if (Spell[i] != null) {
-        spell += "\n" + Spell[i].toString();
-      }
-    }
-    return spell + "\n";
-  }
-
+  /**
+   * 初始化技能
+   */
   private void initSpell() {
     Spell = new Spell[TotalSpellNumber];
     for (int i = 0; i < TotalSpellNumber; i++) {
@@ -153,85 +117,197 @@ public class Role {
     }
   }
 
-  private void increaseAttr(int rise) {
-    if (Strength >= Dexterity && Strength >= Constitution) {
-      Strength += rise;
-    } else if (Dexterity >= Strength && Dexterity >= Constitution) {
-      Dexterity += rise;
+  /**
+   * 初始化角色
+   *
+   * @param code  角色代码
+   * @param level 角色等级
+   */
+  protected void initRole(char code, int level) {
+    if (level <= 1) {
+      initAttribute(code);
     } else {
-      Constitution += rise;
+      initRole(code, level - 1);
+      if (Strength % 2 + Dexterity % 2 + Constitution % 2 == 3) {
+        improveAttr(3);
+      } else if (Strength % 2 + Dexterity % 2 + Constitution % 2 == 2) {
+        improveAttr(0, 1, 3);
+      } else if (Strength % 2 + Dexterity % 2 + Constitution % 2 == 1) {
+        improveAttr(1, 3, 1);
+      } else {
+        improveAttr(5);
+      }
     }
+    Level = level;
+    calculateBonus();
   }
 
-  private void increaseAttr(int odevity, int rise1, int rise2) {
+  /**
+   * 提高属性
+   *
+   * @param odevity  要提高的属性值的奇偶性
+   * @param improve1 第一种提高值
+   * @param improve2 第二种提高值
+   */
+  private void improveAttr(int odevity, int improve1, int improve2) {
     if (Strength % 2 == odevity) {
-      Strength += rise1;
+      Strength += improve1;
       if (Dexterity <= Constitution) {
-        Dexterity += rise2;
+        Dexterity += improve2;
       } else {
-        Constitution += rise2;
+        Constitution += improve2;
       }
     } else if (Dexterity % 2 == odevity) {
-      Dexterity += rise1;
+      Dexterity += improve1;
       if (Strength <= Constitution) {
-        Strength += rise2;
+        Strength += improve2;
       } else {
-        Constitution += rise2;
+        Constitution += improve2;
       }
     } else {
-      Constitution += rise1;
+      Constitution += improve1;
       if (Strength <= Dexterity) {
-        Strength += rise2;
+        Strength += improve2;
       } else {
-        Dexterity += rise2;
+        Dexterity += improve2;
       }
     }
   }
 
-  public int roll(int x, int n) {
+  /**
+   * 使用技能
+   *
+   * @param num 技能编号
+   * @throws HaveNotSpellException 还没有技能
+   * @throws KingSpellException    国王技能
+   * @throws SameCampException     相同阵营
+   */
+  public void useSpell(int num) throws HaveNotSpellException, KingSpellException, SameCampException {
+    if (Spell[num - 1] == null) {
+      throw new HaveNotSpellException();
+    }
+    while (true) {
+      if (Spell[num - 1].use((Piece) this)) {
+        break;
+      }
+    }
+  }
+
+  /**
+   * 提高属性
+   *
+   * @param improve 提高值
+   */
+  private void improveAttr(int improve) {
+    if (Strength >= Dexterity && Strength >= Constitution) {
+      Strength += improve;
+    } else if (Dexterity >= Strength && Dexterity >= Constitution) {
+      Dexterity += improve;
+    } else {
+      Constitution += improve;
+    }
+  }
+
+  /**
+   * 掷骰（ndx）
+   *
+   * @param n d 前面的
+   * @param x d 后面的
+   * @return 骰子值
+   */
+  public int roll(int n, int x) {
     int ran = 0;
-    for (int i = 0; i < x; i++) {
-      ran += (int) (Math.random() * n + 1);
+    for (int i = 0; i < n; i++) {
+      ran += (int) (Math.random() * x + 1);
     }
     return ran;
   }
 
+  /**
+   * 投先攻检定
+   *
+   * @return 先攻值
+   */
   public int rollInitiative() {
     return Initiative + roll(1, 20);
   }
 
+  /**
+   * 投攻击检定
+   *
+   * @return 攻击检定值
+   */
   public int rollAttack() {
     return CurrentAB + roll(1, 20);
   }
 
+  /**
+   * 投伤害
+   *
+   * @return 伤害值
+   */
   public int rollDamage() {
     if (AttackType == 0) {
       return roll(MinDamage, MaxDamage) + DamageBonus;
     } else {
-      return roll(MinDamage, MaxDamage - DistanceBonus) + DamageBonus;
+      return roll(MinDamage, MaxDamage - MeleeBonus) + DamageBonus;
     }
   }
 
+  /**
+   * 减弱远程攻击加值，重置近战减值
+   *
+   * @param gridNumber 格子数
+   */
+  public void weakenRemote(int gridNumber) {
+    CurrentAB -= gridNumber + 2;
+    if (gridNumber == 0) {
+      MeleeBonus = 5;
+    } else {
+      MeleeBonus = 0;
+    }
+  }
+
+  /**
+   * 恢复攻击加值
+   */
+  public void recoverAB() {
+    CurrentAB = AttackBonus;
+  }
+
+  /**
+   * 恢复生命值
+   */
   public void recoverHP() {
     CurrentHP = HitPoint;
   }
 
+  /**
+   * 减少生命值
+   *
+   * @param damage 伤害值
+   */
   public void reduceHp(int damage) {
     CurrentHP -= damage;
   }
 
-  public int getArmorClass() {
-    return ArmorClass;
-  }
-
+  /**
+   * 添加河流加值
+   */
   public void addRiverBonus() {
     ArmorClass += RIVER_BONUS;
   }
 
+  /**
+   * 清除河流加值
+   */
   public void clearRiverBonus() {
     ArmorClass -= RIVER_BONUS;
   }
 
+  /**
+   * 添加防御加值
+   */
   public void addDefenseBonus() {
     if (DefenceBonusCount < 2) {
       DefenceBonusCount++;
@@ -239,13 +315,26 @@ public class Role {
     }
   }
 
+  /**
+   * 清除防御加值
+   */
   public void clearDefenseBonus() {
     ArmorClass -= DEFENCE_BONUS * DefenceBonusCount;
     DefenceBonusCount = 0;
   }
 
+  /**
+   * 获取调整值
+   *
+   * @param attr 属性值
+   * @return 调整值
+   */
   private int getBonus(int attr) {
     return (int) Math.floor((attr - 10) / 2.0);
+  }
+
+  public int getArmorClass() {
+    return ArmorClass;
   }
 
   public int getCurrentHP() {
@@ -280,16 +369,19 @@ public class Role {
     return CurrentAB;
   }
 
-  public void recoverAB() {
-    CurrentAB = AttackBonus;
+  public int getTotalSpellNumber() {
+    return TotalSpellNumber;
   }
 
-  public void weakenRemote(int gridNumber) {
-    CurrentAB -= gridNumber + 2;
-    if (gridNumber == 0) {
-      DistanceBonus = 5;
+  public String getSpellCode(int i) {
+    return SpellCode[i - 1];
+  }
+
+  public String getSpellName(int i) {
+    if (Spell[i - 1] == null) {
+      return "";
     } else {
-      DistanceBonus = 0;
+      return Spell[i - 1].getName();
     }
   }
 
@@ -360,6 +452,16 @@ public class Role {
     } else {
       return MinDamage + "d" + MaxDamage + DamageBonus;
     }
+  }
+
+  public String getSpell() {
+    String spell = "";
+    for (int i = 0; i < TotalSpellNumber; i++) {
+      if (Spell[i] != null) {
+        spell += "\n" + Spell[i].toString();
+      }
+    }
+    return spell + "\n";
   }
 
   @Override

@@ -9,12 +9,20 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+/**
+ * 确认对话框类
+ */
 public class ConfirmDialog extends JDialog {
   private JPanel contentPane;
   private JButton buttonOK;
   private JButton buttonCancel;
   private GuiFrame GuiFrame;
 
+  /**
+   * 实例化一个确认对话框
+   *
+   * @param guiFrame 要挂载的 Gui 框架
+   */
   public ConfirmDialog(GuiFrame guiFrame) {
     GuiFrame = guiFrame;
     setTitle("提醒");
@@ -38,11 +46,17 @@ public class ConfirmDialog extends JDialog {
             KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
   }
 
+  /**
+   * 当点击是的时候输出 y
+   */
   private void onYes() {
     GuiFrame.sendCmd("y");
     dispose();
   }
 
+  /**
+   * 当点击否的时候输出 n
+   */
   private void onNo() {
     GuiFrame.sendCmd("n");
     dispose();

@@ -4,7 +4,15 @@ import com.gensokyochess.Piece;
 import com.gensokyochess.Tool;
 import com.gensokyochess.exception.KingSpellException;
 
+/**
+ * 技能：封魔阵
+ * 代码：H2
+ * 作用：使对方一个棋子一回合之内无法进行移动
+ */
 public class EvilSealingCircle extends Spell {
+  /**
+   * 实例化技能
+   */
   public EvilSealingCircle() {
     super("H2");
   }

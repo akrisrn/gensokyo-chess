@@ -1,12 +1,23 @@
 package com.gensokyochess;
 
+/**
+ * 棋盘类
+ */
 public class Chessboard {
   private StringBuffer Chessboard;
 
+  /**
+   * 实例化一个棋盘
+   */
   public Chessboard() {
     Chessboard = createChessboard();
   }
 
+  /**
+   * 创建一个空白的棋盘字符串
+   *
+   * @return 棋盘字符串的可变对象
+   */
   private StringBuffer createChessboard() {
     String chessboard = "";
 
@@ -47,6 +58,11 @@ public class Chessboard {
     return new StringBuffer(chessboard);
   }
 
+  /**
+   * 获取棋盘
+   *
+   * @return 棋盘字符串的可变对象
+   */
   public StringBuffer getChessboard() {
     return Chessboard;
   }

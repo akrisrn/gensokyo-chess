@@ -4,6 +4,9 @@ import com.gensokyochess.exception.*;
 
 import java.util.ArrayList;
 
+/**
+ * 主类
+ */
 public class Main {
   private StringBuffer Chessboard = new Chessboard().getChessboard();
   private ArrayList<Piece> Pieces = new ArrayList<>();
@@ -13,11 +16,19 @@ public class Main {
   private Piece RedKing, BlackKing;
   private boolean CurrentCampIsRed = true;
 
+  /**
+   * 主方法，实例化一个主类开始启动游戏
+   *
+   * @param args the input arguments
+   */
   public static void main(String[] args) {
     Main main = new Main();
     main.start();
   }
 
+  /**
+   * 启动游戏
+   */
   protected void start() {
     Tool.setChessboard(Chessboard);
     Tool.setPieces(Pieces);
@@ -35,6 +46,9 @@ public class Main {
     beginRound();
   }
 
+  /**
+   * 开始一个个不断循环的游戏回合
+   */
   private void beginRound() {
     int count = 0;
     while (true) {
@@ -58,13 +72,19 @@ public class Main {
     }
   }
 
-  private boolean startAction(int i) {
+  /**
+   * 一方开始进行行动
+   *
+   * @param count 第几次行动
+   * @return 是否行动成功
+   */
+  private boolean startAction(int count) {
     boolean inputError;
     do {
-      Tool.updateActionMsg(i, 0);
+      Tool.updateActionMsg(count, 0);
 
       ArrayList action = handleInput(Tool.input());
-      inputError = !handleAction(action, i);
+      inputError = !executeAction(action, count);
 
       if (!inputError) {
         Tool.updateChessboard();
@@ -76,6 +96,12 @@ public class Main {
     return true;
   }
 
+  /**
+   * 根据长度和类型对输入指令进行处理并储存到一个列表中，列表第一个值记录指令的类型（0：空，1：查看，2：移动，3：战斗，4：技能）
+   *
+   * @param in 输入
+   * @return 处理后的指令，输入错误返回 null
+   */
   @SuppressWarnings("unchecked")
   private ArrayList handleInput(String in) {
     ArrayList action = new ArrayList();
@@ -124,7 +150,14 @@ public class Main {
     return action;
   }
 
-  private boolean handleAction(ArrayList action, int i) {
+  /**
+   * 读取处理后的指令并执行
+   *
+   * @param action 指令
+   * @param count  第几次行动
+   * @return 是否执行成功（0，1 类型指令不算行动）
+   */
+  private boolean executeAction(ArrayList action, int count) {
     if (action == null) {
       Tool.print("输入有误");
       return false;
@@ -142,7 +175,7 @@ public class Main {
       case 2:
         char code = (char) action.get(1);
         int move = (int) action.get(2);
-        return moveAction(code, move, i);
+        return moveAction(code, move, count);
       case 3:
         HaveBattleOrSpell = true;
         return battleAction(action);
@@ -154,6 +187,11 @@ public class Main {
     }
   }
 
+  /**
+   * 放置一方的棋子
+   *
+   * @param isRed 是否是红方
+   */
   private void placePieces(boolean isRed) {
     int count = 1;
     int levelCount = 0;
@@ -212,7 +250,6 @@ public class Main {
       } else {
         Tool.print("输入有误", true, !IsRandomPlace);
       }
-
     }
     if (isRed) {
       Tool.print("-----红方布置完成------", true, !IsRandomPlace);
@@ -222,6 +259,12 @@ public class Main {
     }
   }
 
+  /**
+   * 随机生成一个放置棋子指令
+   *
+   * @param isRed 是否是红方
+   * @return 随机生成的指令
+   */
   private String rollPlace(boolean isRed) {
     int bonus = 0;
     if (!isRed) {
@@ -233,6 +276,40 @@ public class Main {
             (int) (Math.random() * 5 + 1);
   }
 
+  /**
+   * 判断是否游戏结束
+   *
+   * @return 是否游戏结束
+   */
+  private boolean isGameOver() {
+    if (!RedKing.isAlive()) {
+      Tool.updateActionMsg(0, -1);
+      return true;
+    } else if (!BlackKing.isAlive()) {
+      Tool.updateActionMsg(0, 1);
+      return true;
+    } else {
+      int count = 0;
+      for (Piece piece : Pieces) {
+        if (piece.isAlive()) {
+          count++;
+          if (count > 2) {
+            return false;
+          }
+        }
+      }
+      Tool.updateActionMsg(0, 0);
+      return true;
+    }
+  }
+
+  /**
+   * 检查使用哪一个技能
+   *
+   * @param piece  使用技能的棋子
+   * @param action 技能指令
+   * @return 使用技能的编号，0 是没有这个技能
+   */
   private int checkSpell(Piece piece, ArrayList action) {
     String spellCode = (String) action.get(2);
     for (int i = 1; i <= piece.getTotalSpellNumber(); i++) {
@@ -243,6 +320,12 @@ public class Main {
     return 0;
   }
 
+  /**
+   * 使用技能的行动
+   *
+   * @param action 技能指令
+   * @return 是否行动成功
+   */
   private boolean spellAction(ArrayList action) {
     Piece piece = (Piece) action.get(1);
     if (piece.getCamp() != Tool.getCurrentCamp()) {
@@ -275,6 +358,12 @@ public class Main {
     }
   }
 
+  /**
+   * 战斗的行动，根据攻击棋子的攻击类型选择进行哪种攻击
+   *
+   * @param action 战斗指令
+   * @return 是否行动成功
+   */
   private boolean battleAction(ArrayList action) {
     Piece piece1 = (Piece) action.get(1);
     if (piece1.getCamp() != Tool.getCurrentCamp()) {
@@ -290,44 +379,13 @@ public class Main {
     }
   }
 
-  private boolean isGameOver() {
-    if (!RedKing.isAlive()) {
-      Tool.updateActionMsg(0, -1);
-      return true;
-    } else if (!BlackKing.isAlive()) {
-      Tool.updateActionMsg(0, 1);
-      return true;
-    } else {
-      int count = 0;
-      for (Piece piece : Pieces) {
-        if (piece.isAlive()) {
-          count++;
-          if (count > 2) {
-            return false;
-          }
-        }
-      }
-      Tool.updateActionMsg(0, 0);
-      return true;
-    }
-  }
-
-  private void opportunityBattleAction(char[] haveChanceChars, Piece piece) {
-    if (haveChanceChars != null) {
-      for (char haveChanceChar : haveChanceChars) {
-        if (haveChanceChar != ' ') {
-          Piece haveChancePiece = Tool.findPiece(haveChanceChar);
-          if (haveChancePiece != null && haveChancePiece.getCamp() != piece.getCamp() && piece.isAlive()) {
-            try {
-              haveChancePiece.opportunityBattleWith(piece);
-            } catch (InRiverException ignored) {
-            }
-          }
-        }
-      }
-    }
-  }
-
+  /**
+   * 远程攻击的行动
+   *
+   * @param piece1 攻击棋子
+   * @param piece2 被攻击棋子
+   * @return 是否行动成功
+   */
   private boolean remoteBattleAction(Piece piece1, Piece piece2) {
     try {
       opportunityBattleAction(piece1.findHaveChanceChar(piece1.getX(), piece1.getY()), piece1);
@@ -355,6 +413,13 @@ public class Main {
     }
   }
 
+  /**
+   * 正面攻击的行动
+   *
+   * @param piece1 攻击棋子
+   * @param piece2 被攻击棋子
+   * @return 是否行动成功
+   */
   private boolean frontalBattleAction(Piece piece1, Piece piece2) {
     try {
       piece1.frontalBattleWith(piece2);
@@ -371,6 +436,14 @@ public class Main {
     }
   }
 
+  /**
+   * 移动的行动
+   *
+   * @param code  移动的棋子代码
+   * @param move  移动的方向
+   * @param count 第几次行动
+   * @return 是否行动成功
+   */
   private boolean moveAction(char code, int move, int count) {
     Piece piece = Tool.findPiece(Tool.getCurrentCamp(), code);
     if (piece != null) {
@@ -390,6 +463,28 @@ public class Main {
     } else {
       Tool.print("你没有这个棋子");
       return false;
+    }
+  }
+
+  /**
+   * 借机攻击的行动
+   *
+   * @param haveChanceChars 有机会进行借机的棋子
+   * @param piece           被借机的棋子
+   */
+  private void opportunityBattleAction(char[] haveChanceChars, Piece piece) {
+    if (haveChanceChars != null) {
+      for (char haveChanceChar : haveChanceChars) {
+        if (haveChanceChar != ' ') {
+          Piece haveChancePiece = Tool.findPiece(haveChanceChar);
+          if (haveChancePiece != null && haveChancePiece.getCamp() != piece.getCamp() && piece.isAlive()) {
+            try {
+              haveChancePiece.opportunityBattleWith(piece);
+            } catch (InRiverException ignored) {
+            }
+          }
+        }
+      }
     }
   }
 }

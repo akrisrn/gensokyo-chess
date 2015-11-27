@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+/**
+ * 工具类
+ */
 public class Tool {
   private static GuiFrame GuiFrame;
   private static boolean UseGui = false;
@@ -19,10 +22,16 @@ public class Tool {
   private static int RoundCount = 0;
   private static boolean Lock = false;
 
+  /**
+   * 给鼠标点击事件上锁
+   */
   public static void locked() {
     Lock = true;
   }
 
+  /**
+   * 给鼠标点击事件解锁
+   */
   public static void unlock() {
     Lock = false;
   }
@@ -35,10 +44,18 @@ public class Tool {
     return RoundCount;
   }
 
+  /**
+   * 增加回合数
+   */
   public static void CountRound() {
     RoundCount++;
   }
 
+  /**
+   * 设置激活的棋子
+   *
+   * @param piece 被激活的棋子
+   */
   public static void setActivatedPiece(Piece piece) {
     ActivatedPiece = piece;
     if (piece == null) {
@@ -55,6 +72,11 @@ public class Tool {
     return ActivatedPiece;
   }
 
+  /**
+   * 设置当前回合的阵营是不是红方
+   *
+   * @param currentCampIsRed 当前的阵营
+   */
   public static void setCurrentCampIsRed(boolean currentCampIsRed) {
     CurrentCampIsRed = currentCampIsRed;
   }
@@ -75,31 +97,72 @@ public class Tool {
     Chessboard = chessboard;
   }
 
+  /**
+   * 设置是否使用 Gui
+   *
+   * @param guiFrame Gui 框架
+   */
   public static void setGuiFrame(GuiFrame guiFrame) {
     GuiFrame = guiFrame;
     UseGui = true;
   }
 
+  /**
+   * 设置棋盘上所有棋子的列表
+   *
+   * @param pieces 棋子列表
+   */
   public static void setPieces(ArrayList<Piece> pieces) {
     Pieces = pieces;
   }
 
+  /**
+   * 打印一行
+   *
+   * @param msg 要打印的内容
+   */
   public static void print(String msg) {
     print(msg, true, true, 0);
   }
 
+  /**
+   * 打印一行
+   *
+   * @param msg   要打印的内容
+   * @param delay 延时（0：不启用，1：启用）
+   */
   public static void print(String msg, int delay) {
     print(msg, true, true, delay);
   }
 
+  /**
+   * 打印一行
+   *
+   * @param msg     要打印的内容
+   * @param isALine 结尾是否有换行符
+   */
   public static void print(String msg, boolean isALine) {
     print(msg, isALine, true, 0);
   }
 
+  /**
+   * 打印一行
+   *
+   * @param msg     要打印的内容
+   * @param isALine 结尾是否有换行符
+   * @param showMsg 是否显示
+   */
   public static void print(String msg, boolean isALine, boolean showMsg) {
     print(msg, isALine, showMsg, 0);
   }
 
+  /**
+   * 打印一行
+   *
+   * @param msg          要打印的内容
+   * @param notShowOnGui 是否不显示在 Gui 上
+   * @param delay        延时（0：不启用，1：启用）
+   */
   public static void print(String msg, boolean notShowOnGui, int delay) {
     if (!UseGui) {
       print(msg);
@@ -108,6 +171,14 @@ public class Tool {
     }
   }
 
+  /**
+   * 打印一行
+   *
+   * @param msg     要打印的内容
+   * @param isALine 结尾是否有换行符
+   * @param showMsg 是否显示
+   * @param delay   延时（0：不启用，1：启用）
+   */
   public static void print(String msg, boolean isALine, boolean showMsg, int delay) {
     if (!UseGui) {
       if (isALine && showMsg) {
@@ -128,6 +199,11 @@ public class Tool {
     }
   }
 
+  /**
+   * 输入一行
+   *
+   * @return 输入值 string
+   */
   public static String input() {
     if (!UseGui) {
       Scanner in = new Scanner(System.in);
@@ -148,6 +224,11 @@ public class Tool {
     }
   }
 
+  /**
+   * 输入尚未检查的一行
+   *
+   * @return 未检查的输入值 string
+   */
   private static String uncheckedInput() {
     try {
       Scanner in = GuiFrame.getScanner();
@@ -157,6 +238,15 @@ public class Tool {
     }
   }
 
+  /**
+   * 寻找一条直线上两个格子之间的棋子
+   *
+   * @param isXAxis     是否在 x 轴
+   * @param commonValue 共同的值（x 轴共同的是 y 坐标， y 轴共同的是 x 坐标）
+   * @param startXOrY   起始格子的 x 或 y 坐标
+   * @param overXOrY    结束格子的 x 或 y 坐标
+   * @return 找到的棋子列表 ，没找到则返回 null
+   */
   public static ArrayList<Piece> findPieces(boolean isXAxis, int commonValue, int startXOrY, int overXOrY) {
     ArrayList<Piece> pieces = new ArrayList<>();
     int reversal = 1;
@@ -168,10 +258,10 @@ public class Tool {
     int index;
     for (int i = startXOrY + reversal; i * reversal < overXOrY * reversal; i += reversal) {
       if (isXAxis) {
-        index = convert2Index(i, commonValue);
+        index = convertXY2Index(i, commonValue);
         aimChar = Chessboard.charAt(index);
       } else {
-        index = convert2Index(commonValue, i);
+        index = convertXY2Index(commonValue, i);
         aimChar = Chessboard.charAt(index);
       }
 
@@ -190,9 +280,16 @@ public class Tool {
     return pieces;
   }
 
-  public static Piece findSpecialPiece(int index, char aimChar) {
-    Piece piece = findPiece(aimChar);
-    if (piece != null && (index == convert2Index(piece.getX(), piece.getY()))) {
+  /**
+   * 寻找特殊的棋子（* 或 |）
+   *
+   * @param index 棋盘上的索引
+   * @param code  目标棋子代码
+   * @return 如果找到了棋子且在索引位置上 ，返回这个棋子，没找到或不在索引位置上则返回 null
+   */
+  public static Piece findSpecialPiece(int index, char code) {
+    Piece piece = findPiece(code);
+    if (piece != null && (index == convertXY2Index(piece.getX(), piece.getY()))) {
       return piece;
     }
     else {
@@ -200,10 +297,23 @@ public class Tool {
     }
   }
 
+  /**
+   * 寻找棋子
+   *
+   * @param x x 坐标
+   * @param y y 坐标
+   * @return 找到的棋子 ，没找到则返回 null
+   */
   public static Piece findPiece(int x, int y) {
-    return findPiece(Chessboard.charAt(convert2Index(x, y)));
+    return findPiece(Chessboard.charAt(convertXY2Index(x, y)));
   }
 
+  /**
+   * 寻找棋子
+   *
+   * @param code 棋子代码
+   * @return 找到的棋子 ，没找到则返回 null
+   */
   public static Piece findPiece(char code) {
     for (Piece piece : Pieces) {
       if (piece.getCode() == code) {
@@ -213,6 +323,13 @@ public class Tool {
     return null;
   }
 
+  /**
+   * 寻找棋子
+   *
+   * @param camp 阵营
+   * @param code 棋子代码
+   * @return the piece
+   */
   public static Piece findPiece(boolean camp, char code) {
     for (Piece piece : Pieces) {
       if (piece.getCamp() == camp) {
@@ -224,7 +341,14 @@ public class Tool {
     return null;
   }
 
-  public static int convert2Index(int x, int y) {
+  /**
+   * 转换格子坐标为棋盘上的索引
+   *
+   * @param x x 坐标
+   * @param y y 坐标
+   * @return 索引值 int
+   */
+  public static int convertXY2Index(int x, int y) {
     if (x < 1 || y < 1 || x > 9 || y > 9) {
       return 0;
     } else {
@@ -232,7 +356,16 @@ public class Tool {
     }
   }
 
-  public static int determineDirection(int aimX, int aimY, int curX, int curY) {
+  /**
+   * 判断移动的方向
+   *
+   * @param aimX 要移动格子的 x 坐标
+   * @param aimY 要移动格子的 y 坐标
+   * @param curX 当前格子的 x 坐标
+   * @param curY 当前格子的 y 坐标
+   * @return 方向值 int
+   */
+  public static int decideDirection(int aimX, int aimY, int curX, int curY) {
     if (aimX > curX) {
       if (aimY > curY) {
         return 9;
@@ -260,6 +393,9 @@ public class Tool {
     }
   }
 
+  /**
+   * 刷新棋盘
+   */
   public static void updateChessboard() {
     if (!UseGui) {
       System.out.println(Chessboard);
@@ -268,6 +404,9 @@ public class Tool {
     }
   }
 
+  /**
+   * 更新回合信息
+   */
   public static void updateRoundMsg() {
     String msg = "第 " + RoundCount + " 回合";
     if (!UseGui) {
@@ -277,6 +416,12 @@ public class Tool {
     }
   }
 
+  /**
+   * 更新行动信息
+   *
+   * @param count 第几次行动（为 0 时表示游戏结束）
+   * @param over  结束（0：平局， 1：红胜，-1：黑胜）
+   */
   public static void updateActionMsg(int count, int over) {
     String msg;
     if (count == 0) {
@@ -307,6 +452,12 @@ public class Tool {
     }
   }
 
+  /**
+   * 在棋子周围画出箭头
+   *
+   * @param piece       要画出箭头的棋子
+   * @param isAllArrows 是否画出所有的箭头
+   */
   public static void drawArrows(Piece piece, boolean isAllArrows) {
     int x = piece.getX();
     int y = piece.getY();
@@ -317,8 +468,8 @@ public class Tool {
       for (int i = x - 1; i <= x + 1; i++) {
         if (!(i == x && j == y)) {
           for (int direction : directions) {
-            if (Tool.determineDirection(i, j, x, y) == direction) {
-              Tool.getChessboard().setCharAt(Tool.convert2Index(i, j), Arrows.charAt(k));
+            if (Tool.decideDirection(i, j, x, y) == direction) {
+              Tool.getChessboard().setCharAt(Tool.convertXY2Index(i, j), Arrows.charAt(k));
             }
           }
           k++;
@@ -331,14 +482,21 @@ public class Tool {
     Tool.updateChessboard();
   }
 
+  /**
+   * 标记指定坐标周围可以画上箭头的方向
+   *
+   * @param x x 坐标
+   * @param y y 坐标
+   * @return 方向列表 array list
+   */
   private static ArrayList<Integer> markDirection(int x, int y) {
     ArrayList<Integer> directions = new ArrayList<>();
     for (int i = x - 1; i <= x + 1; i++) {
       for (int j = y - 1; j <= y + 1; j++) {
         if (!(i == x && j == y)) {
-          int index = Tool.convert2Index(i, j);
+          int index = Tool.convertXY2Index(i, j);
           if (index != 0) {
-            int direction = Tool.determineDirection(i, j, x, y);
+            int direction = Tool.decideDirection(i, j, x, y);
             char aimChar = Tool.getChessboard().charAt(index);
             if (aimChar == ' ') {
               directions.add(direction);
@@ -354,10 +512,18 @@ public class Tool {
     return directions;
   }
 
+  /**
+   * 擦除箭头
+   */
   public static void eraseArrows() {
     eraseArrows(true);
   }
 
+  /**
+   * 擦除箭头
+   *
+   * @param isAll 是否擦除所有箭头
+   */
   public static void eraseArrows(boolean isAll) {
     String arrows;
     int max;
@@ -371,12 +537,12 @@ public class Tool {
     for (int i = 0; i < max; i++) {
       int index = Tool.getChessboard().indexOf(String.valueOf(arrows.charAt(i)));
       if (index != -1) {
-        if (index == Tool.convert2Index(2, 5) || index == Tool.convert2Index(5, 5) ||
-                index == Tool.convert2Index(8, 5)) {
+        if (index == Tool.convertXY2Index(2, 5) || index == Tool.convertXY2Index(5, 5) ||
+                index == Tool.convertXY2Index(8, 5)) {
           Tool.getChessboard().setCharAt(index, '|');
-        } else if (index == Tool.convert2Index(1, 5) || index == Tool.convert2Index(3, 5) ||
-                index == Tool.convert2Index(4, 5) || index == Tool.convert2Index(6, 5) ||
-                index == Tool.convert2Index(7, 5) || index == Tool.convert2Index(9, 5)) {
+        } else if (index == Tool.convertXY2Index(1, 5) || index == Tool.convertXY2Index(3, 5) ||
+                index == Tool.convertXY2Index(4, 5) || index == Tool.convertXY2Index(6, 5) ||
+                index == Tool.convertXY2Index(7, 5) || index == Tool.convertXY2Index(9, 5)) {
           Tool.getChessboard().setCharAt(index, '*');
         } else {
           Tool.getChessboard().setCharAt(index, ' ');
@@ -386,8 +552,14 @@ public class Tool {
     Tool.updateChessboard();
   }
 
-  public static int getMove(char aimChar) {
-    int arrowIndex = Arrows.indexOf(aimChar);
+  /**
+   * 根据箭头获取移动的方向
+   *
+   * @param arrow 指定的箭头
+   * @return 移动的方向 ，没找到箭头则返回 0
+   */
+  public static int getMove(char arrow) {
+    int arrowIndex = Arrows.indexOf(arrow);
     if (arrowIndex != -1) {
       return 5 * arrowIndex / 4 + 1;
     } else {
@@ -395,6 +567,12 @@ public class Tool {
     }
   }
 
+  /**
+   * 获取指定 csv 文件的读取器
+   *
+   * @param name 文件名
+   * @return 读取器 ，没找到文件则返回 null
+   */
   public static CsvReader getCsvReader(String name) {
     String path = System.getProperty("user.dir") + name;
     try {
@@ -405,6 +583,12 @@ public class Tool {
     }
   }
 
+  /**
+   * 根据放置指令创建一个棋子
+   *
+   * @param place 放置指令
+   * @return 创建的棋子 ，如果输入有误则返回 null
+   */
   public static Piece createPiece(String place) {
     String tmp[] = place.split("");
     if (tmp.length != 4) {
@@ -418,24 +602,32 @@ public class Tool {
     }
   }
 
-  public static int[] handleMove2XY(Piece piece, int move) {
+  /**
+   * 转换移动的方向为格子坐标
+   *
+   * @param x    x 坐标
+   * @param y    y 坐标
+   * @param move 移动方向
+   * @return 要移动格子的坐标 ，如果输入有误则返回 null
+   */
+  public static int[] convertMove2XY(int x, int y, int move) {
     switch (move) {
       case 1:
-        return new int[]{piece.getX() - 1, piece.getY() - 1};
+        return new int[]{x - 1, y - 1};
       case 2:
-        return new int[]{piece.getX(), piece.getY() - 1};
+        return new int[]{x, y - 1};
       case 3:
-        return new int[]{piece.getX() + 1, piece.getY() - 1};
+        return new int[]{x + 1, y - 1};
       case 4:
-        return new int[]{piece.getX() - 1, piece.getY()};
+        return new int[]{x - 1, y};
       case 6:
-        return new int[]{piece.getX() + 1, piece.getY()};
+        return new int[]{x + 1, y};
       case 7:
-        return new int[]{piece.getX() - 1, piece.getY() + 1};
+        return new int[]{x - 1, y + 1};
       case 8:
-        return new int[]{piece.getX(), piece.getY() + 1};
+        return new int[]{x, y + 1};
       case 9:
-        return new int[]{piece.getX() + 1, piece.getY() + 1};
+        return new int[]{x + 1, y + 1};
       default:
         return null;
     }

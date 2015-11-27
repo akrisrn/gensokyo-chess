@@ -7,7 +7,15 @@ import com.gensokyochess.exception.CanNotMoveException;
 import com.gensokyochess.exception.CanNotPlaceException;
 import com.gensokyochess.exception.KingMoveException;
 
+/**
+ * 技能：彗星
+ * 代码：K2
+ * 作用：在直线距离上进行移动，如果撞上一个棋子，则对其造成等同于移动的格子数的伤害，然后停止，否则直到移动到棋盘边缘才停止
+ */
 public class BlazingStar extends Spell {
+  /**
+   * 实例化技能
+   */
   public BlazingStar() {
     super("K2");
   }
@@ -27,7 +35,7 @@ public class BlazingStar extends Spell {
         Tool.updateChessboard();
         Thread.sleep(800 - 100 * damage);
       } catch (CanNotPlaceException e) {
-        int[] tmp = Tool.handleMove2XY(piece1, direction);
+        int[] tmp = Tool.convertMove2XY(piece1.getX(), piece1.getY(), direction);
         assert tmp != null;
         Piece piece2 = Tool.findPiece(tmp[0], tmp[1]);
         if (!piece2.isKing()) {
