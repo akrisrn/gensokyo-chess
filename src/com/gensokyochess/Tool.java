@@ -22,6 +22,11 @@ public class Tool {
   private static Piece ActivatedPiece;
   private static int RoundCount = 0;
   private static boolean Lock = false;
+  private static Piece RedKing;
+
+  public static void setRedKing(Piece redKing) {
+    RedKing = redKing;
+  }
 
   /**
    * 给鼠标点击事件上锁
@@ -353,20 +358,6 @@ public class Tool {
   }
 
   /**
-   * 寻找国王
-   * @param isRed 是否是红方
-   * @return 国王
-   */
-  public static Piece findKing(boolean isRed) {
-    for (Piece piece : Pieces) {
-      if (piece.getCamp() == isRed && piece.isKing()) {
-        return piece;
-      }
-    }
-    return null;
-  }
-
-  /**
    * 转换格子坐标为棋盘上的索引
    *
    * @param x x 坐标
@@ -666,9 +657,6 @@ public class Tool {
     ArrayList<Piece> aiPiece = Pieces.stream().filter(piece ->
             !piece.getCamp()).collect(Collectors.toCollection(ArrayList::new));
 
-    Piece redKing = findKing(true);
-    assert redKing != null;
-
     for (Piece piece1 : aiPiece) {
       for (char nearbyChar : piece1.findNearbyChar()) {
         if (nearbyChar != ' ') {
@@ -684,7 +672,11 @@ public class Tool {
         if (nearbyChar != ' ') {
           Piece piece2 = findPiece(nearbyChar);
           if (piece2 != null && piece2.getCamp() && !piece1.isInRiver()) {
-            return piece1.getCode() + "+" + nearbyChar;
+            if (piece1.isKing() && piece1.getDefenceBonusCount() < 2) {
+              return piece1.getCode() + "5";
+            } else {
+              return piece1.getCode() + "+" + nearbyChar;
+            }
           }
         }
       }
@@ -700,7 +692,7 @@ public class Tool {
             pieces = findPieces(true, ranPiece.getY(), ranPiece.getX(), 9);
             if (pieces.size() == 0) {
               return ranPiece.getCode() + "" +
-                      randMove(ranPiece.getX(), ranPiece.getY(), redKing.getX(), redKing.getY());
+                      randMove(ranPiece.getX(), ranPiece.getY());
             }
           }
         }
@@ -709,15 +701,15 @@ public class Tool {
         return ranPiece.getCode() + "+" + pieces.get(0).getCode();
       } else {
         return ranPiece.getCode() + "" +
-                randMove(ranPiece.getX(), ranPiece.getY(), redKing.getX(), redKing.getY());
+                randMove(ranPiece.getX(), ranPiece.getY());
       }
     } else {
       return ranPiece.getCode() + "" +
-              randMove(ranPiece.getX(), ranPiece.getY(), redKing.getX(), redKing.getY());
+              randMove(ranPiece.getX(), ranPiece.getY());
     }
   }
 
-  public static int randMove(int curX, int curY, int kingX, int kingY) {
+  public static int randMove(int curX, int curY) {
     int aimX = curX;
     int aimY = curY;
     if (aimY > 5) {
@@ -743,14 +735,14 @@ public class Tool {
       aimY--;
       return convertXY2Move(aimX, aimY, curX, curY);
     } else {
-      if (aimX < kingX) {
+      if (aimX < RedKing.getX()) {
         aimX++;
-      } else if (aimX > kingX) {
+      } else if (aimX > RedKing.getX()) {
         aimX--;
       }
-      if (aimY < kingY) {
+      if (aimY < RedKing.getY()) {
         aimY++;
-      } else if (aimY > kingY) {
+      } else if (aimY > RedKing.getY()) {
         aimY--;
       }
       return convertXY2Move(aimX, aimY, curX, curY);

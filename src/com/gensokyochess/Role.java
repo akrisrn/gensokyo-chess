@@ -459,6 +459,10 @@ public class Role {
     InRiver = inRiver;
   }
 
+  public int getDefenceBonusCount() {
+    return DefenceBonusCount;
+  }
+
   public String getBodyType() {
     switch (getBodyBonus()) {
       case 0:
