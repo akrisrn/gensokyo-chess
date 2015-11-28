@@ -171,7 +171,7 @@ public class GuiFrame extends JFrame {
     MainPanel.setLayout(new GridLayoutManager(3, 6, new Insets(10, 10, 20, 10), -1, -1));
     MainPanel.setAutoscrolls(false);
     MainPanel.setEnabled(true);
-    MainPanel.setPreferredSize(new Dimension(740, 530));
+    MainPanel.setPreferredSize(new Dimension(760, 530));
     final JScrollPane scrollPane1 = new JScrollPane();
     scrollPane1.setAutoscrolls(false);
     scrollPane1.setFocusable(true);
@@ -198,6 +198,7 @@ public class GuiFrame extends JFrame {
     final JScrollPane scrollPane3 = new JScrollPane();
     MainPanel.add(scrollPane3, new GridConstraints(0, 2, 1, 4, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(305, 402), null, 0, false));
     LogArea = new JTextArea();
+    LogArea.setEditable(false);
     LogArea.setLineWrap(true);
     LogArea.setMargin(new Insets(5, 5, 5, 5));
     scrollPane3.setViewportView(LogArea);

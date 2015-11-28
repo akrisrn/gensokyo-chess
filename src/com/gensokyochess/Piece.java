@@ -52,7 +52,6 @@ public class Piece extends Role {
     } else if (!piece.isAlive()) {
       piece.remove();
     }
-    Tool.updateChessboard();
   }
 
   /**
@@ -165,7 +164,7 @@ public class Piece extends Role {
   public char[] findHaveChanceChar(int x, int y) {
     char[] haveChanceChar = new char[5];
     char[] nearbyChar = findNearbyChar();
-    int direction = Tool.decideDirection(x, y, X, Y);
+    int direction = Tool.convertXY2Move(x, y, X, Y);
 
     switch (direction) {
       case 8:
@@ -207,7 +206,7 @@ public class Piece extends Role {
    *
    * @return 威胁区域内的棋子列表
    */
-  private char[] findNearbyChar() {
+  public char[] findNearbyChar() {
     char[] nearbyChar = new char[8];
     int count = 0;
 

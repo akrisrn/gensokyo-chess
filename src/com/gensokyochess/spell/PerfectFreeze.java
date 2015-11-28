@@ -66,6 +66,7 @@ public class PerfectFreeze extends Spell {
     if (piece2 != null && !piece2.equals(piece1) && !piece2.isKing()) {
       Battle.damage(piece1, piece2, damage);
       piece1.checkAlive(piece2);
+      Tool.updateChessboard();
     }
   }
 }

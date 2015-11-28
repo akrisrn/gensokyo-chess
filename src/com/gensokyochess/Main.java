@@ -83,7 +83,12 @@ public class Main {
     do {
       Tool.updateActionMsg(count, 0);
 
-      ArrayList action = handleInput(Tool.input());
+      ArrayList action;
+      if (Tool.getCurrentCamp()) {
+        action = handleInput(Tool.input());
+      } else {
+        action = handleInput(Tool.AiInput());
+      }
       inputError = !executeAction(action, count);
 
       if (!inputError) {
@@ -266,14 +271,14 @@ public class Main {
    * @return 随机生成的指令
    */
   private String rollPlace(boolean isRed) {
-    int bonus = 0;
+    int bonus = 1;
     if (!isRed) {
-      bonus = 5;
+      bonus = 6;
     }
-    return "" + (int) (Math.random() * 9 + 1) +
-            "" + (int) (Math.random() * 4 + 1 + bonus) +
-            (char) (Math.random() * 94 + 33) +
-            (int) (Math.random() * 5 + 1);
+    return "" + Tool.random(1, 9) +
+            "" + Tool.random(bonus, 4) +
+            (char) Tool.random(33, 94) +
+            Tool.random(1, 5);
   }
 
   /**
@@ -454,10 +459,10 @@ public class Main {
         opportunityBattleAction(piece.moveTo(move, count, NoChance), piece);
         return true;
       } catch (CanNotPlaceException e) {
-        Tool.print("该格已有棋子");
+        Tool.print("该格已有棋子", true, Tool.getCurrentCamp());
         return false;
       } catch (CanNotMoveException | KingMoveException e) {
-        Tool.print("无法进行移动");
+        Tool.print("无法进行移动", true, Tool.getCurrentCamp());
         return false;
       }
     } else {

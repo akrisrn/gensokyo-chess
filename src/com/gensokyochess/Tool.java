@@ -7,6 +7,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /**
  * 工具类
@@ -352,6 +353,20 @@ public class Tool {
   }
 
   /**
+   * 寻找国王
+   * @param isRed 是否是红方
+   * @return 国王
+   */
+  public static Piece findKing(boolean isRed) {
+    for (Piece piece : Pieces) {
+      if (piece.getCamp() == isRed && piece.isKing()) {
+        return piece;
+      }
+    }
+    return null;
+  }
+
+  /**
    * 转换格子坐标为棋盘上的索引
    *
    * @param x x 坐标
@@ -367,7 +382,7 @@ public class Tool {
   }
 
   /**
-   * 判断移动的方向
+   * 转换格子坐标为移动的方向
    *
    * @param aimX 要移动格子的 x 坐标
    * @param aimY 要移动格子的 y 坐标
@@ -375,7 +390,7 @@ public class Tool {
    * @param curY 当前格子的 y 坐标
    * @return 方向值 int
    */
-  public static int decideDirection(int aimX, int aimY, int curX, int curY) {
+  public static int convertXY2Move(int aimX, int aimY, int curX, int curY) {
     if (aimX > curX) {
       if (aimY > curY) {
         return 9;
@@ -478,8 +493,8 @@ public class Tool {
       for (int i = x - 1; i <= x + 1; i++) {
         if (!(i == x && j == y)) {
           for (int direction : directions) {
-            if (Tool.decideDirection(i, j, x, y) == direction) {
-              Tool.getChessboard().setCharAt(Tool.convertXY2Index(i, j), Arrows.charAt(k));
+            if (convertXY2Move(i, j, x, y) == direction) {
+              getChessboard().setCharAt(convertXY2Index(i, j), Arrows.charAt(k));
             }
           }
           k++;
@@ -489,7 +504,7 @@ public class Tool {
     if (!isAllArrows) {
       eraseArrows(false);
     }
-    Tool.updateChessboard();
+    updateChessboard();
   }
 
   /**
@@ -504,15 +519,15 @@ public class Tool {
     for (int i = x - 1; i <= x + 1; i++) {
       for (int j = y - 1; j <= y + 1; j++) {
         if (!(i == x && j == y)) {
-          int index = Tool.convertXY2Index(i, j);
+          int index = convertXY2Index(i, j);
           if (index != 0) {
-            int direction = Tool.decideDirection(i, j, x, y);
-            char aimChar = Tool.getChessboard().charAt(index);
+            int direction = convertXY2Move(i, j, x, y);
+            char aimChar = getChessboard().charAt(index);
             if (aimChar == ' ') {
               directions.add(direction);
-            } else if (aimChar == '*' && Tool.findSpecialPiece(index, '*') == null) {
+            } else if (aimChar == '*' && findSpecialPiece(index, '*') == null) {
               directions.add(direction);
-            } else if (aimChar == '|' && Tool.findSpecialPiece(index, '|') == null) {
+            } else if (aimChar == '|' && findSpecialPiece(index, '|') == null) {
               directions.add(direction);
             }
           }
@@ -545,21 +560,21 @@ public class Tool {
       max = 4;
     }
     for (int i = 0; i < max; i++) {
-      int index = Tool.getChessboard().indexOf(String.valueOf(arrows.charAt(i)));
+      int index = getChessboard().indexOf(String.valueOf(arrows.charAt(i)));
       if (index != -1) {
-        if (index == Tool.convertXY2Index(2, 5) || index == Tool.convertXY2Index(5, 5) ||
-                index == Tool.convertXY2Index(8, 5)) {
-          Tool.getChessboard().setCharAt(index, '|');
-        } else if (index == Tool.convertXY2Index(1, 5) || index == Tool.convertXY2Index(3, 5) ||
-                index == Tool.convertXY2Index(4, 5) || index == Tool.convertXY2Index(6, 5) ||
-                index == Tool.convertXY2Index(7, 5) || index == Tool.convertXY2Index(9, 5)) {
-          Tool.getChessboard().setCharAt(index, '*');
+        if (index == convertXY2Index(2, 5) || index == convertXY2Index(5, 5) ||
+                index == convertXY2Index(8, 5)) {
+          getChessboard().setCharAt(index, '|');
+        } else if (index == convertXY2Index(1, 5) || index == convertXY2Index(3, 5) ||
+                index == convertXY2Index(4, 5) || index == convertXY2Index(6, 5) ||
+                index == convertXY2Index(7, 5) || index == convertXY2Index(9, 5)) {
+          getChessboard().setCharAt(index, '*');
         } else {
-          Tool.getChessboard().setCharAt(index, ' ');
+          getChessboard().setCharAt(index, ' ');
         }
       }
     }
-    Tool.updateChessboard();
+    updateChessboard();
   }
 
   /**
@@ -641,5 +656,108 @@ public class Tool {
       default:
         return null;
     }
+  }
+
+  /**
+   * Ai 设计
+   * @return Ai 的指令
+   */
+  public static String AiInput() {
+    ArrayList<Piece> aiPiece = Pieces.stream().filter(piece ->
+            !piece.getCamp()).collect(Collectors.toCollection(ArrayList::new));
+
+    Piece redKing = findKing(true);
+    assert redKing != null;
+
+    for (Piece piece1 : aiPiece) {
+      for (char nearbyChar : piece1.findNearbyChar()) {
+        if (nearbyChar != ' ') {
+          Piece piece2 = findPiece(nearbyChar);
+          if (piece2 != null && piece2.getCamp() && piece2.isKing() && !piece1.isInRiver()) {
+            return piece1.getCode() + "+" + nearbyChar;
+          }
+        }
+      }
+    }
+    for (Piece piece1 : aiPiece) {
+      for (char nearbyChar : piece1.findNearbyChar()) {
+        if (nearbyChar != ' ') {
+          Piece piece2 = findPiece(nearbyChar);
+          if (piece2 != null && piece2.getCamp() && !piece1.isInRiver()) {
+            return piece1.getCode() + "+" + nearbyChar;
+          }
+        }
+      }
+    }
+    Piece ranPiece = aiPiece.get(random(0, aiPiece.size() - 1));
+    if (ranPiece.getAttackType() != 0) {
+      ArrayList<Piece> pieces = findPieces(true, ranPiece.getY(), ranPiece.getX(), 1);
+      if (pieces.size() == 0) {
+        pieces = findPieces(false, ranPiece.getX(), ranPiece.getY(), 9);
+        if (pieces.size() == 0) {
+          pieces = findPieces(false, ranPiece.getX(), ranPiece.getY(), 0);
+          if (pieces.size() == 0) {
+            pieces = findPieces(true, ranPiece.getY(), ranPiece.getX(), 9);
+            if (pieces.size() == 0) {
+              return ranPiece.getCode() + "" +
+                      randMove(ranPiece.getX(), ranPiece.getY(), redKing.getX(), redKing.getY());
+            }
+          }
+        }
+      }
+      if (pieces.get(0).getCamp()) {
+        return ranPiece.getCode() + "+" + pieces.get(0).getCode();
+      } else {
+        return ranPiece.getCode() + "" +
+                randMove(ranPiece.getX(), ranPiece.getY(), redKing.getX(), redKing.getY());
+      }
+    } else {
+      return ranPiece.getCode() + "" +
+              randMove(ranPiece.getX(), ranPiece.getY(), redKing.getX(), redKing.getY());
+    }
+  }
+
+  public static int randMove(int curX, int curY, int kingX, int kingY) {
+    int aimX = curX;
+    int aimY = curY;
+    if (aimY > 5) {
+      if (aimX >= 1 && aimX <= 3) {
+        if (aimX < 2) {
+          aimX++;
+        } else if (aimX > 2) {
+          aimX--;
+        }
+      } else if (aimX >= 4 && aimX <= 6) {
+        if (aimX < 5) {
+          aimX++;
+        } else if (aimX > 5) {
+          aimX--;
+        }
+      } else {
+        if (aimX < 8) {
+          aimX++;
+        } else if (aimX > 8) {
+          aimX--;
+        }
+      }
+      aimY--;
+      return convertXY2Move(aimX, aimY, curX, curY);
+    } else {
+      if (aimX < kingX) {
+        aimX++;
+      } else if (aimX > kingX) {
+        aimX--;
+      }
+      if (aimY < kingY) {
+        aimY++;
+      } else if (aimY > kingY) {
+        aimY--;
+      }
+      return convertXY2Move(aimX, aimY, curX, curY);
+    }
+  }
+
+  public static int random(int a, int b) {
+    return (int) (Math.random() * b + a);
   }
 }

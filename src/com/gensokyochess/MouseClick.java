@@ -40,7 +40,7 @@ public class MouseClick extends MouseAdapter {
           piece = Tool.findPiece(aimChar);
           if (piece != null && X == piece.getX() && Y == piece.getY()) {
             Tool.print(piece.toString());
-            if (piece.getCamp() == Tool.getCurrentCamp()) {
+            if (piece.getCamp()) {
               Tool.drawArrows(piece, true);
               Tool.setActivatedPiece(piece);
             }

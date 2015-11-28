@@ -8,7 +8,7 @@
     <properties>
       <autoscrolls value="false"/>
       <enabled value="true"/>
-      <preferredSize width="740" height="530"/>
+      <preferredSize width="760" height="530"/>
     </properties>
     <border type="none"/>
     <children>
