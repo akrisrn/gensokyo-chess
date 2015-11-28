@@ -199,7 +199,7 @@ public class Tool {
     }
     if (delay != 0) {
       try {
-        Thread.sleep(1200);
+        Thread.sleep(1000);
       } catch (InterruptedException ignored) {
       }
     }

@@ -27,6 +27,7 @@ public abstract class Spell {
     spells.add(new BlazingStar());
     spells.add(new Darkness());
     spells.add(new PerfectFreeze());
+    spells.add(new Heal());
 
     for (Spell spell : spells) {
       SpellsMap.put(spell.getCode(), spell);
@@ -190,6 +191,8 @@ public abstract class Spell {
       Tool.print("这是己方棋子");
     } else if (type == 2) {
       Tool.print("国王不受技能影响");
+    } else if (type == 3) {
+      Tool.print("这是敌方棋子");
     }
     Tool.setActivatedPiece(piece);
     Tool.unlock();

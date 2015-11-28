@@ -361,6 +361,13 @@ public class Role {
     recoverAB();
   }
 
+  public void addHitPoint(int recover) {
+    CurrentHP += recover;
+    if (CurrentHP > HitPoint) {
+      CurrentHP = HitPoint;
+    }
+  }
+
   /**
    * 获取调整值
    *

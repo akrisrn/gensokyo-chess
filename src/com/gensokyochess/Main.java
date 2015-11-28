@@ -32,7 +32,6 @@ public class Main {
   protected void start() {
     Tool.setChessboard(Chessboard);
     Tool.setPieces(Pieces);
-    Tool.setRedKing(RedKing);
 
     Tool.print("是否使用随机布局?(Y/N)", true, 0);
     if (Tool.input().equalsIgnoreCase("y")) {
@@ -43,6 +42,7 @@ public class Main {
     placePieces(true);
     placePieces(false);
 
+    Tool.setRedKing(RedKing);
     Tool.updateChessboard();
     beginRound();
   }
