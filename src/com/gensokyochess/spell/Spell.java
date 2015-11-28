@@ -28,6 +28,7 @@ public abstract class Spell {
     spells.add(new Darkness());
     spells.add(new PerfectFreeze());
     spells.add(new Heal());
+    spells.add(new FierceTigerEnergyRelease());
 
     for (Spell spell : spells) {
       SpellsMap.put(spell.getCode(), spell);

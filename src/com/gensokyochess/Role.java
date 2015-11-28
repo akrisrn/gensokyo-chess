@@ -361,11 +361,34 @@ public class Role {
     recoverAB();
   }
 
+  /**
+   * 恢复生命值
+   *
+   * @param recover 恢复值
+   */
   public void addHitPoint(int recover) {
     CurrentHP += recover;
     if (CurrentHP > HitPoint) {
       CurrentHP = HitPoint;
     }
+  }
+
+  /**
+   * 增加伤害加值
+   *
+   * @param increase 增加值
+   */
+  public void addDamageBonus(int increase) {
+    DamageBonus += increase;
+  }
+
+  /**
+   * 减少伤害加值
+   *
+   * @param decrease 减少值
+   */
+  public void subDamageBonus(int decrease) {
+    DamageBonus -= decrease;
   }
 
   /**
