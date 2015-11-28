@@ -22,7 +22,6 @@ public class FierceTigerEnergyRelease extends Spell {
   public boolean use(Piece piece1) {
     int increase = 5;
     int decrease = 5;
-    Tool.eraseArrows();
     start(piece1, 1);
     count++;
     if (count == 1) {

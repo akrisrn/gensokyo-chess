@@ -147,6 +147,7 @@ public abstract class Spell {
    * @param num   技能编号
    */
   public void start(Piece piece, int num) {
+    Tool.eraseArrows();
     Tool.locked();
     Tool.print(piece.getNameAndLv() + " 使用了 " + piece.getSpellName(num) + "!", 1);
   }

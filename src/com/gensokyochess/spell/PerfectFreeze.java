@@ -21,7 +21,6 @@ public class PerfectFreeze extends Spell {
 
   @Override
   public boolean use(Piece piece1) {
-    Tool.eraseArrows();
     start(piece1, 1);
     ArrayList<Integer> directions = Tool.markDirection(piece1.getX(), piece1.getY());
     for (int direction : directions) {

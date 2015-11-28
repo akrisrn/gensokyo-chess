@@ -22,7 +22,6 @@ public class Darkness extends Spell {
   public boolean use(Piece piece1) {
     int increase = 5;
     int decrease = 10;
-    Tool.eraseArrows();
     start(piece1, 1);
     count++;
     if (count == 1) {
