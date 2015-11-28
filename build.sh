@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-version=$(git rev-list --all | head -n 1 | cut -b 1-5)
+version=$(git rev-list --branches | head -n 1 | cut -b 1-5)
 if [ ! -e "gnc-2d-v${version}.jar" ] || [ ! -e "gnc-2d-gui-v${version}.jar" ]; then
     if [ ! -d "tmp" ]; then
         mkdir tmp
