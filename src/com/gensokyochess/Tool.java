@@ -700,6 +700,9 @@ public class Tool {
       }
     }
     Piece ranPiece = aiPiece.get(random(0, aiPiece.size() - 1));
+    if (ranPiece.isKing()) {
+      ranPiece = aiPiece.get(random(0, aiPiece.size() - 1));
+    }
     if (ranPiece.getAttackType() != 0) {
       ArrayList<Piece> pieces = findPieces(true, ranPiece.getY(), ranPiece.getX(), 1);
       if (pieces.size() == 0) {
