@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * 技能：完美冻结
  * 代码：91
- * 作用：以棋子威胁区域内的空白格为原点，每一个格子生成一个随机的方向，对这些方向上遇到的第一个棋子造成 3 点伤害
+ * 作用：以棋子威胁区域内的空白格为原点，每一个格子生成一个随机的方向，对这些方向上遇到的第一个对方棋子造成 5 点伤害
  */
 public class PerfectFreeze extends Spell {
   /**
@@ -60,9 +60,9 @@ public class PerfectFreeze extends Spell {
   }
 
   private void damage(int x, int y, Piece piece1) {
-    int damage = 3;
+    int damage = 5;
     Piece piece2 = Tool.findPiece(x, y);
-    if (piece2 != null && !piece2.equals(piece1) && !piece2.isKing()) {
+    if (piece2 != null && !piece2.equals(piece1) && (piece1.getCamp() != piece2.getCamp()) && !piece2.isKing()) {
       Battle.damage(piece1, piece2, damage);
       piece1.checkAlive(piece2);
       Tool.updateChessboard();

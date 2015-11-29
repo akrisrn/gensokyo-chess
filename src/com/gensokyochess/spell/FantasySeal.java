@@ -7,7 +7,7 @@ import com.gensokyochess.exception.KingSpellException;
 /**
  * 技能：梦想封印
  * 代码：H1
- * 作用：对一个对方棋子造成 3 点伤害
+ * 作用：对一个对方棋子造成 5 点伤害
  */
 public class FantasySeal extends Spell {
   /**
@@ -19,7 +19,7 @@ public class FantasySeal extends Spell {
 
   @Override
   public boolean use(Piece piece1) {
-    int damage = 3;
+    int damage = 5;
     Piece piece2 = choicePiece();
     if (piece2 != null) {
       if (piece1.getCamp() == piece2.getCamp()) {
