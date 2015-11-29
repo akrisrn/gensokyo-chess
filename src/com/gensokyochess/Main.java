@@ -12,7 +12,6 @@ public class Main {
   private ArrayList<Piece> Pieces = new ArrayList<>();
   private boolean NoChance;
   private boolean HaveBattleOrSpell;
-  private boolean IsRandomPlace = false;
   private Piece RedKing, BlackKing;
   private boolean CurrentCampIsRed = true;
 
@@ -35,12 +34,12 @@ public class Main {
 
     Tool.print("是否使用随机布局?(Y/N)", true, 0);
     if (Tool.input().equalsIgnoreCase("y")) {
-      IsRandomPlace = true;
       Tool.print("-----自动填入棋子-----");
+      placePieces(true, true);
+    } else {
+      placePieces(true, false);
     }
-
-    placePieces(true);
-    placePieces(false);
+    placePieces(false, true);
 
     Tool.setRedKing(RedKing);
     Tool.updateChessboard();
@@ -196,16 +195,17 @@ public class Main {
   /**
    * 放置一方的棋子
    *
-   * @param isRed 是否是红方
+   * @param isRed       是否是红方
+   * @param isRandomPlace 是否随机放置
    */
-  private void placePieces(boolean isRed) {
+  private void placePieces(boolean isRed, boolean isRandomPlace) {
     int count = 1;
     int levelCount = 0;
     boolean haveKing = false;
     String place;
 
     while (levelCount != 15) {
-      if (!IsRandomPlace) {
+      if (!isRandomPlace) {
         Tool.updateChessboard();
         Tool.print("-----当前棋子总等级: " + levelCount + "-----");
         Tool.print("请布置", false);
@@ -223,16 +223,16 @@ public class Main {
 
       if (piece != null) {
         if (piece.getCamp() != isRed) {
-          Tool.print("请摆在己方区域", true, !IsRandomPlace);
+          Tool.print("请摆在己方区域", true, !isRandomPlace);
         } else if (Tool.findPiece(piece.getCode()) != null) {
-          Tool.print("棋盘上已经有了相同棋子", true, !IsRandomPlace);
+          Tool.print("棋盘上已经有了相同棋子", true, !isRandomPlace);
         } else {
           levelCount += piece.getLevel();
           if (levelCount > 15) {
-            Tool.print("总等级要等于 15", true, !IsRandomPlace);
+            Tool.print("总等级要等于 15", true, !isRandomPlace);
             levelCount -= piece.getLevel();
           } else if (levelCount == 15 && !haveKing) {
-            Tool.print("棋盘缺少国王", true, !IsRandomPlace);
+            Tool.print("棋盘缺少国王", true, !isRandomPlace);
             levelCount -= piece.getLevel();
           } else {
             try {
@@ -248,19 +248,19 @@ public class Main {
               }
               count++;
             } catch (CanNotPlaceException e) {
-              Tool.print("无法放到该格", true, !IsRandomPlace);
+              Tool.print("无法放到该格", true, !isRandomPlace);
               levelCount -= piece.getLevel();
             }
           }
         }
       } else {
-        Tool.print("输入有误", true, !IsRandomPlace);
+        Tool.print("输入有误", true, !isRandomPlace);
       }
     }
     if (isRed) {
-      Tool.print("-----红方布置完成------", true, !IsRandomPlace);
+      Tool.print("-----红方布置完成------", true, !isRandomPlace);
     } else {
-      Tool.print("-----黑方布置完成------", true, !IsRandomPlace);
+      Tool.print("-----黑方布置完成------", true, !isRandomPlace);
       Tool.print("-----开始游戏-----");
     }
   }
