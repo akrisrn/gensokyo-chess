@@ -41,7 +41,7 @@ public class Main {
     }
     placePieces(false, true);
 
-    Tool.setRedKing(RedKing);
+    Tool.setKing(RedKing, BlackKing);
     Tool.updateChessboard();
     beginRound();
   }

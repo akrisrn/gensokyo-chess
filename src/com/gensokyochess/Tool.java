@@ -22,10 +22,11 @@ public class Tool {
   private static Piece ActivatedPiece;
   private static int RoundCount = 0;
   private static boolean Lock = false;
-  private static Piece RedKing;
+  private static Piece RedKing, BlackKing;
 
-  public static void setRedKing(Piece redKing) {
+  public static void setKing(Piece redKing, Piece blackKing) {
     RedKing = redKing;
+    BlackKing = blackKing;
   }
 
   /**
@@ -331,6 +332,9 @@ public class Tool {
    * @return 找到的棋子 ，没找到则返回 null
    */
   public static Piece findPiece(char code) {
+    if (code == ' ') {
+      return null;
+    }
     for (Piece piece : Pieces) {
       if (piece.getCode() == code) {
         return piece;
@@ -659,25 +663,39 @@ public class Tool {
 
     for (Piece piece1 : aiPiece) {
       for (char nearbyChar : piece1.findNearbyChar()) {
-        if (nearbyChar != ' ') {
-          Piece piece2 = findPiece(nearbyChar);
-          if (piece2 != null && piece2.getCamp() && piece2.isKing() && !piece1.isInRiver()) {
-            return piece1.getCode() + "+" + nearbyChar;
+        Piece piece2 = findPiece(nearbyChar);
+        if (piece2 != null && piece2.getCamp() && piece2.isKing() && !piece1.isInRiver()) {
+          return piece1.getCode() + "+" + nearbyChar;
+        }
+      }
+    }
+    for (char nearbyChar1 : BlackKing.findNearbyChar()) {
+      Piece piece1 = findPiece(nearbyChar1);
+      if (piece1 != null) {
+        if (piece1.getCamp() && BlackKing.getDefenceBonusCount() < 2) {
+          return BlackKing.getCode() + "5";
+        }
+        for (char nearbyChar2 : piece1.findNearbyChar()) {
+          Piece piece2 = findPiece(nearbyChar2);
+          if (piece2 != null && piece2.getCamp()) {
+            if (BlackKing.getX() < piece2.getX() && BlackKing.getY() > piece2.getY()) {
+              return BlackKing.getCode() + "" + kingMove(1);
+            } else if (BlackKing.getX() < piece2.getX() && BlackKing.getY() < piece2.getY()) {
+              return BlackKing.getCode() + "" + kingMove(2);
+            } else if (BlackKing.getX() > piece2.getX() && BlackKing.getY() > piece2.getY()) {
+              return BlackKing.getCode() + "" + kingMove(3);
+            } else if (BlackKing.getX() > piece2.getX() && BlackKing.getY() < piece2.getY()) {
+              return BlackKing.getCode() + "" + kingMove(4);
+            }
           }
         }
       }
     }
     for (Piece piece1 : aiPiece) {
       for (char nearbyChar : piece1.findNearbyChar()) {
-        if (nearbyChar != ' ') {
-          Piece piece2 = findPiece(nearbyChar);
-          if (piece2 != null && piece2.getCamp() && !piece1.isInRiver()) {
-            if (piece1.isKing() && piece1.getDefenceBonusCount() < 2) {
-              return piece1.getCode() + "5";
-            } else {
-              return piece1.getCode() + "+" + nearbyChar;
-            }
-          }
+        Piece piece2 = findPiece(nearbyChar);
+        if (piece2 != null && piece2.getCamp() && !piece1.isInRiver()) {
+          return piece1.getCode() + "+" + nearbyChar;
         }
       }
     }
@@ -705,7 +723,37 @@ public class Tool {
       }
     } else {
       return ranPiece.getCode() + "" +
-              randMove(ranPiece.getX(), ranPiece.getY());
+                randMove(ranPiece.getX(), ranPiece.getY());
+
+    }
+  }
+
+  public static int kingMove(int type) {
+    int a, b, c;
+    if (type == 1) {
+      a = 7;
+      b = 4;
+      c = 8;
+    } else if (type == 2) {
+      a = 1;
+      b = 4;
+      c = 2;
+    } else if (type == 3) {
+      a = 9;
+      b = 8;
+      c = 6;
+    } else {
+      a = 3;
+      b = 2;
+      c = 6;
+    }
+    int ran = random(1, 100);
+    if (ran <= 40) {
+      return a;
+    } else if (ran > 70) {
+      return b;
+    } else {
+      return c;
     }
   }
 
@@ -718,18 +766,36 @@ public class Tool {
           aimX++;
         } else if (aimX > 2) {
           aimX--;
+        } else {
+          if (random(1, 100) < 10) {
+            aimX--;
+          } else if (random(1, 100) > 90) {
+            aimX++;
+          }
         }
       } else if (aimX >= 4 && aimX <= 6) {
         if (aimX < 5) {
           aimX++;
         } else if (aimX > 5) {
           aimX--;
+        } else {
+          if (random(1, 100) < 10) {
+            aimX--;
+          } else if (random(1, 100) > 90) {
+            aimX++;
+          }
         }
       } else {
         if (aimX < 8) {
           aimX++;
         } else if (aimX > 8) {
           aimX--;
+        } else {
+          if (random(1, 100) < 10) {
+            aimX--;
+          } else if (random(1, 100) > 90) {
+            aimX++;
+          }
         }
       }
       aimY--;
@@ -739,11 +805,23 @@ public class Tool {
         aimX++;
       } else if (aimX > RedKing.getX()) {
         aimX--;
+      } else {
+        if (random(1, 100) < 10) {
+          aimX--;
+        } else if (random(1, 100) > 90) {
+          aimX++;
+        }
       }
       if (aimY < RedKing.getY()) {
         aimY++;
       } else if (aimY > RedKing.getY()) {
         aimY--;
+      } else {
+        if (random(1, 100) < 10) {
+          aimX--;
+        } else if (random(1, 100) > 90) {
+          aimX++;
+        }
       }
       return convertXY2Move(aimX, aimY, curX, curY);
     }
